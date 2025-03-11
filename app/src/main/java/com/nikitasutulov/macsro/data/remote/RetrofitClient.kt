@@ -1,12 +1,12 @@
 package com.nikitasutulov.macsro.data.remote
 
-import com.nikitasutulov.macsro.data.remote.api.AuthApi
-import com.nikitasutulov.macsro.data.remote.api.DistrictApi
-import com.nikitasutulov.macsro.data.remote.api.MeasurementUnitApi
-import com.nikitasutulov.macsro.data.remote.api.ResourceApi
-import com.nikitasutulov.macsro.data.remote.api.ResourceMeasurementUnitApi
-import com.nikitasutulov.macsro.data.remote.api.RoleApi
-import com.nikitasutulov.macsro.data.remote.api.UserApi
+import com.nikitasutulov.macsro.data.remote.api.auth.AuthApi
+import com.nikitasutulov.macsro.data.remote.api.utils.DistrictApi
+import com.nikitasutulov.macsro.data.remote.api.utils.MeasurementUnitApi
+import com.nikitasutulov.macsro.data.remote.api.utils.ResourceApi
+import com.nikitasutulov.macsro.data.remote.api.utils.ResourceMeasurementUnitApi
+import com.nikitasutulov.macsro.data.remote.api.auth.RoleApi
+import com.nikitasutulov.macsro.data.remote.api.auth.UserApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
