@@ -11,7 +11,7 @@ class ResourceMeasurementUnitRepository {
         resourceMeasurementUnitApi.getResourceMeasurementUnitsByUnitGID(unitGID)
 
     suspend fun getByResourceGID(resourceGID: String) =
-        resourceMeasurementUnitApi.getResourceMeasurementUnitsByUnitGID(resourceGID)
+        resourceMeasurementUnitApi.getResourceMeasurementUnitsByResourceGID(resourceGID)
 
     suspend fun getByGID(gid: String) =
         resourceMeasurementUnitApi.getResourceMeasurementUnitByGID(gid)
