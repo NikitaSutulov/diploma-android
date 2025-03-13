@@ -2,13 +2,11 @@ package com.nikitasutulov.macsro.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.repository.CrudRepository
-import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 
-abstract class CrudViewModel<EntityDto, CreateEntityDto>(private val repository: CrudRepository<EntityDto, CreateEntityDto>): ViewModel() {
+abstract class CrudViewModel<EntityDto, CreateEntityDto>(private val repository: CrudRepository<EntityDto, CreateEntityDto>): ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<EntityDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<EntityDto>>> = _getAllResponse
 
