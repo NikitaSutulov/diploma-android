@@ -1,0 +1,15 @@
+package com.nikitasutulov.macsro.viewmodel.factories.operations
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.nikitasutulov.macsro.repository.OperationWorkerRepository
+import com.nikitasutulov.macsro.viewmodel.OperationWorkerViewModel
+
+class OperationWorkerViewModelFactory(private val operationWorkerRepository: OperationWorkerRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(OperationWorkerViewModel::class.java)) {
+            return OperationWorkerViewModel(operationWorkerRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}

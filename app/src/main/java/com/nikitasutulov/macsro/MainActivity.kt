@@ -8,15 +8,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.repository.AuthRepository
 import com.nikitasutulov.macsro.repository.RoleRepository
 import com.nikitasutulov.macsro.repository.UserRepository
-import com.nikitasutulov.macsro.viewmodel.auth.auth.AuthViewModel
-import com.nikitasutulov.macsro.viewmodel.auth.auth.AuthViewModelFactory
-import com.nikitasutulov.macsro.viewmodel.auth.role.RoleViewModel
-import com.nikitasutulov.macsro.viewmodel.auth.role.RoleViewModelFactory
-import com.nikitasutulov.macsro.viewmodel.auth.user.UserViewModel
-import com.nikitasutulov.macsro.viewmodel.auth.user.UserViewModelFactory
+import com.nikitasutulov.macsro.viewmodel.AuthViewModel
+import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
+import com.nikitasutulov.macsro.viewmodel.RoleViewModel
+import com.nikitasutulov.macsro.viewmodel.factories.auth.RoleViewModelFactory
+import com.nikitasutulov.macsro.viewmodel.UserViewModel
+import com.nikitasutulov.macsro.viewmodel.factories.auth.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,8 +55,10 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             authViewModel.login(
-                username = "Nikitosik",
-                password = "*Password1Password"
+                LoginDto(
+                    username = "Nikitosik",
+                    password = "*Password1Password"
+                )
             )
         }
 
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     Log.v("Login", "Token: $token")
                     Log.v("Login", "Expiration: $expiration")
                     CoroutineScope(Dispatchers.IO).launch {
-                        roleViewModel.getAllRoles("Bearer $token")
+                        roleViewModel.getAll("Bearer $token")
                     }
                 }
 
@@ -84,14 +87,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        roleViewModel.getAllRolesResponse.observe(this) { response ->
+        roleViewModel.getAllResponse.observe(this) { response ->
             when (response) {
                 is BaseResponse.Success -> {
                     Log.v("Role", "getAllRoles successful")
                     val roles = response.data!!
                     Log.v("Role", "Roles: $roles")
                     CoroutineScope(Dispatchers.IO).launch {
-                        userViewModel.getAllUsers("Bearer $token")
+                        userViewModel.getAll("Bearer $token")
                     }
                 }
 
@@ -106,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        userViewModel.getAllUsersResponse.observe(this) { response ->
+        userViewModel.getAllResponse.observe(this) { response ->
             when (response) {
                 is BaseResponse.Success -> {
                     Log.v("User", "getAllUsers successful")

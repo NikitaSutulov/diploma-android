@@ -19,7 +19,7 @@ class MeasurementUnitRepository(api: MeasurementUnitApi): CrudRepository<Measure
 
 class ResourceRepository(api: ResourceApi): CrudRepository<ResourceDto, CreateResourceDto>(api)
 
-class ResourceMeasurementUnitRepository(private val api: ResourceMeasurementUnitApi) {
+class ResourceMeasurementUnitRepository(private val api: ResourceMeasurementUnitApi): Repository() {
     suspend fun getByUnitGID(unitGID: String) =
         api.getByUnitGID(unitGID)
 
