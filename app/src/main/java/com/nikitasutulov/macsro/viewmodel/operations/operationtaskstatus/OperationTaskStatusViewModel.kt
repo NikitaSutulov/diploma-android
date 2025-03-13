@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.CreateOperationTaskStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
-import com.nikitasutulov.macsro.repository.operations.OperationTaskStatusRepository
+import com.nikitasutulov.macsro.repository.OperationTaskStatusRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

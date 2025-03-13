@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.group.CreateGroupDto
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
-import com.nikitasutulov.macsro.repository.operations.GroupRepository
+import com.nikitasutulov.macsro.repository.GroupRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

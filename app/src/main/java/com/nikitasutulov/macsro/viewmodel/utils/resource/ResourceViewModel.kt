@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.utils.resource.CreateResourceDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
-import com.nikitasutulov.macsro.repository.utils.ResourceRepository
+import com.nikitasutulov.macsro.repository.ResourceRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

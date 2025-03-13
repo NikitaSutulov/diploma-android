@@ -2,6 +2,7 @@ package com.nikitasutulov.macsro.data.remote.api.operations
 
 import com.nikitasutulov.macsro.data.dto.operations.eventstatus.CreateEventStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.eventstatus.EventStatusDto
+import com.nikitasutulov.macsro.data.remote.api.CrudApi
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -12,22 +13,22 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface EventStatusApi {
+interface EventStatusApi: CrudApi<EventStatusDto, CreateEventStatusDto> {
     @GET("/operations/api/EventStatus")
-    suspend fun getAllEventStatuses(
+    override suspend fun getAll(
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<EventStatusDto>>
 
     @POST("/operations/api/EventStatus")
-    suspend fun createEventStatus(@Body createEventStatusDto: CreateEventStatusDto): Response<EventStatusDto>
+    override suspend fun create(@Body createDto: CreateEventStatusDto): Response<EventStatusDto>
 
     @PUT("/operations/api/EventStatus")
-    suspend fun editEventStatus(@Body eventStatusDto: EventStatusDto): Response<EventStatusDto>
+    override suspend fun edit(@Body dto: EventStatusDto): Response<EventStatusDto>
 
     @GET("/operations/api/EventStatus/{gid}")
-    suspend fun getEventStatusByGID(@Path("gid") gid: String): Response<EventStatusDto>
+    override suspend fun getByGID(@Path("gid") gid: String): Response<EventStatusDto>
 
     @DELETE("/operations/api/EventStatus/{gid}")
-    suspend fun deleteEventStatusByGID(@Path("gid") gid: String): Response<ResponseBody>
+    override suspend fun deleteByGID(@Path("gid") gid: String): Response<ResponseBody>
 }

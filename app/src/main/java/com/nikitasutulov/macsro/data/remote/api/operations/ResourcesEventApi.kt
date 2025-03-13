@@ -2,6 +2,7 @@ package com.nikitasutulov.macsro.data.remote.api.operations
 
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.CreateResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
+import com.nikitasutulov.macsro.data.remote.api.CrudApi
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -12,22 +13,22 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ResourcesEventApi {
+interface ResourcesEventApi: CrudApi<ResourcesEventDto, CreateResourcesEventDto> {
     @GET("/operations/api/ResourcesEvent")
-    suspend fun getAllResourcesEvents(
+    override suspend fun getAll(
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<ResourcesEventDto>>
 
     @POST("/operations/api/ResourcesEvent")
-    suspend fun createResourcesEvent(@Body createResourcesEventDto: CreateResourcesEventDto): Response<ResourcesEventDto>
+    override suspend fun create(@Body createDto: CreateResourcesEventDto): Response<ResourcesEventDto>
 
     @PUT("/operations/api/ResourcesEvent")
-    suspend fun editResourcesEvent(@Body resourcesEventDto: ResourcesEventDto): Response<ResourcesEventDto>
+    override suspend fun edit(@Body dto: ResourcesEventDto): Response<ResourcesEventDto>
 
     @GET("/operations/api/ResourcesEvent/{gid}")
-    suspend fun getResourcesEventByGID(@Path("gid") gid: String): Response<ResourcesEventDto>
+    override suspend fun getByGID(@Path("gid") gid: String): Response<ResourcesEventDto>
 
     @DELETE("/operations/api/ResourcesEvent/{gid}")
-    suspend fun deleteResourcesEventByGID(@Path("gid") gid: String): Response<ResponseBody>
+    override suspend fun deleteByGID(@Path("gid") gid: String): Response<ResponseBody>
 }

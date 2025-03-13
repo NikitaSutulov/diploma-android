@@ -2,7 +2,7 @@ package com.nikitasutulov.macsro.viewmodel.operations.event
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.nikitasutulov.macsro.repository.operations.EventRepository
+import com.nikitasutulov.macsro.repository.EventRepository
 
 class EventViewModelFactory(private val eventRepository: EventRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

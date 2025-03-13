@@ -7,7 +7,7 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.SuccessfulLoginResponseDto
-import com.nikitasutulov.macsro.repository.auth.AuthRepository
+import com.nikitasutulov.macsro.repository.AuthRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

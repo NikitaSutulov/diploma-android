@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.operationworker.CreateOperationWorkerDto
 import com.nikitasutulov.macsro.data.dto.operations.operationworker.OperationWorkerDto
-import com.nikitasutulov.macsro.repository.operations.OperationWorkerRepository
+import com.nikitasutulov.macsro.repository.OperationWorkerRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.utils.measurementunit.CreateMeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
-import com.nikitasutulov.macsro.repository.utils.MeasurementUnitRepository
+import com.nikitasutulov.macsro.repository.MeasurementUnitRepository
 import com.nikitasutulov.macsro.util.performRequest
 import okhttp3.ResponseBody
 

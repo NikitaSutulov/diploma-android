@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.role.RoleDto
-import com.nikitasutulov.macsro.repository.auth.RoleRepository
+import com.nikitasutulov.macsro.repository.RoleRepository
 import com.nikitasutulov.macsro.util.performRequest
 
 

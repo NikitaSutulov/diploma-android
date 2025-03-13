@@ -2,7 +2,7 @@ package com.nikitasutulov.macsro.viewmodel.utils.resource
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.nikitasutulov.macsro.repository.utils.ResourceRepository
+import com.nikitasutulov.macsro.repository.ResourceRepository
 
 class ResourceViewModelFactory(private val resourceRepository: ResourceRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

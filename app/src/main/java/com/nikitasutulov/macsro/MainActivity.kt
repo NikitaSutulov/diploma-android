@@ -8,9 +8,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.data.dto.BaseResponse
-import com.nikitasutulov.macsro.repository.auth.AuthRepository
-import com.nikitasutulov.macsro.repository.auth.RoleRepository
-import com.nikitasutulov.macsro.repository.auth.UserRepository
+import com.nikitasutulov.macsro.repository.AuthRepository
+import com.nikitasutulov.macsro.repository.RoleRepository
+import com.nikitasutulov.macsro.repository.UserRepository
 import com.nikitasutulov.macsro.viewmodel.auth.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.auth.auth.AuthViewModelFactory
 import com.nikitasutulov.macsro.viewmodel.auth.role.RoleViewModel

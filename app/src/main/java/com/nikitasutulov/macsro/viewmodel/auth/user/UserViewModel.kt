@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
-import com.nikitasutulov.macsro.repository.auth.UserRepository
+import com.nikitasutulov.macsro.repository.UserRepository
 import com.nikitasutulov.macsro.util.performRequest
 
 class UserViewModel(private val userRepository: UserRepository): ViewModel() {
