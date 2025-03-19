@@ -22,37 +22,37 @@ abstract class CrudViewModel<EntityDto, CreateEntityDto>(private val repository:
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
-    fun getAll(pageNumber: Int?, pageSize: Int?) {
+    fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
         performRequest(
-            request = { repository.getAll(pageNumber, pageSize) },
+            request = { repository.getAll(token, pageNumber, pageSize) },
             responseLiveData = _getAllResponse
         )
     }
 
-    fun create(createDto: CreateEntityDto) {
+    fun create(token: String, createDto: CreateEntityDto) {
         performRequest(
-            request = { repository.create(createDto) },
+            request = { repository.create(token, createDto) },
             responseLiveData = _createResponse
         )
     }
 
-    fun edit(dto: EntityDto) {
+    fun edit(token: String, dto: EntityDto) {
         performRequest(
-            request = { repository.edit(dto) },
+            request = { repository.edit(token, dto) },
             responseLiveData = _editResponse
         )
     }
 
-    fun getByGID(gid: String) {
+    fun getByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.getByGID(gid) },
+            request = { repository.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
         )
     }
 
-    fun deleteByGID(gid: String) {
+    fun deleteByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.deleteByGID(gid) },
+            request = { repository.deleteByGID(token, gid) },
             responseLiveData = _deleteByGIDResponse
         )
     }

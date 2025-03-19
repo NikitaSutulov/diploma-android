@@ -8,27 +8,41 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface VolunteersGroupsApi: CrudApi<VolunteersGroupsDto, CreateVolunteersGroupsDto> {
+interface VolunteersGroupsApi : CrudApi<VolunteersGroupsDto, CreateVolunteersGroupsDto> {
     @GET("/volunteer/api/VolunteersGroups")
     override suspend fun getAll(
+        @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<VolunteersGroupsDto>>
 
     @POST("/volunteer/api/VolunteersGroups")
-    override suspend fun create(@Body createDto: CreateVolunteersGroupsDto): Response<VolunteersGroupsDto>
+    override suspend fun create(
+        @Header("Authorization") token: String,
+        @Body createDto: CreateVolunteersGroupsDto
+    ): Response<VolunteersGroupsDto>
 
     @PUT("/volunteer/api/VolunteersGroups")
-    override suspend fun edit(@Body dto: VolunteersGroupsDto): Response<VolunteersGroupsDto>
+    override suspend fun edit(
+        @Header("Authorization") token: String,
+        @Body dto: VolunteersGroupsDto
+    ): Response<VolunteersGroupsDto>
 
     @GET("/volunteer/api/VolunteersGroups/{gid}")
-    override suspend fun getByGID(@Path("gid") gid: String): Response<VolunteersGroupsDto>
+    override suspend fun getByGID(
+        @Header("Authorization") token: String,
+        @Path("gid") gid: String
+    ): Response<VolunteersGroupsDto>
 
     @DELETE("/volunteer/api/VolunteersGroups/{gid}")
-    override suspend fun deleteByGID(@Path("gid") gid: String): Response<ResponseBody>
+    override suspend fun deleteByGID(
+        @Header("Authorization") token: String,
+        @Path("gid") gid: String
+    ): Response<ResponseBody>
 }

@@ -12,8 +12,14 @@ interface UserApi {
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserDto>>
 
     @GET("/api/User/{roleName}")
-    suspend fun getUsersWithRole(@Header("Authorization") token: String, @Path("roleName") roleName: String): Response<List<UserDto>>
+    suspend fun getUsersWithRole(
+        @Header("Authorization") token: String,
+        @Path("roleName") roleName: String
+    ): Response<List<UserDto>>
 
     @PUT("/api/User")
-    suspend fun editUser(@Header("Authorization") token: String, userDto: UserDto): Response<UserDto>
+    suspend fun editUser(
+        @Header("Authorization") token: String,
+        userDto: UserDto
+    ): Response<UserDto>
 }

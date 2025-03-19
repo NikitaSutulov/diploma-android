@@ -8,27 +8,41 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface EventApi: CrudApi<EventDto, CreateEventDto> {
+interface EventApi : CrudApi<EventDto, CreateEventDto> {
     @GET("/operations/api/Event")
     override suspend fun getAll(
+        @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<EventDto>>
 
     @POST("/operations/api/Event")
-    override suspend fun create(@Body createDto: CreateEventDto): Response<EventDto>
+    override suspend fun create(
+        @Header("Authorization") token: String,
+        @Body createDto: CreateEventDto
+    ): Response<EventDto>
 
     @PUT("/operations/api/Event")
-    override suspend fun edit(@Body dto: EventDto): Response<EventDto>
+    override suspend fun edit(
+        @Header("Authorization") token: String,
+        @Body dto: EventDto
+    ): Response<EventDto>
 
     @GET("/operations/api/Event/{gid}")
-    override suspend fun getByGID(@Path("gid") gid: String): Response<EventDto>
+    override suspend fun getByGID(
+        @Header("Authorization") token: String,
+        @Path("gid") gid: String
+    ): Response<EventDto>
 
     @DELETE("/operations/api/Event/{gid}")
-    override suspend fun deleteByGID(@Path("gid") gid: String): Response<ResponseBody>
+    override suspend fun deleteByGID(
+        @Header("Authorization") token: String,
+        @Path("gid") gid: String
+    ): Response<ResponseBody>
 }

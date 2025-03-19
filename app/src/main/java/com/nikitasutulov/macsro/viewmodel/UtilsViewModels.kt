@@ -42,44 +42,44 @@ class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasureme
     private val _existsResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val existsResponse: LiveData<BaseResponse<ResponseBody>> = _existsResponse
 
-    fun getByUnitGID(unitGID: String) {
+    fun getByUnitGID(token: String, unitGID: String) {
         performRequest(
-            request = { repository.getByUnitGID(unitGID) },
+            request = { repository.getByUnitGID(token, unitGID) },
             responseLiveData = _getByUnitGIDResponse
         )
     }
 
-    fun getByResourceGID(resourceGID: String) {
+    fun getByResourceGID(token: String, resourceGID: String) {
         performRequest(
-            request = { repository.getByResourceGID(resourceGID) },
+            request = { repository.getByResourceGID(token, resourceGID) },
             responseLiveData = _getByResourceGIDResponse
         )
     }
 
-    fun getByGID(gid: String) {
+    fun getByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.getByGID(gid) },
+            request = { repository.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
         )
     }
 
-    fun deleteByGID(gid: String) {
+    fun deleteByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.deleteByGID(gid) },
+            request = { repository.deleteByGID(token, gid) },
             responseLiveData = _deleteByGIDResponse
         )
     }
 
-    fun create(createDto: CreateResourceMeasurementUnitDto) {
+    fun create(token: String, createDto: CreateResourceMeasurementUnitDto) {
         performRequest(
-            request = { repository.create(createDto) },
+            request = { repository.create(token, createDto) },
             responseLiveData = _createResponse
         )
     }
 
-    fun exists(dto: ResourceMeasurementUnitDto) {
+    fun exists(token: String, dto: ResourceMeasurementUnitDto) {
         performRequest(
-            request = { repository.exists(dto) },
+            request = { repository.exists(token, dto) },
             responseLiveData = _existsResponse
         )
     }

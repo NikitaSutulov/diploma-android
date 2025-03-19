@@ -20,21 +20,21 @@ class MeasurementUnitRepository(api: MeasurementUnitApi): CrudRepository<Measure
 class ResourceRepository(api: ResourceApi): CrudRepository<ResourceDto, CreateResourceDto>(api)
 
 class ResourceMeasurementUnitRepository(private val api: ResourceMeasurementUnitApi): Repository() {
-    suspend fun getByUnitGID(unitGID: String) =
-        api.getByUnitGID(unitGID)
+    suspend fun getByUnitGID(token: String, unitGID: String) =
+        api.getByUnitGID(token, unitGID)
 
-    suspend fun getByResourceGID(resourceGID: String) =
-        api.getByResourceGID(resourceGID)
+    suspend fun getByResourceGID(token: String, resourceGID: String) =
+        api.getByResourceGID(token, resourceGID)
 
-    suspend fun getByGID(gid: String) =
-        api.getByGID(gid)
+    suspend fun getByGID(token: String, gid: String) =
+        api.getByGID(token, gid)
 
-    suspend fun deleteByGID(gid: String) =
-        api.deleteByGID(gid)
+    suspend fun deleteByGID(token: String, gid: String) =
+        api.deleteByGID(token, gid)
 
-    suspend fun create(createResourceMeasurementUnitDto: CreateResourceMeasurementUnitDto) =
-        api.create(createResourceMeasurementUnitDto)
+    suspend fun create(token: String, createResourceMeasurementUnitDto: CreateResourceMeasurementUnitDto) =
+        api.create(token, createResourceMeasurementUnitDto)
 
-    suspend fun exists(resourceMeasurementUnitDto: ResourceMeasurementUnitDto) =
-        api.exists(resourceMeasurementUnitDto)
+    suspend fun exists(token: String, resourceMeasurementUnitDto: ResourceMeasurementUnitDto) =
+        api.exists(token, resourceMeasurementUnitDto)
 }
