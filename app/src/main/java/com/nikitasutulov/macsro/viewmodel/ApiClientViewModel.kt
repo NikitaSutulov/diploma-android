@@ -9,6 +9,7 @@ import com.nikitasutulov.macsro.data.dto.ErrorResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 abstract class ApiClientViewModel(): ViewModel() {
     fun <T> performRequest(
@@ -22,7 +23,8 @@ abstract class ApiClientViewModel(): ViewModel() {
             val result = if (response.isSuccessful) {
                 BaseResponse.Success(response.body())
             } else {
-                BaseResponse.Error(ErrorResponse(response.errorBody()!!.string()))
+                val errorMessage = JSONObject(response.errorBody()!!.string()).get("message") as String
+                BaseResponse.Error(ErrorResponse(errorMessage))
             }
 
             responseLiveData.postValue(result)
