@@ -1,4 +1,4 @@
-package com.nikitasutulov.macsro
+package com.nikitasutulov.macsro.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
