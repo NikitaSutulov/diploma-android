@@ -1,6 +1,5 @@
 package com.nikitasutulov.macsro.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -17,6 +16,7 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
 import com.nikitasutulov.macsro.repository.AuthRepository
+import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.viewmodel.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -26,13 +26,8 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private val authViewModel: AuthViewModel by lazy {
-        val authRepository = AuthRepository()
-        ViewModelProvider(
-            requireActivity(),
-            AuthViewModelFactory(authRepository)
-        )[AuthViewModel::class.java]
-    }
+    private lateinit var authViewModel: AuthViewModel
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +35,26 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
+        initAuthViewModel()
+        initSessionManager()
         handleTogglingPasswordVisibility()
         handleEmptyCredentials()
         setLoginResponseObserver()
         setLoginButtonOnClickListener()
 
         return binding.root
+    }
+
+    private fun initAuthViewModel() {
+        val authRepository = AuthRepository()
+        authViewModel = ViewModelProvider(
+            requireActivity(),
+            AuthViewModelFactory(authRepository)
+        )[AuthViewModel::class.java]
+    }
+
+    private fun initSessionManager() {
+        sessionManager = SessionManager(requireActivity())
     }
 
     private fun handleTogglingPasswordVisibility() {
@@ -111,12 +120,7 @@ class LoginFragment : Fragment() {
                 is BaseResponse.Success -> {
                     Log.v("Login", "Login successful")
                     val responseData = response.data!!
-                    val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-                    with(sharedPref.edit()) {
-                        putString("token", responseData.token)
-                        putString("expiration", responseData.expiration)
-                        apply()
-                    }
+                    sessionManager.saveToken(responseData.token, responseData.expiration)
                     findNavController().navigate(R.id.action_loginFragment_to_eventsFragment)
                 }
                 is BaseResponse.Error -> {
