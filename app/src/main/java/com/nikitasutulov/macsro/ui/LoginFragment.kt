@@ -128,6 +128,7 @@ class LoginFragment : Fragment() {
                     Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
                         .show()
                     binding.passwordEditText.setText("")
+                    binding.passwordEditText.error = null
                 }
                 is BaseResponse.Loading -> {
                     Log.v("Login", "Pending login...")
