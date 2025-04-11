@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-abstract class ApiClientViewModel(): ViewModel() {
+abstract class ApiClientViewModel : ViewModel() {
     fun <T> performRequest(
         request: suspend () -> retrofit2.Response<T>,
         responseLiveData: MutableLiveData<BaseResponse<T>>

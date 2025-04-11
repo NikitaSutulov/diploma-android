@@ -16,27 +16,26 @@ import com.nikitasutulov.macsro.data.dto.operations.operationworker.CreateOperat
 import com.nikitasutulov.macsro.data.dto.operations.operationworker.OperationWorkerDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.CreateResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
-import com.nikitasutulov.macsro.data.remote.api.operations.EventApi
-import com.nikitasutulov.macsro.data.remote.api.operations.EventStatusApi
-import com.nikitasutulov.macsro.data.remote.api.operations.EventTypeApi
-import com.nikitasutulov.macsro.data.remote.api.operations.GroupApi
-import com.nikitasutulov.macsro.data.remote.api.operations.OperationTaskApi
-import com.nikitasutulov.macsro.data.remote.api.operations.OperationTaskStatusApi
-import com.nikitasutulov.macsro.data.remote.api.operations.OperationWorkerApi
-import com.nikitasutulov.macsro.data.remote.api.operations.ResourcesEventApi
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 
-class EventRepository(api: EventApi): CrudRepository<EventDto, CreateEventDto>(api)
+class EventRepository : CrudRepository<EventDto, CreateEventDto>(RetrofitClient.eventApi)
 
-class EventStatusRepository(api: EventStatusApi): CrudRepository<EventStatusDto, CreateEventStatusDto>(api)
+class EventStatusRepository :
+    CrudRepository<EventStatusDto, CreateEventStatusDto>(RetrofitClient.eventStatusApi)
 
-class EventTypeRepository(api: EventTypeApi): CrudRepository<EventTypeDto, CreateEventTypeDto>(api)
+class EventTypeRepository :
+    CrudRepository<EventTypeDto, CreateEventTypeDto>(RetrofitClient.eventTypeApi)
 
-class GroupRepository(api: GroupApi): CrudRepository<GroupDto, CreateGroupDto>(api)
+class GroupRepository : CrudRepository<GroupDto, CreateGroupDto>(RetrofitClient.groupApi)
 
-class OperationTaskRepository(api: OperationTaskApi): CrudRepository<OperationTaskDto, CreateOperationTaskDto>(api)
+class OperationTaskRepository :
+    CrudRepository<OperationTaskDto, CreateOperationTaskDto>(RetrofitClient.operationTaskApi)
 
-class OperationTaskStatusRepository(api: OperationTaskStatusApi): CrudRepository<OperationTaskStatusDto, CreateOperationTaskStatusDto>(api)
+class OperationTaskStatusRepository :
+    CrudRepository<OperationTaskStatusDto, CreateOperationTaskStatusDto>(RetrofitClient.operationTaskStatusApi)
 
-class OperationWorkerRepository(api: OperationWorkerApi): CrudRepository<OperationWorkerDto, CreateOperationWorkerDto>(api)
+class OperationWorkerRepository :
+    CrudRepository<OperationWorkerDto, CreateOperationWorkerDto>(RetrofitClient.operationWorkerApi)
 
-class ResourcesEventRepository(api: ResourcesEventApi): CrudRepository<ResourcesEventDto, CreateResourcesEventDto>(api)
+class ResourcesEventRepository :
+    CrudRepository<ResourcesEventDto, CreateResourcesEventDto>(RetrofitClient.resourcesEventApi)

@@ -8,18 +8,20 @@ import com.nikitasutulov.macsro.data.dto.utils.resource.CreateResourceDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.CreateResourceMeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.ResourceMeasurementUnitDto
-import com.nikitasutulov.macsro.data.remote.api.utils.DistrictApi
-import com.nikitasutulov.macsro.data.remote.api.utils.MeasurementUnitApi
-import com.nikitasutulov.macsro.data.remote.api.utils.ResourceApi
-import com.nikitasutulov.macsro.data.remote.api.utils.ResourceMeasurementUnitApi
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 
-class DistrictRepository(api: DistrictApi): CrudRepository<DistrictDto, CreateDistrictDto>(api)
+class DistrictRepository :
+    CrudRepository<DistrictDto, CreateDistrictDto>(RetrofitClient.districtApi)
 
-class MeasurementUnitRepository(api: MeasurementUnitApi): CrudRepository<MeasurementUnitDto, CreateMeasurementUnitDto>(api)
+class MeasurementUnitRepository :
+    CrudRepository<MeasurementUnitDto, CreateMeasurementUnitDto>(RetrofitClient.measurementUnitApi)
 
-class ResourceRepository(api: ResourceApi): CrudRepository<ResourceDto, CreateResourceDto>(api)
+class ResourceRepository :
+    CrudRepository<ResourceDto, CreateResourceDto>(RetrofitClient.resourceApi)
 
-class ResourceMeasurementUnitRepository(private val api: ResourceMeasurementUnitApi): Repository() {
+class ResourceMeasurementUnitRepository : Repository() {
+    val api = RetrofitClient.resourceMeasurementUnitApi
+
     suspend fun getByUnitGID(token: String, unitGID: String) =
         api.getByUnitGID(token, unitGID)
 
@@ -32,7 +34,10 @@ class ResourceMeasurementUnitRepository(private val api: ResourceMeasurementUnit
     suspend fun deleteByGID(token: String, gid: String) =
         api.deleteByGID(token, gid)
 
-    suspend fun create(token: String, createResourceMeasurementUnitDto: CreateResourceMeasurementUnitDto) =
+    suspend fun create(
+        token: String,
+        createResourceMeasurementUnitDto: CreateResourceMeasurementUnitDto
+    ) =
         api.create(token, createResourceMeasurementUnitDto)
 
     suspend fun exists(token: String, resourceMeasurementUnitDto: ResourceMeasurementUnitDto) =

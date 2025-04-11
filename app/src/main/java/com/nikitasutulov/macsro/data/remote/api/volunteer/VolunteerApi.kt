@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface VolunteerApi : CrudApi<VolunteerDto, CreateVolunteerDto> {
-    @GET("/volunteer/api/Volunteer")
+    @GET("Volunteer")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<VolunteerDto>>
 
-    @POST("/volunteer/api/Volunteer")
+    @POST("Volunteer")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateVolunteerDto
     ): Response<VolunteerDto>
 
-    @PUT("/volunteer/api/Volunteer")
+    @PUT("Volunteer")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: VolunteerDto
     ): Response<VolunteerDto>
 
-    @GET("/volunteer/api/Volunteer/{gid}")
+    @GET("Volunteer/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<VolunteerDto>
 
-    @DELETE("/volunteer/api/Volunteer/{gid}")
+    @DELETE("Volunteer/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

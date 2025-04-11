@@ -10,8 +10,11 @@ import com.nikitasutulov.macsro.repository.VolunteerRepository
 import com.nikitasutulov.macsro.repository.VolunteersDistrictsRepository
 import com.nikitasutulov.macsro.repository.VolunteersGroupsRepository
 
-class VolunteerViewModel(repository: VolunteerRepository): CrudViewModel<VolunteerDto, CreateVolunteerDto>(repository)
+class VolunteerViewModel(repository: VolunteerRepository) :
+    CrudViewModel<VolunteerDto, CreateVolunteerDto>(repository)
 
-class VolunteersDistrictsViewModel(repository: VolunteersDistrictsRepository): CrudViewModel<VolunteersDistrictsDto, CreateVolunteersDistrictsDto>(repository)
+class VolunteersDistrictsViewModel(repository: VolunteersDistrictsRepository) :
+    CrudViewModel<VolunteersDistrictsDto, CreateVolunteersDistrictsDto>(repository)
 
-class VolunteersGroupsViewModel(repository: VolunteersGroupsRepository): CrudViewModel<VolunteersGroupsDto, CreateVolunteersGroupsDto>(repository)
+class VolunteersGroupsViewModel(repository: VolunteersGroupsRepository) :
+    CrudViewModel<VolunteersGroupsDto, CreateVolunteersGroupsDto>(repository)

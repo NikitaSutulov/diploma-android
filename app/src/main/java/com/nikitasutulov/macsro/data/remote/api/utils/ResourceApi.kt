@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ResourceApi : CrudApi<ResourceDto, CreateResourceDto> {
-    @GET("/utils/api/Resource")
+    @GET("Resource")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<ResourceDto>>
 
-    @POST("/utils/api/Resource")
+    @POST("Resource")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateResourceDto
     ): Response<ResourceDto>
 
-    @PUT("/utils/api/Resource")
+    @PUT("Resource")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: ResourceDto
     ): Response<ResourceDto>
 
-    @GET("/utils/api/Resource/{gid}")
+    @GET("Resource/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<ResourceDto>
 
-    @DELETE("/utils/api/Resource/{gid}")
+    @DELETE("Resource/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

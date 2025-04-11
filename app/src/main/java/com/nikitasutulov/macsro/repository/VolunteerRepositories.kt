@@ -6,10 +6,13 @@ import com.nikitasutulov.macsro.data.dto.volunteer.volunteersdistricts.CreateVol
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersdistricts.VolunteersDistrictsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.CreateVolunteersGroupsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
-import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteerApi
-import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersDistrictsApi
-import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersGroupsApi
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 
-class VolunteerRepository(api: VolunteerApi): CrudRepository<VolunteerDto, CreateVolunteerDto>(api)
-class VolunteersDistrictsRepository(api: VolunteersDistrictsApi): CrudRepository<VolunteersDistrictsDto, CreateVolunteersDistrictsDto>(api)
-class VolunteersGroupsRepository(api: VolunteersGroupsApi): CrudRepository<VolunteersGroupsDto, CreateVolunteersGroupsDto>(api)
+class VolunteerRepository :
+    CrudRepository<VolunteerDto, CreateVolunteerDto>(RetrofitClient.volunteerApi)
+
+class VolunteersDistrictsRepository :
+    CrudRepository<VolunteersDistrictsDto, CreateVolunteersDistrictsDto>(RetrofitClient.volunteersDistrictsApi)
+
+class VolunteersGroupsRepository :
+    CrudRepository<VolunteersGroupsDto, CreateVolunteersGroupsDto>(RetrofitClient.volunteersGroupsApi)

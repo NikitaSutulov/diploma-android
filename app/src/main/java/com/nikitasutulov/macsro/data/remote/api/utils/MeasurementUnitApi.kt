@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MeasurementUnitApi : CrudApi<MeasurementUnitDto, CreateMeasurementUnitDto> {
-    @GET("/utils/api/MeasurementUnit")
+    @GET("MeasurementUnit")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<MeasurementUnitDto>>
 
-    @POST("/utils/api/MeasurementUnit")
+    @POST("MeasurementUnit")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateMeasurementUnitDto
     ): Response<MeasurementUnitDto>
 
-    @PUT("/utils/api/MeasurementUnit")
+    @PUT("MeasurementUnit")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: MeasurementUnitDto
     ): Response<MeasurementUnitDto>
 
-    @GET("/utils/api/MeasurementUnit/{gid}")
+    @GET("MeasurementUnit/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<MeasurementUnitDto>
 
-    @DELETE("/utils/api/MeasurementUnit/{gid}")
+    @DELETE("MeasurementUnit/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

@@ -25,18 +25,26 @@ import com.nikitasutulov.macsro.repository.OperationTaskStatusRepository
 import com.nikitasutulov.macsro.repository.OperationWorkerRepository
 import com.nikitasutulov.macsro.repository.ResourcesEventRepository
 
-class EventViewModel(repository: EventRepository): CrudViewModel<EventDto, CreateEventDto>(repository)
+class EventViewModel(repository: EventRepository) :
+    CrudViewModel<EventDto, CreateEventDto>(repository)
 
-class EventStatusViewModel(repository: EventStatusRepository): CrudViewModel<EventStatusDto, CreateEventStatusDto>(repository)
+class EventStatusViewModel(repository: EventStatusRepository) :
+    CrudViewModel<EventStatusDto, CreateEventStatusDto>(repository)
 
-class EventTypeViewModel(repository: EventTypeRepository): CrudViewModel<EventTypeDto, CreateEventTypeDto>(repository)
+class EventTypeViewModel(repository: EventTypeRepository) :
+    CrudViewModel<EventTypeDto, CreateEventTypeDto>(repository)
 
-class GroupViewModel(repository: GroupRepository): CrudViewModel<GroupDto, CreateGroupDto>(repository)
+class GroupViewModel(repository: GroupRepository) :
+    CrudViewModel<GroupDto, CreateGroupDto>(repository)
 
-class OperationTaskViewModel(repository: OperationTaskRepository): CrudViewModel<OperationTaskDto, CreateOperationTaskDto>(repository)
+class OperationTaskViewModel(repository: OperationTaskRepository) :
+    CrudViewModel<OperationTaskDto, CreateOperationTaskDto>(repository)
 
-class OperationTaskStatusViewModel(repository: OperationTaskStatusRepository): CrudViewModel<OperationTaskStatusDto, CreateOperationTaskStatusDto>(repository)
+class OperationTaskStatusViewModel(repository: OperationTaskStatusRepository) :
+    CrudViewModel<OperationTaskStatusDto, CreateOperationTaskStatusDto>(repository)
 
-class OperationWorkerViewModel(repository: OperationWorkerRepository): CrudViewModel<OperationWorkerDto, CreateOperationWorkerDto>(repository)
+class OperationWorkerViewModel(repository: OperationWorkerRepository) :
+    CrudViewModel<OperationWorkerDto, CreateOperationWorkerDto>(repository)
 
-class ResourcesEventViewModel(repository: ResourcesEventRepository): CrudViewModel<ResourcesEventDto, CreateResourcesEventDto>(repository)
+class ResourcesEventViewModel(repository: ResourcesEventRepository) :
+    CrudViewModel<ResourcesEventDto, CreateResourcesEventDto>(repository)

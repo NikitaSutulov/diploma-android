@@ -17,18 +17,26 @@ import com.nikitasutulov.macsro.repository.ResourceMeasurementUnitRepository
 import com.nikitasutulov.macsro.repository.ResourceRepository
 import okhttp3.ResponseBody
 
-class DistrictViewModel(repository: DistrictRepository): CrudViewModel<DistrictDto, CreateDistrictDto>(repository)
+class DistrictViewModel(repository: DistrictRepository) :
+    CrudViewModel<DistrictDto, CreateDistrictDto>(repository)
 
-class MeasurementUnitViewModel(repository: MeasurementUnitRepository): CrudViewModel<MeasurementUnitDto, CreateMeasurementUnitDto>(repository)
+class MeasurementUnitViewModel(repository: MeasurementUnitRepository) :
+    CrudViewModel<MeasurementUnitDto, CreateMeasurementUnitDto>(repository)
 
-class ResourceViewModel(repository: ResourceRepository): CrudViewModel<ResourceDto, CreateResourceDto>(repository)
+class ResourceViewModel(repository: ResourceRepository) :
+    CrudViewModel<ResourceDto, CreateResourceDto>(repository)
 
-class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasurementUnitRepository): ApiClientViewModel() {
-    private val _getByUnitGIDResponse = MutableLiveData<BaseResponse<List<ResourceMeasurementUnitDto>>>()
-    val getByUnitGIDResponse: LiveData<BaseResponse<List<ResourceMeasurementUnitDto>>> = _getByUnitGIDResponse
+class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasurementUnitRepository) :
+    ApiClientViewModel() {
+    private val _getByUnitGIDResponse =
+        MutableLiveData<BaseResponse<List<ResourceMeasurementUnitDto>>>()
+    val getByUnitGIDResponse: LiveData<BaseResponse<List<ResourceMeasurementUnitDto>>> =
+        _getByUnitGIDResponse
 
-    private val _getByResourceGIDResponse = MutableLiveData<BaseResponse<List<ResourceMeasurementUnitDto>>>()
-    val getByResourceGIDResponse: LiveData<BaseResponse<List<ResourceMeasurementUnitDto>>> = _getByResourceGIDResponse
+    private val _getByResourceGIDResponse =
+        MutableLiveData<BaseResponse<List<ResourceMeasurementUnitDto>>>()
+    val getByResourceGIDResponse: LiveData<BaseResponse<List<ResourceMeasurementUnitDto>>> =
+        _getByResourceGIDResponse
 
     private val _getByGIDResponse = MutableLiveData<BaseResponse<ResourceMeasurementUnitDto>>()
     val getByGIDResponse: LiveData<BaseResponse<ResourceMeasurementUnitDto>> = _getByGIDResponse

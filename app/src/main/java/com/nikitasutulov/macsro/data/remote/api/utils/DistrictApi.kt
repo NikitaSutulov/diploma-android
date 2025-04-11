@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface DistrictApi : CrudApi<DistrictDto, CreateDistrictDto> {
-    @GET("/utils/api/District")
+    @GET("District")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<DistrictDto>>
 
-    @POST("/utils/api/District")
+    @POST("District")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateDistrictDto
     ): Response<DistrictDto>
 
-    @PUT("/utils/api/District")
+    @PUT("District")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: DistrictDto
     ): Response<DistrictDto>
 
-    @GET("/utils/api/District/{gid}")
+    @GET("District/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<DistrictDto>
 
-    @DELETE("/utils/api/District/{gid}")
+    @DELETE("District/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
