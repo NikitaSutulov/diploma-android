@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EventApi : CrudApi<EventDto, CreateEventDto> {
-    @GET("/operations/api/Event")
+    @GET("Event")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<EventDto>>
 
-    @POST("/operations/api/Event")
+    @POST("Event")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateEventDto
     ): Response<EventDto>
 
-    @PUT("/operations/api/Event")
+    @PUT("Event")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: EventDto
     ): Response<EventDto>
 
-    @GET("/operations/api/Event/{gid}")
+    @GET("Event/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<EventDto>
 
-    @DELETE("/operations/api/Event/{gid}")
+    @DELETE("Event/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

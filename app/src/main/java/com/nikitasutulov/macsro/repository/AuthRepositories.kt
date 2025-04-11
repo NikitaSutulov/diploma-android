@@ -8,7 +8,8 @@ import com.nikitasutulov.macsro.data.remote.RetrofitClient
 class AuthRepository {
     private val authApi = RetrofitClient.authApi
 
-    suspend fun registerVolunteer(registerVolunteerDto: RegisterDto) = authApi.register(registerVolunteerDto)
+    suspend fun registerVolunteer(registerVolunteerDto: RegisterDto) =
+        authApi.register(registerVolunteerDto)
 
     suspend fun login(loginDto: LoginDto) = authApi.login(loginDto)
 }
@@ -24,7 +25,8 @@ class UserRepository {
 
     suspend fun getAllUsers(token: String) = userApi.getAllUsers(token)
 
-    suspend fun getUsersWithRole(token: String, roleName: String) = userApi.getUsersWithRole(token, roleName)
+    suspend fun getUsersWithRole(token: String, roleName: String) =
+        userApi.getUsersWithRole(token, roleName)
 
     suspend fun editUser(token: String, userDto: UserDto) = userApi.editUser(token, userDto)
 }

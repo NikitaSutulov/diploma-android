@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GroupApi : CrudApi<GroupDto, CreateGroupDto> {
-    @GET("/operations/api/Group")
+    @GET("Group")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<GroupDto>>
 
-    @POST("/operations/api/Group")
+    @POST("Group")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateGroupDto
     ): Response<GroupDto>
 
-    @PUT("/operations/api/Group")
+    @PUT("Group")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: GroupDto
     ): Response<GroupDto>
 
-    @GET("/operations/api/Group/{gid}")
+    @GET("Group/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<GroupDto>
 
-    @DELETE("/operations/api/Group/{gid}")
+    @DELETE("Group/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

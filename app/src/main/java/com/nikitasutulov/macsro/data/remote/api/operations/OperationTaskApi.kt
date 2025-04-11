@@ -15,32 +15,32 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface OperationTaskApi : CrudApi<OperationTaskDto, CreateOperationTaskDto> {
-    @GET("/operations/api/OperationTask")
+    @GET("OperationTask")
     override suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<OperationTaskDto>>
 
-    @POST("/operations/api/OperationTask")
+    @POST("OperationTask")
     override suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateOperationTaskDto
     ): Response<OperationTaskDto>
 
-    @PUT("/operations/api/OperationTask")
+    @PUT("OperationTask")
     override suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: OperationTaskDto
     ): Response<OperationTaskDto>
 
-    @GET("/operations/api/OperationTask/{gid}")
+    @GET("OperationTask/{gid}")
     override suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<OperationTaskDto>
 
-    @DELETE("/operations/api/OperationTask/{gid}")
+    @DELETE("OperationTask/{gid}")
     override suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String

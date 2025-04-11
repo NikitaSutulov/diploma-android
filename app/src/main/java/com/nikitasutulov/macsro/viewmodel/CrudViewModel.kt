@@ -6,7 +6,8 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.repository.CrudRepository
 import okhttp3.ResponseBody
 
-abstract class CrudViewModel<EntityDto, CreateEntityDto>(private val repository: CrudRepository<EntityDto, CreateEntityDto>): ApiClientViewModel() {
+abstract class CrudViewModel<EntityDto, CreateEntityDto>
+    (private val repository: CrudRepository<EntityDto, CreateEntityDto>) : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<EntityDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<EntityDto>>> = _getAllResponse
 

@@ -8,16 +8,16 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserApi {
-    @GET("/api/User/collection")
+    @GET("User/collection")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserDto>>
 
-    @GET("/api/User/{roleName}")
+    @GET("User/{roleName}")
     suspend fun getUsersWithRole(
         @Header("Authorization") token: String,
         @Path("roleName") roleName: String
     ): Response<List<UserDto>>
 
-    @PUT("/api/User")
+    @PUT("User")
     suspend fun editUser(
         @Header("Authorization") token: String,
         userDto: UserDto

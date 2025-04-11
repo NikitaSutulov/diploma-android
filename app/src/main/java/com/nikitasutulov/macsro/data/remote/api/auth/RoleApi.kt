@@ -6,6 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 
 interface RoleApi {
-    @GET("/api/Role/collection")
+    @GET("Role/collection")
     suspend fun getAllRoles(@Header("Authorization") token: String): Response<List<RoleDto>>
 }

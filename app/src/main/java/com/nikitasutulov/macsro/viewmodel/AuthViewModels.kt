@@ -13,7 +13,7 @@ import com.nikitasutulov.macsro.repository.RoleRepository
 import com.nikitasutulov.macsro.repository.UserRepository
 import okhttp3.ResponseBody
 
-class AuthViewModel(private val repository: AuthRepository): ApiClientViewModel() {
+class AuthViewModel(private val repository: AuthRepository) : ApiClientViewModel() {
     private val _registerResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val registerResponse: LiveData<BaseResponse<ResponseBody>> = _registerResponse
 
@@ -35,7 +35,7 @@ class AuthViewModel(private val repository: AuthRepository): ApiClientViewModel(
     }
 }
 
-class RoleViewModel(private val repository: RoleRepository): ApiClientViewModel() {
+class RoleViewModel(private val repository: RoleRepository) : ApiClientViewModel() {
     private val _getAllRolesResponse = MutableLiveData<BaseResponse<List<RoleDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<RoleDto>>> = _getAllRolesResponse
 
@@ -47,7 +47,7 @@ class RoleViewModel(private val repository: RoleRepository): ApiClientViewModel(
     }
 }
 
-class UserViewModel(private val repository: UserRepository): ApiClientViewModel() {
+class UserViewModel(private val repository: UserRepository) : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<UserDto>>> = _getAllResponse
 
