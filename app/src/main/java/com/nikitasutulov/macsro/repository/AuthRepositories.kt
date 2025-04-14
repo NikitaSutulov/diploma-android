@@ -25,6 +25,12 @@ class UserRepository {
 
     suspend fun getAllUsers(token: String) = userApi.getAllUsers(token)
 
+    suspend fun getUsersWithUsername(token: String, username: String) =
+        userApi.getUsersWithUsername(token, username)
+
+    suspend fun getUsersWithEmail(token: String, email: String) =
+        userApi.getUsersWithEmail(token, email)
+
     suspend fun getUsersWithRole(token: String, roleName: String) =
         userApi.getUsersWithRole(token, roleName)
 

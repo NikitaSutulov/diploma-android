@@ -51,6 +51,12 @@ class UserViewModel(private val repository: UserRepository) : ApiClientViewModel
     private val _getAllResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<UserDto>>> = _getAllResponse
 
+    private val _getWithUsernameResponse = MutableLiveData<BaseResponse<ResponseBody>>()
+    val getWithUsernameResponse: LiveData<BaseResponse<ResponseBody>> = _getWithUsernameResponse
+
+    private val _getWithEmailResponse = MutableLiveData<BaseResponse<ResponseBody>>()
+    val getWithEmailResponse: LiveData<BaseResponse<ResponseBody>> = _getWithEmailResponse
+
     private val _getWithRoleResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
     val getWithRoleResponse: LiveData<BaseResponse<List<UserDto>>> = _getWithRoleResponse
 
@@ -61,6 +67,20 @@ class UserViewModel(private val repository: UserRepository) : ApiClientViewModel
         performRequest(
             request = { repository.getAllUsers(token) },
             responseLiveData = _getAllResponse
+        )
+    }
+
+    fun getWithUsername(token: String, username: String) {
+        performRequest(
+            request = { repository.getUsersWithUsername(token, username) },
+            responseLiveData = _getWithUsernameResponse
+        )
+    }
+
+    fun getWithEmail(token: String, email: String) {
+        performRequest(
+            request = { repository.getUsersWithEmail(token, email) },
+            responseLiveData = _getWithEmailResponse
         )
     }
 
