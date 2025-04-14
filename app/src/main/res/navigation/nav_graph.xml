@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/createVolunteerFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -43,4 +43,9 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/createVolunteerFragment"
+        android:name="com.nikitasutulov.macsro.ui.CreateVolunteerFragment"
+        android:label="fragment_create_volunteer"
+        tools:layout="@layout/fragment_create_volunteer" />
 </navigation>
