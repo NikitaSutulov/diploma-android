@@ -2,7 +2,6 @@ package com.nikitasutulov.macsro.data.remote.api.utils
 
 import com.nikitasutulov.macsro.data.dto.utils.district.CreateDistrictDto
 import com.nikitasutulov.macsro.data.dto.utils.district.DistrictDto
-import com.nikitasutulov.macsro.data.remote.api.CrudApi
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -14,34 +13,34 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface DistrictApi : CrudApi<DistrictDto, CreateDistrictDto> {
+interface DistrictApi {
     @GET("District")
-    override suspend fun getAll(
+    suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<DistrictDto>>
 
     @POST("District")
-    override suspend fun create(
+    suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateDistrictDto
     ): Response<DistrictDto>
 
     @PUT("District")
-    override suspend fun edit(
+    suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: DistrictDto
     ): Response<DistrictDto>
 
     @GET("District/{gid}")
-    override suspend fun getByGID(
+    suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<DistrictDto>
 
     @DELETE("District/{gid}")
-    override suspend fun deleteByGID(
+    suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<ResponseBody>

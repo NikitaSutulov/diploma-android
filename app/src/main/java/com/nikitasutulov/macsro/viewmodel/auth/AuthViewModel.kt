@@ -6,11 +6,13 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.SuccessfulLoginResponseDto
-import com.nikitasutulov.macsro.repository.AuthRepository
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 import okhttp3.ResponseBody
 
-class AuthViewModel(private val repository: AuthRepository) : ApiClientViewModel() {
+class AuthViewModel : ApiClientViewModel() {
+    private val api = RetrofitClient.authApi
+
     private val _registerResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val registerResponse: LiveData<BaseResponse<ResponseBody>> = _registerResponse
 
@@ -19,14 +21,14 @@ class AuthViewModel(private val repository: AuthRepository) : ApiClientViewModel
 
     fun register(registerDto: RegisterDto) {
         performRequest(
-            request = { repository.registerVolunteer(registerDto) },
+            request = { api.register(registerDto) },
             responseLiveData = _registerResponse
         )
     }
 
     fun login(loginDto: LoginDto) {
         performRequest(
-            request = { repository.login(loginDto) },
+            request = { api.login(loginDto) },
             responseLiveData = _loginResponse
         )
     }

@@ -13,11 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.databinding.FragmentRegisterBinding
-import com.nikitasutulov.macsro.repository.UserRepository
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
-import com.nikitasutulov.macsro.viewmodel.factories.auth.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,11 +45,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun initUserViewModel() {
-        val userRepository = UserRepository()
-        userViewModel = ViewModelProvider(
-            requireActivity(),
-            UserViewModelFactory(userRepository)
-        )[UserViewModel::class.java]
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
     }
 
     private fun initSessionManager() {

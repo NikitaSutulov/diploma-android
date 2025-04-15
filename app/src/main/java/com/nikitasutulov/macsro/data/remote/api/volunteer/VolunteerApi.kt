@@ -2,7 +2,6 @@ package com.nikitasutulov.macsro.data.remote.api.volunteer
 
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
-import com.nikitasutulov.macsro.data.remote.api.CrudApi
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body

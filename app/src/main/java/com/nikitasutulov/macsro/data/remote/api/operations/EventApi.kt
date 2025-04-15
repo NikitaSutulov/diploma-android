@@ -2,7 +2,6 @@ package com.nikitasutulov.macsro.data.remote.api.operations
 
 import com.nikitasutulov.macsro.data.dto.operations.event.CreateEventDto
 import com.nikitasutulov.macsro.data.dto.operations.event.EventDto
-import com.nikitasutulov.macsro.data.remote.api.CrudApi
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -14,34 +13,34 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface EventApi : CrudApi<EventDto, CreateEventDto> {
+interface EventApi {
     @GET("Event")
-    override suspend fun getAll(
+    suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<EventDto>>
 
     @POST("Event")
-    override suspend fun create(
+    suspend fun create(
         @Header("Authorization") token: String,
         @Body createDto: CreateEventDto
     ): Response<EventDto>
 
     @PUT("Event")
-    override suspend fun edit(
+    suspend fun edit(
         @Header("Authorization") token: String,
         @Body dto: EventDto
     ): Response<EventDto>
 
     @GET("Event/{gid}")
-    override suspend fun getByGID(
+    suspend fun getByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<EventDto>
 
     @DELETE("Event/{gid}")
-    override suspend fun deleteByGID(
+    suspend fun deleteByGID(
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<ResponseBody>

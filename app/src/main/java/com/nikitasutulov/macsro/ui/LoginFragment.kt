@@ -16,10 +16,8 @@ import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
-import com.nikitasutulov.macsro.repository.AuthRepository
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
-import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,11 +47,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun initAuthViewModel() {
-        val authRepository = AuthRepository()
-        authViewModel = ViewModelProvider(
-            requireActivity(),
-            AuthViewModelFactory(authRepository)
-        )[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
     }
 
     private fun initSessionManager() {

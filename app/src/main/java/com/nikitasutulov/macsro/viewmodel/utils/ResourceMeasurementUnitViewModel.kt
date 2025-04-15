@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.CreateResourceMeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.ResourceMeasurementUnitDto
-import com.nikitasutulov.macsro.repository.ResourceMeasurementUnitRepository
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 import okhttp3.ResponseBody
 
-class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasurementUnitRepository) :
-    ApiClientViewModel() {
+class ResourceMeasurementUnitViewModel : ApiClientViewModel() {
+    private val api = RetrofitClient.resourceMeasurementUnitApi
+
     private val _getByUnitGIDResponse =
         MutableLiveData<BaseResponse<List<ResourceMeasurementUnitDto>>>()
     val getByUnitGIDResponse: LiveData<BaseResponse<List<ResourceMeasurementUnitDto>>> =
@@ -35,42 +36,42 @@ class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasureme
 
     fun getByUnitGID(token: String, unitGID: String) {
         performRequest(
-            request = { repository.getByUnitGID(token, unitGID) },
+            request = { api.getByUnitGID(token, unitGID) },
             responseLiveData = _getByUnitGIDResponse
         )
     }
 
     fun getByResourceGID(token: String, resourceGID: String) {
         performRequest(
-            request = { repository.getByResourceGID(token, resourceGID) },
+            request = { api.getByResourceGID(token, resourceGID) },
             responseLiveData = _getByResourceGIDResponse
         )
     }
 
     fun getByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.getByGID(token, gid) },
+            request = { api.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
         )
     }
 
     fun deleteByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.deleteByGID(token, gid) },
+            request = { api.deleteByGID(token, gid) },
             responseLiveData = _deleteByGIDResponse
         )
     }
 
     fun create(token: String, createDto: CreateResourceMeasurementUnitDto) {
         performRequest(
-            request = { repository.create(token, createDto) },
+            request = { api.create(token, createDto) },
             responseLiveData = _createResponse
         )
     }
 
     fun exists(token: String, dto: ResourceMeasurementUnitDto) {
         performRequest(
-            request = { repository.exists(token, dto) },
+            request = { api.exists(token, dto) },
             responseLiveData = _existsResponse
         )
     }

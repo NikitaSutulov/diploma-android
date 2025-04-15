@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
-import com.nikitasutulov.macsro.repository.UserRepository
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 import okhttp3.ResponseBody
 
-class UserViewModel(private val repository: UserRepository) : ApiClientViewModel() {
+class UserViewModel : ApiClientViewModel() {
+    private val api = RetrofitClient.userApi
+
     private val _getAllResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<UserDto>>> = _getAllResponse
 
@@ -26,35 +28,35 @@ class UserViewModel(private val repository: UserRepository) : ApiClientViewModel
 
     fun getAll(token: String) {
         performRequest(
-            request = { repository.getAllUsers(token) },
+            request = { api.getAllUsers(token) },
             responseLiveData = _getAllResponse
         )
     }
 
     fun getWithUsername(token: String, username: String) {
         performRequest(
-            request = { repository.getUsersWithUsername(token, username) },
+            request = { api.getUsersWithUsername(token, username) },
             responseLiveData = _getWithUsernameResponse
         )
     }
 
     fun getWithEmail(token: String, email: String) {
         performRequest(
-            request = { repository.getUsersWithEmail(token, email) },
+            request = { api.getUsersWithEmail(token, email) },
             responseLiveData = _getWithEmailResponse
         )
     }
 
     fun getWithRole(token: String, roleName: String) {
         performRequest(
-            request = { repository.getUsersWithRole(token, roleName) },
+            request = { api.getUsersWithRole(token, roleName) },
             responseLiveData = _getWithRoleResponse
         )
     }
 
     fun edit(token: String, userDto: UserDto) {
         performRequest(
-            request = { repository.editUser(token, userDto) },
+            request = { api.editUser(token, userDto) },
             responseLiveData = _editResponse
         )
     }

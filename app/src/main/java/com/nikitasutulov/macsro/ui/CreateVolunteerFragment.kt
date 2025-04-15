@@ -17,14 +17,10 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.databinding.FragmentCreateVolunteerBinding
-import com.nikitasutulov.macsro.repository.AuthRepository
-import com.nikitasutulov.macsro.repository.VolunteerRepository
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
-import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
-import com.nikitasutulov.macsro.viewmodel.factories.volunteer.VolunteerViewModelFactory
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -55,11 +51,7 @@ class CreateVolunteerFragment : Fragment() {
     }
 
     private fun initAuthViewModel() {
-        val authRepository = AuthRepository()
-        authViewModel = ViewModelProvider(
-            requireActivity(),
-            AuthViewModelFactory(authRepository)
-        )[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
     }
 
     private fun initSessionManager() {
@@ -67,11 +59,7 @@ class CreateVolunteerFragment : Fragment() {
     }
 
     private fun initVolunteerViewModel() {
-        val volunteerRepository = VolunteerRepository()
-        volunteerViewModel = ViewModelProvider(
-            requireActivity(),
-            VolunteerViewModelFactory(volunteerRepository)
-        )[VolunteerViewModel::class.java]
+        volunteerViewModel = ViewModelProvider(requireActivity())[VolunteerViewModel::class.java]
     }
 
     @SuppressLint("DefaultLocale")

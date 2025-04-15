@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.CreateVolunteersGroupsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
-import com.nikitasutulov.macsro.repository.VolunteersGroupsRepository
+import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 import okhttp3.ResponseBody
 
-class VolunteersGroupsViewModel(private val repository: VolunteersGroupsRepository) : ApiClientViewModel() {
+class VolunteersGroupsViewModel : ApiClientViewModel() {
+    private val api = RetrofitClient.volunteersGroupsApi
+
     private val _getAllResponse = MutableLiveData<BaseResponse<List<VolunteersGroupsDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<VolunteersGroupsDto>>> = _getAllResponse
 
@@ -37,42 +39,42 @@ class VolunteersGroupsViewModel(private val repository: VolunteersGroupsReposito
 
     fun getByVolunteerGID(token: String, volunteerGID: String) {
         performRequest(
-            request = { repository.getByVolunteerGID(token, volunteerGID) },
+            request = { api.getByVolunteerGID(token, volunteerGID) },
             responseLiveData = _getByVolunteerGIDResponse
         )
     }
 
     fun getByGroupGID(token: String, groupGID: String) {
         performRequest(
-            request = { repository.getByGroupGID(token, groupGID) },
+            request = { api.getByGroupGID(token, groupGID) },
             responseLiveData = _getByGroupGIDResponse
         )
     }
 
     fun getByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.getByGID(token, gid) },
+            request = { api.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
         )
     }
 
     fun deleteByGID(token: String, gid: String) {
         performRequest(
-            request = { repository.deleteByGID(token, gid) },
+            request = { api.deleteByGID(token, gid) },
             responseLiveData = _deleteByGIDResponse
         )
     }
 
     fun create(token: String, createDto: CreateVolunteersGroupsDto) {
         performRequest(
-            request = { repository.create(token, createDto) },
+            request = { api.create(token, createDto) },
             responseLiveData = _createResponse
         )
     }
 
     fun exists(token: String, dto: CreateVolunteersGroupsDto) {
         performRequest(
-            request = { repository.exists(token, dto) },
+            request = { api.exists(token, dto) },
             responseLiveData = _existsResponse
         )
     }
