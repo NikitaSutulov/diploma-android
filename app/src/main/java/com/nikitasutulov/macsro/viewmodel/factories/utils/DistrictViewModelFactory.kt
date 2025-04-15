@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.utils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.DistrictRepository
-import com.nikitasutulov.macsro.viewmodel.DistrictViewModel
+import com.nikitasutulov.macsro.viewmodel.utils.DistrictViewModel
 
 class DistrictViewModelFactory(private val districtRepository: DistrictRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

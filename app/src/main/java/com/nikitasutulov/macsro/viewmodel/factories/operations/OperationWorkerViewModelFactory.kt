@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.operations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.OperationWorkerRepository
-import com.nikitasutulov.macsro.viewmodel.OperationWorkerViewModel
+import com.nikitasutulov.macsro.viewmodel.operations.OperationWorkerViewModel
 
 class OperationWorkerViewModelFactory(private val operationWorkerRepository: OperationWorkerRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

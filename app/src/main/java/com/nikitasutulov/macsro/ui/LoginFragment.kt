@@ -18,7 +18,7 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
 import com.nikitasutulov.macsro.repository.AuthRepository
 import com.nikitasutulov.macsro.utils.SessionManager
-import com.nikitasutulov.macsro.viewmodel.AuthViewModel
+import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

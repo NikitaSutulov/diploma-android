@@ -16,7 +16,7 @@ import com.nikitasutulov.macsro.databinding.FragmentRegisterBinding
 import com.nikitasutulov.macsro.repository.UserRepository
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.observeOnce
-import com.nikitasutulov.macsro.viewmodel.UserViewModel
+import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
 import com.nikitasutulov.macsro.viewmodel.factories.auth.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

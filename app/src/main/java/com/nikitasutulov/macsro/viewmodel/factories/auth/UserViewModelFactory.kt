@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.UserRepository
-import com.nikitasutulov.macsro.viewmodel.UserViewModel
+import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
 
 class UserViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

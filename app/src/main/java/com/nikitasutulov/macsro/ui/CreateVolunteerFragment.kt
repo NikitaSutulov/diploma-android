@@ -3,13 +3,10 @@ package com.nikitasutulov.macsro.ui
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
-import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,18 +21,14 @@ import com.nikitasutulov.macsro.repository.AuthRepository
 import com.nikitasutulov.macsro.repository.VolunteerRepository
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.observeOnce
-import com.nikitasutulov.macsro.viewmodel.AuthViewModel
-import com.nikitasutulov.macsro.viewmodel.VolunteerViewModel
+import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
+import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import com.nikitasutulov.macsro.viewmodel.factories.auth.AuthViewModelFactory
 import com.nikitasutulov.macsro.viewmodel.factories.volunteer.VolunteerViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.regex.Pattern
 
 class CreateVolunteerFragment : Fragment() {
     private var _binding: FragmentCreateVolunteerBinding? = null

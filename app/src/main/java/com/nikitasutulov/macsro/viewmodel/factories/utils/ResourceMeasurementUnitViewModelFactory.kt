@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.utils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.ResourceMeasurementUnitRepository
-import com.nikitasutulov.macsro.viewmodel.ResourceMeasurementUnitViewModel
+import com.nikitasutulov.macsro.viewmodel.utils.ResourceMeasurementUnitViewModel
 
 class ResourceMeasurementUnitViewModelFactory(private val resourceMeasurementUnitRepository: ResourceMeasurementUnitRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

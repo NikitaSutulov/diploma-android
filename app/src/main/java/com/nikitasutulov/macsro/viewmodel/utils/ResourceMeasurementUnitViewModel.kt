@@ -1,30 +1,13 @@
-package com.nikitasutulov.macsro.viewmodel
+package com.nikitasutulov.macsro.viewmodel.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
-import com.nikitasutulov.macsro.data.dto.utils.district.CreateDistrictDto
-import com.nikitasutulov.macsro.data.dto.utils.district.DistrictDto
-import com.nikitasutulov.macsro.data.dto.utils.measurementunit.CreateMeasurementUnitDto
-import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
-import com.nikitasutulov.macsro.data.dto.utils.resource.CreateResourceDto
-import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.CreateResourceMeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resourcemeasurementunit.ResourceMeasurementUnitDto
-import com.nikitasutulov.macsro.repository.DistrictRepository
-import com.nikitasutulov.macsro.repository.MeasurementUnitRepository
 import com.nikitasutulov.macsro.repository.ResourceMeasurementUnitRepository
-import com.nikitasutulov.macsro.repository.ResourceRepository
+import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 import okhttp3.ResponseBody
-
-class DistrictViewModel(repository: DistrictRepository) :
-    CrudViewModel<DistrictDto, CreateDistrictDto>(repository)
-
-class MeasurementUnitViewModel(repository: MeasurementUnitRepository) :
-    CrudViewModel<MeasurementUnitDto, CreateMeasurementUnitDto>(repository)
-
-class ResourceViewModel(repository: ResourceRepository) :
-    CrudViewModel<ResourceDto, CreateResourceDto>(repository)
 
 class ResourceMeasurementUnitViewModel(private val repository: ResourceMeasurementUnitRepository) :
     ApiClientViewModel() {

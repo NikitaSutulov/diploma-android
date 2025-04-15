@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.operations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.OperationTaskStatusRepository
-import com.nikitasutulov.macsro.viewmodel.OperationTaskStatusViewModel
+import com.nikitasutulov.macsro.viewmodel.operations.OperationTaskStatusViewModel
 
 class OperationTaskStatusViewModelFactory(private val operationTaskStatusRepository: OperationTaskStatusRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

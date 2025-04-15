@@ -3,7 +3,7 @@ package com.nikitasutulov.macsro.viewmodel.factories.volunteer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.repository.VolunteerRepository
-import com.nikitasutulov.macsro.viewmodel.VolunteerViewModel
+import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 
 class VolunteerViewModelFactory(private val volunteerRepository: VolunteerRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
