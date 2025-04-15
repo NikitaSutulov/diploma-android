@@ -21,4 +21,12 @@
     <string name="mobile_phone">Mobile Phone</string>
     <string name="date_of_birth">Date of birth</string>
     <string name="proceed_to_events">Proceed to events</string>
+    <string name="name_must_not_be_empty">Name must not be empty</string>
+    <string name="second_name_must_not_be_empty">Second name must not be empty</string>
+    <string name="surname_must_not_be_empty">Surname must not be empty</string>
+    <string name="mobile_phone_must_not_be_empty">Mobile phone must not be empty</string>
+    <string name="mobile_phone_must_be_valid">Mobile phone must be valid</string>
+    <string name="volunteer_age_requirement">You must be at least 16 years old to be a volunteer.</string>
+    <string name="username_taken_message">This username is already taken</string>
+    <string name="email_taken_message">This email is already taken</string>
 </resources>

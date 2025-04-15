@@ -156,7 +156,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun checkIfReceivedCredentialsFromRegisterFragment() {
-        val args: LoginFragmentArgs by navArgs<LoginFragmentArgs>()
+        val args: LoginFragmentArgs by navArgs()
         val username = args.username
         val password = args.password
         Log.v("Login", "Username is null? ${username == null}")

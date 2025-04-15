@@ -21,7 +21,11 @@ abstract class ApiClientViewModel : ViewModel() {
             try {
                 val response = request()
                 val result = if (response.isSuccessful) {
-                    BaseResponse.Success(response.body())
+                    BaseResponse.Success(
+                        data = response.body(),
+                        code = response.code()
+                    )
+
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorMessage = try {

@@ -37,15 +37,26 @@
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
-            android:id="@+id/action_registerFragment_to_eventsFragment"
-            app:destination="@id/eventsFragment" />
-        <action
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_createVolunteerFragment"
+            app:destination="@id/createVolunteerFragment" />
     </fragment>
     <fragment
         android:id="@+id/createVolunteerFragment"
         android:name="com.nikitasutulov.macsro.ui.CreateVolunteerFragment"
         android:label="fragment_create_volunteer"
-        tools:layout="@layout/fragment_create_volunteer" />
+        tools:layout="@layout/fragment_create_volunteer" >
+        <argument android:name="username"
+            app:argType="string" />
+        <argument android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_createVolunteerFragment_to_eventsFragment"
+            app:destination="@id/eventsFragment" />
+    </fragment>
 </navigation>
