@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,13 +19,13 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.databinding.FragmentCreateVolunteerBinding
 import com.nikitasutulov.macsro.utils.SessionManager
-import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 class CreateVolunteerFragment : Fragment() {
     private var _binding: FragmentCreateVolunteerBinding? = null
@@ -34,57 +35,52 @@ class CreateVolunteerFragment : Fragment() {
     private lateinit var sessionManager: SessionManager
     private val args: CreateVolunteerFragmentArgs by navArgs()
 
+    private var isProcessing = false
+    private var userGID: String? = null
+    private var authToken: String? = null
+    private var tokenExpiration: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCreateVolunteerBinding.inflate(inflater, container, false)
 
-        initAuthViewModel()
-        initVolunteerViewModel()
+        initViewModels()
         initSessionManager()
-        initBirthDatePicker()
-        handleEmptyData()
-        setSubmitVolunteerDataButtonOnClickListener()
+        setupViews()
+        setupObservers()
 
         return binding.root
     }
 
-    private fun initAuthViewModel() {
+    private fun initViewModels() {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
-    }
-
-    private fun initSessionManager() {
-        sessionManager = SessionManager(requireActivity())
-    }
-
-    private fun initVolunteerViewModel() {
         volunteerViewModel = ViewModelProvider(requireActivity())[VolunteerViewModel::class.java]
     }
 
+    private fun initSessionManager() {
+        sessionManager = SessionManager.getInstance(requireContext())
+    }
+
+    private fun setupViews() {
+        setupBirthDatePicker()
+        setupInputValidation()
+        setupSubmitButton()
+    }
+
     @SuppressLint("DefaultLocale")
-    private fun initBirthDatePicker() {
-        val birthDateEditText = binding.birthdateEditText
-        birthDateEditText.setOnClickListener {
+    private fun setupBirthDatePicker() {
+        binding.birthdateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val datePickerDialog =
-                DatePickerDialog(requireActivity(), { _, selectedYear, selectedMonth, selectedDay ->
-                    val formattedDate = String.format(
-                        "%02d/%02d/%04d",
-                        selectedDay,
-                        selectedMonth + 1,
-                        selectedYear
-                    )
-                    birthDateEditText.setText(formattedDate)
-                }, year, month, day)
-            datePickerDialog.show()
+            DatePickerDialog(requireActivity(), { _, year, month, day ->
+                binding.birthdateEditText.setText(String.format("%02d/%02d/%04d", day, month + 1, year))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
     }
 
-    private fun handleEmptyData() {
+    private fun setupInputValidation() {
         binding.nameEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
                 binding.nameEditText.error = getString(R.string.name_must_not_be_empty)
@@ -92,6 +88,7 @@ class CreateVolunteerFragment : Fragment() {
                 binding.nameEditText.error = null
             }
         }
+
         binding.secondNameEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
                 binding.secondNameEditText.error = getString(R.string.second_name_must_not_be_empty)
@@ -99,6 +96,7 @@ class CreateVolunteerFragment : Fragment() {
                 binding.secondNameEditText.error = null
             }
         }
+
         binding.surnameEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
                 binding.surnameEditText.error = getString(R.string.surname_must_not_be_empty)
@@ -106,82 +104,162 @@ class CreateVolunteerFragment : Fragment() {
                 binding.surnameEditText.error = null
             }
         }
+
         binding.mobilePhoneEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
-                binding.mobilePhoneEditText.error =
-                    getString(R.string.mobile_phone_must_not_be_empty)
+                binding.mobilePhoneEditText.error = getString(R.string.mobile_phone_must_not_be_empty)
             } else {
                 binding.mobilePhoneEditText.error = null
             }
         }
     }
 
-    private fun setSubmitVolunteerDataButtonOnClickListener() {
+    private fun setupSubmitButton() {
         binding.submitVolunteerDataButton.setOnClickListener {
-            val username = args.username
-            val email = args.email
-            val password = args.password
+            if (isProcessing) return@setOnClickListener
 
-            val name = binding.nameEditText.text.toString().trim()
-            val secondName = binding.secondNameEditText.text.toString().trim()
-            val surname = binding.surnameEditText.text.toString().trim()
-            val mobilePhone = binding.mobilePhoneEditText.text.toString().trim()
-            val birthdate = binding.birthdateEditText.text.toString().trim()
-
-            val isNameValid = name.isNotBlank()
-            val isSecondNameValid = secondName.isNotBlank()
-            val isSurnameValid = surname.isNotBlank()
-            val isMobilePhoneValid = mobilePhone.isNotBlank() && isValidPhoneNumber(mobilePhone)
-            val isBirthdateValid = birthdate.isNotBlank() && isAtLeast16YearsOld(birthdate)
-            if (isNameValid && isSecondNameValid && isSurnameValid && isMobilePhoneValid && isBirthdateValid) {
-                val registerDto = RegisterDto(username, email, password)
-                authViewModel.register(registerDto)
-
-                authViewModel.registerResponse.observeOnce(viewLifecycleOwner) { registerResponse ->
-                    if (registerResponse !is BaseResponse.Success || registerResponse.data == null) {
-                        return@observeOnce
-                    }
-
-                    val userGID = registerResponse.data.toString()
-                    authViewModel.login(LoginDto(username, password))
-
-                    authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { loginRes ->
-                        if (loginRes !is BaseResponse.Success || loginRes.data?.token == null) {
-                            return@observeOnce
-                        }
-
-                        val token = loginRes.data.token
-                        val volunteerDto = CreateVolunteerDto(
-                            name = name,
-                            secondName = secondName,
-                            surname = surname,
-                            email = email,
-                            mobilePhone = mobilePhone,
-                            birthDate = birthdate,
-                            userGID = userGID
-                        )
-
-                        volunteerViewModel.create(token, volunteerDto)
-
-                        volunteerViewModel.createResponse.observeOnce(viewLifecycleOwner) { createRes ->
-                            if (createRes is BaseResponse.Success) {
-                                findNavController().navigate(R.id.action_createVolunteerFragment_to_eventsFragment)
-                            }
-                        }
-                    }
-                }
-            } else {
-                showValidationErrors(
-                    isNameValid,
-                    isSecondNameValid,
-                    isSurnameValid,
-                    isMobilePhoneValid,
-                    isBirthdateValid
-                )
+            if (validateAllInputs()) {
+                isProcessing = true
+                updateButtonState()
+                startRegistrationProcess()
             }
         }
     }
 
+    private fun setupObservers() {
+        authViewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is BaseResponse.Success -> {
+                    userGID = response.data!!.id
+                    performLogin()
+                }
+                is BaseResponse.Error -> {
+                    handleError("Registration failed: ${response.error?.message}")
+                }
+                is BaseResponse.Loading -> {}
+            }
+        }
+
+        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is BaseResponse.Success -> {
+                    authToken = response.data?.token
+                    tokenExpiration = response.data?.expiration
+                    createVolunteerRecord()
+                }
+                is BaseResponse.Error -> {
+                    handleError("Login failed: ${response.error?.message}")
+                }
+                is BaseResponse.Loading -> {}
+            }
+        }
+
+        volunteerViewModel.createResponse.observe(viewLifecycleOwner) { response ->
+            isProcessing = false
+            updateButtonState()
+
+            when (response) {
+                is BaseResponse.Success -> {
+                    saveSessionAndNavigate()
+                }
+                is BaseResponse.Error -> {
+                    handleError("Volunteer creation failed: ${response.error?.message}")
+                }
+                is BaseResponse.Loading -> {}
+            }
+        }
+    }
+
+    private fun validateAllInputs(): Boolean {
+        val name = binding.nameEditText.text.toString().trim()
+        val secondName = binding.secondNameEditText.text.toString().trim()
+        val surname = binding.surnameEditText.text.toString().trim()
+        val mobilePhone = binding.mobilePhoneEditText.text.toString().trim()
+        val birthdate = binding.birthdateEditText.text.toString().trim()
+
+        var isValid = true
+
+        if (name.isBlank()) {
+            binding.nameEditText.error = getString(R.string.name_must_not_be_empty)
+            isValid = false
+        }
+
+        if (secondName.isBlank()) {
+            binding.secondNameEditText.error = getString(R.string.second_name_must_not_be_empty)
+            isValid = false
+        }
+
+        if (surname.isBlank()) {
+            binding.surnameEditText.error = getString(R.string.surname_must_not_be_empty)
+            isValid = false
+        }
+
+        if (mobilePhone.isBlank()) {
+            binding.mobilePhoneEditText.error = getString(R.string.mobile_phone_must_not_be_empty)
+            isValid = false
+        } else if (!isValidPhoneNumber(mobilePhone)) {
+            binding.mobilePhoneEditText.error = getString(R.string.mobile_phone_must_be_valid)
+            isValid = false
+        }
+
+        if (birthdate.isBlank()) {
+            binding.birthdateEditText.error = getString(R.string.birthdate_must_not_be_empty)
+            isValid = false
+        } else if (!isAtLeast16YearsOld(birthdate)) {
+            binding.birthdateEditText.error = getString(R.string.volunteer_age_requirement)
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    private fun startRegistrationProcess() {
+        authViewModel.register(RegisterDto(
+            username = args.username,
+            email = args.email,
+            password = args.password
+        ))
+    }
+
+    private fun performLogin() {
+        authViewModel.login(LoginDto(
+            username = args.username,
+            password = args.password
+        ))
+    }
+
+    private fun createVolunteerRecord() {
+        val volunteerDto = CreateVolunteerDto(
+            name = binding.nameEditText.text.toString().trim(),
+            secondName = binding.secondNameEditText.text.toString().trim(),
+            surname = binding.surnameEditText.text.toString().trim(),
+            email = args.email,
+            mobilePhone = binding.mobilePhoneEditText.text.toString().trim(),
+            birthDate = convertDateInputToIsoFormat(binding.birthdateEditText.text.toString()),
+            userGID = userGID!!
+        )
+
+        volunteerViewModel.create("Bearer ${authToken!!}", volunteerDto)
+    }
+
+    private fun saveSessionAndNavigate() {
+        authToken?.let { token ->
+            tokenExpiration?.let { expiration ->
+                sessionManager.saveToken(token, expiration)
+                findNavController().navigate(R.id.action_createVolunteerFragment_to_eventsFragment)
+            }
+        }
+    }
+
+    private fun handleError(message: String) {
+        isProcessing = false
+        updateButtonState()
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun updateButtonState() {
+        binding.submitVolunteerDataButton.isEnabled = !isProcessing
+    }
 
     private fun isValidPhoneNumber(mobilePhone: String): Boolean {
         val phoneRegex = Regex("^\\+380(50|63|66|67|68|73|75|77|93|95|96|97|98|99)\\d{7}\$")
@@ -202,28 +280,13 @@ class CreateVolunteerFragment : Fragment() {
         }
     }
 
-    private fun showValidationErrors(
-        isNameValid: Boolean,
-        isSecondNameValid: Boolean,
-        isSurnameValid: Boolean,
-        isMobilePhoneValid: Boolean,
-        isBirthdateValid: Boolean
-    ) {
-        if (!isNameValid) {
-            binding.nameEditText.error = getString(R.string.name_must_not_be_empty)
-        }
-        if (!isSecondNameValid) {
-            binding.secondNameEditText.error = getString(R.string.second_name_must_not_be_empty)
-        }
-        if (!isSurnameValid) {
-            binding.surnameEditText.error = getString(R.string.surname_must_not_be_empty)
-        }
-        if (!isMobilePhoneValid) {
-            binding.mobilePhoneEditText.error = getString(R.string.mobile_phone_must_be_valid)
-        }
-        if (!isBirthdateValid) {
-            binding.birthdateEditText.error = getString(R.string.volunteer_age_requirement)
-        }
+    private fun convertDateInputToIsoFormat(input: String): String {
+        val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        inputFormat.isLenient = false
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        outputFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val date = inputFormat.parse(input)
+        return outputFormat.format(date)
     }
 
     override fun onDestroyView() {

@@ -29,4 +29,5 @@
     <string name="volunteer_age_requirement">You must be at least 16 years old to be a volunteer.</string>
     <string name="username_taken_message">This username is already taken</string>
     <string name="email_taken_message">This email is already taken</string>
+    <string name="birthdate_must_not_be_empty">Birthdate must not be empty</string>
 </resources>

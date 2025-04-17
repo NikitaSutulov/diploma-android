@@ -1,6 +1,5 @@
 package com.nikitasutulov.macsro.utils
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import java.text.ParseException
@@ -9,14 +8,24 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class SessionManager(context: Context) {
+class SessionManager private constructor(context: Context) {
     companion object {
         private const val KEY_TOKEN = "token"
         private const val KEY_EXPIRATION = "expiration"
+
+        @Volatile
+        private var INSTANCE: SessionManager? = null
+        fun getInstance(context: Context): SessionManager {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: SessionManager(context).also {
+                    INSTANCE = it
+                }
+            }
+        }
     }
 
-    private val sharedPref: SharedPreferences =
-        (context as Activity).getPreferences(Context.MODE_PRIVATE)
+    private val sharedPref: SharedPreferences = context.applicationContext
+        .getSharedPreferences("user_session", Context.MODE_PRIVATE)
 
     fun saveToken(token: String, expiration: String) {
         with(sharedPref.edit()) {
@@ -26,9 +35,9 @@ class SessionManager(context: Context) {
         }
     }
 
-    fun getToken(): String? = sharedPref.getString(KEY_TOKEN, null)
+    private fun getToken(): String? = sharedPref.getString(KEY_TOKEN, null)
 
-    fun getExpiration(): String? = sharedPref.getString(KEY_EXPIRATION, null)
+    private fun getExpiration(): String? = sharedPref.getString(KEY_EXPIRATION, null)
 
     fun clearSession() {
         with(sharedPref.edit()) {

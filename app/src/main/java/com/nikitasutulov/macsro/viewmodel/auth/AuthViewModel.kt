@@ -6,15 +6,15 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.auth.auth.SuccessfulLoginResponseDto
+import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
 import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
-import okhttp3.ResponseBody
 
 class AuthViewModel : ApiClientViewModel() {
     private val api = RetrofitClient.authApi
 
-    private val _registerResponse = MutableLiveData<BaseResponse<ResponseBody>>()
-    val registerResponse: LiveData<BaseResponse<ResponseBody>> = _registerResponse
+    private val _registerResponse = MutableLiveData<BaseResponse<UserDto>>()
+    val registerResponse: LiveData<BaseResponse<UserDto>> = _registerResponse
 
     private val _loginResponse = MutableLiveData<BaseResponse<SuccessfulLoginResponseDto>>()
     val loginResponse: LiveData<BaseResponse<SuccessfulLoginResponseDto>> = _loginResponse
@@ -31,5 +31,9 @@ class AuthViewModel : ApiClientViewModel() {
             request = { api.login(loginDto) },
             responseLiveData = _loginResponse
         )
+    }
+
+    fun clearLoginResponse() {
+        _loginResponse.value = BaseResponse.Loading()
     }
 }

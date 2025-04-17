@@ -18,15 +18,13 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var authViewModel: AuthViewModel
     private lateinit var sessionManager: SessionManager
+    private var isLoggingIn = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,40 +32,35 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        initAuthViewModel()
-        initSessionManager()
-        setLoginToRegisterLinkOnClickListener()
-        handleTogglingPasswordVisibility()
-        handleEmptyCredentials()
-        setLoginResponseObserver()
-        setLoginButtonOnClickListener()
-        checkIfReceivedCredentialsFromRegisterFragment()
+        initDependencies()
+        setupViews()
+        setupObservers()
 
         return binding.root
     }
 
-    private fun initAuthViewModel() {
+    private fun initDependencies() {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        sessionManager = SessionManager.getInstance(requireContext())
     }
 
-    private fun initSessionManager() {
-        sessionManager = SessionManager(requireActivity())
-    }
-
-    private fun setLoginToRegisterLinkOnClickListener() {
+    private fun setupViews() {
         binding.loginToRegisterLink.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
+        setupPasswordVisibilityToggle()
+        setupInputValidation()
+        binding.loginButton.setOnClickListener {
+            attemptLogin()
+        }
     }
 
-    private fun handleTogglingPasswordVisibility() {
-        val hiddenPasswordInputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        val shownPasswordInputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+    private fun setupPasswordVisibilityToggle() {
+        val hiddenPasswordInputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        val shownPasswordInputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         binding.togglePasswordVisibilityButton.setOnClickListener {
-            val currentPasswordInputType = binding.passwordEditText.inputType
-            if (currentPasswordInputType == hiddenPasswordInputType) {
+            val currentInputType = binding.passwordEditText.inputType
+            if (currentInputType == hiddenPasswordInputType) {
                 binding.passwordEditText.inputType = shownPasswordInputType
                 binding.togglePasswordVisibilityButton.setImageResource(R.drawable.outline_eye_disabled_24)
             } else {
@@ -79,7 +72,7 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun handleEmptyCredentials() {
+    private fun setupInputValidation() {
         binding.usernameEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
                 binding.usernameEditText.error = getString(R.string.empty_username_message)
@@ -87,29 +80,51 @@ class LoginFragment : Fragment() {
                 binding.usernameEditText.error = null
             }
         }
+
         binding.passwordEditText.addTextChangedListener {
             if (it.isNullOrBlank()) {
                 binding.passwordEditText.error = getString(R.string.empty_password_message)
             } else {
-                binding.usernameEditText.error = null
+                binding.passwordEditText.error = null
             }
         }
     }
 
-    private fun setLoginButtonOnClickListener() {
-        binding.loginButton.setOnClickListener {
-            val username = binding.usernameEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
-            val isUsernameValid = username.isNotBlank()
-            val isPasswordValid = password.isNotBlank()
-            if (isUsernameValid && isPasswordValid) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    authViewModel.login(LoginDto(username, password))
+    private fun setupObservers() {
+        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
+            isLoggingIn = false
+            updateLoginButtonState()
+            when (response) {
+                is BaseResponse.Success -> {
+                    response.data?.let { loginData ->
+                        sessionManager.saveToken(loginData.token, loginData.expiration)
+                        authViewModel.clearLoginResponse()
+                        navigateToEvents()
+                    }
                 }
-            } else {
-                showValidationErrors(isUsernameValid, isPasswordValid)
+                is BaseResponse.Error -> {
+                    showLoginError(response.error?.message ?: "Unknown error occurred")
+                }
+                is BaseResponse.Loading -> {}
             }
         }
+    }
+
+    private fun attemptLogin() {
+        if (isLoggingIn) return
+        val username = binding.usernameEditText.text.toString().trim()
+        val password = binding.passwordEditText.text.toString().trim()
+        binding.usernameEditText.error = null
+        binding.passwordEditText.error = null
+        val isUsernameValid = username.isNotBlank()
+        val isPasswordValid = password.isNotBlank()
+        if (!isUsernameValid || !isPasswordValid) {
+            showValidationErrors(isUsernameValid, isPasswordValid)
+            return
+        }
+        isLoggingIn = true
+        updateLoginButtonState()
+        authViewModel.login(LoginDto(username, password))
     }
 
     private fun showValidationErrors(
@@ -124,43 +139,19 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun setLoginResponseObserver() {
-        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is BaseResponse.Success -> {
-                    Log.v("Login", "Login successful")
-                    val responseData = response.data!!
-                    sessionManager.saveToken(responseData.token, responseData.expiration)
-                    findNavController().navigate(R.id.action_loginFragment_to_eventsFragment)
-                }
-
-                is BaseResponse.Error -> {
-                    val errorMessage = response.error!!.message
-                    Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
-                        .show()
-                    binding.passwordEditText.setText("")
-                    binding.passwordEditText.error = null
-                }
-
-                is BaseResponse.Loading -> {
-                    Log.v("Login", "Pending login...")
-                }
-            }
-        }
+    private fun showLoginError(message: String) {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
+        binding.passwordEditText.setText("")
     }
 
-    private fun checkIfReceivedCredentialsFromRegisterFragment() {
-        val args: LoginFragmentArgs by navArgs()
-        val username = args.username
-        val password = args.password
-        Log.v("Login", "Username is null? ${username == null}")
-        Log.v("Login", "Password is null? ${password == null}")
-        if (username != null && password != null) {
-            binding.usernameEditText.setText(username)
-            binding.passwordEditText.setText(password)
-            binding.loginButton.performClick()
-        }
+    private fun navigateToEvents() {
+        findNavController().navigate(R.id.action_loginFragment_to_eventsFragment)
     }
+
+    private fun updateLoginButtonState() {
+        binding.loginButton.isEnabled = !isLoggingIn
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

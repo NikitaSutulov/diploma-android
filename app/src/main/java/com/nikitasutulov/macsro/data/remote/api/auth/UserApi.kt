@@ -1,7 +1,7 @@
 package com.nikitasutulov.macsro.data.remote.api.auth
 
+import com.nikitasutulov.macsro.data.dto.ExistsDto
 import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -14,15 +14,13 @@ interface UserApi {
 
     @GET("User/byname/{username}")
     suspend fun getUsersWithUsername(
-        @Header("Authorization") token: String,
         @Path("username") username: String
-    ): Response<ResponseBody>
+    ): Response<ExistsDto>
 
     @GET("User/byemail/{email}")
     suspend fun getUsersWithEmail(
-        @Header("Authorization") token: String,
         @Path("email") email: String
-    ): Response<ResponseBody>
+    ): Response<ExistsDto>
 
     @GET("User/{roleName}")
     suspend fun getUsersWithRole(
