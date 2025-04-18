@@ -12,12 +12,12 @@ interface UserApi {
     @GET("User/collection")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserDto>>
 
-    @GET("User/byname/{username}")
+    @GET("User/check/byname/{username}")
     suspend fun getUsersWithUsername(
         @Path("username") username: String
     ): Response<ExistsDto>
 
-    @GET("User/byemail/{email}")
+    @GET("User/check/byemail/{email}")
     suspend fun getUsersWithEmail(
         @Path("email") email: String
     ): Response<ExistsDto>
