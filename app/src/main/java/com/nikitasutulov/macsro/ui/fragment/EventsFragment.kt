@@ -156,7 +156,9 @@ class EventsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = EventAdapter()
+        eventAdapter = EventAdapter { event ->
+            Toast.makeText(requireActivity(), "Clicked on event ${event.name}", Toast.LENGTH_SHORT).show()
+        }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventAdapter

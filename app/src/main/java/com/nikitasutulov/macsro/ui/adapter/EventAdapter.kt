@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nikitasutulov.macsro.data.ui.Event
 import com.nikitasutulov.macsro.databinding.EventCardBinding
 
-class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
+class EventAdapter(private val onItemClick: (Event) -> Unit) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = EventCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,15 +17,17 @@ class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffC
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = getItem(position)
-        holder.bind(event)
+        holder.bind(event, onItemClick)
     }
 
     class EventViewHolder(private val binding: EventCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: Event) {
+        fun bind(event: Event, onItemClick: (Event) -> Unit) {
             binding.eventNameTextView.text = event.name
             binding.eventTypeTextView.text = event.eventType.name
             binding.eventStatusTextView.text = event.eventStatus.name
             binding.eventDistrictTextView.text = event.district.name
+
+            binding.root.setOnClickListener { onItemClick(event) }
         }
     }
 
