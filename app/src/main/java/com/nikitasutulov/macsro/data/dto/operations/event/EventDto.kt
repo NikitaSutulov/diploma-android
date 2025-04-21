@@ -6,8 +6,8 @@ data class EventDto(
     val longitude: Double,
     val latitude: Double,
     val eventTypeGID: String,
+    val eventStatusGID: String,
     val districtGID: String,
     val coordinatorGID: String,
-    val dispatcherGID: String,
-    val eventStatusGID: String
+    val dispatcherGID: String
 )

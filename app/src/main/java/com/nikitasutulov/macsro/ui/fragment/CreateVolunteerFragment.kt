@@ -1,4 +1,4 @@
-package com.nikitasutulov.macsro.ui
+package com.nikitasutulov.macsro.ui.fragment
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -286,7 +286,7 @@ class CreateVolunteerFragment : Fragment() {
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = inputFormat.parse(input)
-        return outputFormat.format(date)
+        return outputFormat.format(date!!)
     }
 
     override fun onDestroyView() {

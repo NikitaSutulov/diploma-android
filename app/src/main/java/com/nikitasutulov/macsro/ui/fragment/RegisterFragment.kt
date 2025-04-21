@@ -1,4 +1,4 @@
-package com.nikitasutulov.macsro.ui
+package com.nikitasutulov.macsro.ui.fragment
 
 import android.os.Bundle
 import android.util.Patterns

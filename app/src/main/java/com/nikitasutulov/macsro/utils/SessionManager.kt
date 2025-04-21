@@ -35,9 +35,9 @@ class SessionManager private constructor(context: Context) {
         }
     }
 
-    private fun getToken(): String? = sharedPref.getString(KEY_TOKEN, null)
+    fun getToken(): String? = sharedPref.getString(KEY_TOKEN, null)
 
-    private fun getExpiration(): String? = sharedPref.getString(KEY_EXPIRATION, null)
+    fun getExpiration(): String? = sharedPref.getString(KEY_EXPIRATION, null)
 
     fun clearSession() {
         with(sharedPref.edit()) {
