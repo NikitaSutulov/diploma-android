@@ -5,5 +5,6 @@ import com.nikitasutulov.macsro.data.dto.auth.role.RoleDto
 data class UserDto(
     val id: String,
     val name: String,
+    val email: String,
     val roles: List<RoleDto>
 )
