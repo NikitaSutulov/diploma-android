@@ -24,6 +24,9 @@ class GroupViewModel : ApiClientViewModel() {
     private val _getByGIDResponse = MutableLiveData<BaseResponse<GroupDto>>()
     val getByGIDResponse: LiveData<BaseResponse<GroupDto>> = _getByGIDResponse
 
+    private val _getByEventGIDResponse = MutableLiveData<BaseResponse<List<GroupDto>>>()
+    val getByEventGIDResponse: LiveData<BaseResponse<List<GroupDto>>> = _getByEventGIDResponse
+
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
@@ -52,6 +55,13 @@ class GroupViewModel : ApiClientViewModel() {
         performRequest(
             request = { api.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
+        )
+    }
+
+    fun getByEventGID(token: String, eventGID: String) {
+        performRequest(
+            request = { api.getByEventGID(token, eventGID) },
+            responseLiveData = _getByEventGIDResponse
         )
     }
 
