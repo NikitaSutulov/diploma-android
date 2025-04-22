@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.nikitasutulov.macsro.data.ui.Event
 import com.nikitasutulov.macsro.databinding.FragmentEventDetailsBinding
@@ -45,6 +46,15 @@ class EventDetailsFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
             startActivity(intent)
+        }
+
+        binding.eventLockJoinButton.visibility = View.VISIBLE
+        binding.eventLockJoinButton.setOnClickListener {
+            Toast.makeText(
+                requireActivity(),
+                "Clicked on link to join the event",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
