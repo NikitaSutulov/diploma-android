@@ -39,6 +39,12 @@ interface OperationWorkerApi {
         @Path("gid") gid: String
     ): Response<OperationWorkerDto>
 
+    @GET("OperationWorker/byUserGID/{userGID}")
+    suspend fun getByUserGID(
+        @Header("Authorization") token: String,
+        @Path("userGID") userGID: String
+    ): Response<OperationWorkerDto>
+
     @DELETE("OperationWorker/{gid}")
     suspend fun deleteByGID(
         @Header("Authorization") token: String,

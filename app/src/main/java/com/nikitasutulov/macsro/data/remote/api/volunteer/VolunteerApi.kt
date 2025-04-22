@@ -39,6 +39,12 @@ interface VolunteerApi {
         @Path("gid") gid: String
     ): Response<VolunteerDto>
 
+    @GET("Volunteer/byUserGID/{userGID}")
+    suspend fun getByUserGID(
+        @Header("Authorization") token: String,
+        @Path("userGID") userGID: String
+    ): Response<VolunteerDto>
+
     @DELETE("Volunteer/{gid}")
     suspend fun deleteByGID(
         @Header("Authorization") token: String,

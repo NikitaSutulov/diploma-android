@@ -24,6 +24,9 @@ class OperationWorkerViewModel : ApiClientViewModel() {
     private val _getByGIDResponse = MutableLiveData<BaseResponse<OperationWorkerDto>>()
     val getByGIDResponse: LiveData<BaseResponse<OperationWorkerDto>> = _getByGIDResponse
 
+    private val _getByUserGIDResponse = MutableLiveData<BaseResponse<OperationWorkerDto>>()
+    val getByUserGIDResponse: LiveData<BaseResponse<OperationWorkerDto>> = _getByUserGIDResponse
+
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
@@ -52,6 +55,13 @@ class OperationWorkerViewModel : ApiClientViewModel() {
         performRequest(
             request = { api.getByGID(token, gid) },
             responseLiveData = _getByGIDResponse
+        )
+    }
+
+    fun getByUserGID(token: String, userGID: String) {
+        performRequest(
+            request = { api.getByUserGID(token, userGID) },
+            responseLiveData = _getByUserGIDResponse
         )
     }
 
