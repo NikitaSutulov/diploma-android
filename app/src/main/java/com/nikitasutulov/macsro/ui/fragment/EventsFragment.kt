@@ -103,7 +103,6 @@ class EventsFragment : Fragment() {
         eventTypeViewModel.getAll("Bearer $token", null, null)
         eventTypeViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                Log.d("EventsFragment", "EventTypes fetched successfully!")
                 eventTypes = response.data!!.associateBy { it.gid }
                 eventStatusViewModel.getAll("Bearer $token", null, null)
             } else if (response is BaseResponse.Error) {
@@ -112,7 +111,6 @@ class EventsFragment : Fragment() {
         }
         eventStatusViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                Log.d("EventsFragment", "EventStatuses fetched successfully!")
                 eventStatuses = response.data!!.associateBy { it.gid }
                 districtViewModel.getAll("Bearer $token", null, null)
             } else if (response is BaseResponse.Error) {
@@ -121,7 +119,6 @@ class EventsFragment : Fragment() {
         }
         districtViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                Log.d("EventsFragment", "Districts fetched successfully!")
                 districts = response.data!!.associateBy { it.gid }
                 eventViewModel.getAll("Bearer $token", null, null)
             } else if (response is BaseResponse.Error) {
@@ -130,7 +127,6 @@ class EventsFragment : Fragment() {
         }
         eventViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                Log.d("EventsFragment", "Events fetched successfully!")
                 mapEvents(response.data!!)
                 eventAdapter.submitList(events)
             } else if (response is BaseResponse.Error) {

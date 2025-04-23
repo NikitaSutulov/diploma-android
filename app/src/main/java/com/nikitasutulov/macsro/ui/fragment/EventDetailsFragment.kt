@@ -61,7 +61,6 @@ class EventDetailsFragment : Fragment() {
         authViewModel.validateToken("Bearer $token")
         authViewModel.tokenValidationResponse.observe(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
-                Log.d("EventDetailsFragment", validationResponse.data.toString())
                 val user = validationResponse.data!!.user!!
                 val roles = user.roles
                 if (roles.any { it.name == "Coordinator" }) {
