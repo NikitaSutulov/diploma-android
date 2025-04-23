@@ -95,6 +95,22 @@ class EventDetailsFragment : Fragment() {
         }
     }
 
+    private fun renderEventHeader() {
+        binding.eventNameTextView.text = event.name
+        binding.eventTypeTextView.text = event.eventType.name
+        binding.eventStatusTextView.text = event.eventStatus.name
+        binding.eventDistrictTextView.text = event.district.name
+        binding.eventLocationLink.setOnClickListener {
+            val uri =
+                "geo:${event.latitude},${event.longitude}?q=${event.latitude},${event.longitude}(${
+                    Uri.encode(event.name)
+                })".toUri()
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.setPackage("com.google.android.apps.maps")
+            startActivity(intent)
+        }
+    }
+
     private fun renderCoordinatorScreen() {
         binding.eventCoordinatorView.visibility = View.VISIBLE
     }
@@ -111,22 +127,6 @@ class EventDetailsFragment : Fragment() {
                 "Clicked on link to join the event",
                 Toast.LENGTH_SHORT
             ).show()
-        }
-    }
-
-    private fun renderEventHeader() {
-        binding.eventNameTextView.text = event.name
-        binding.eventTypeTextView.text = event.eventType.name
-        binding.eventStatusTextView.text = event.eventStatus.name
-        binding.eventDistrictTextView.text = event.district.name
-        binding.eventLocationLink.setOnClickListener {
-            val uri =
-                "geo:${event.latitude},${event.longitude}?q=${event.latitude},${event.longitude}(${
-                    Uri.encode(event.name)
-                })".toUri()
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            intent.setPackage("com.google.android.apps.maps")
-            startActivity(intent)
         }
     }
 
