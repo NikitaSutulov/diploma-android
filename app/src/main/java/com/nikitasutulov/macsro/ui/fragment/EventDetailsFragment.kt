@@ -3,7 +3,6 @@ package com.nikitasutulov.macsro.ui.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.utils.SessionManager
+import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
@@ -71,12 +71,16 @@ class EventDetailsFragment : Fragment() {
                         if (volunteerResponse is BaseResponse.Success) {
                             val volunteerGID = volunteerResponse.data!!.gid
                             volunteersGroupsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
+                        } else if (volunteerResponse is BaseResponse.Error) {
+                            showUserCheckError(volunteerResponse)
                         }
                     }
                     volunteersGroupsViewModel.getByVolunteerGIDResponse.observe(viewLifecycleOwner) { volunteersGroupsResponse ->
                         if (volunteersGroupsResponse is BaseResponse.Success) {
                             groupsOfVolunteer = volunteersGroupsResponse.data!!.map { it.groupGID }.toSet()
                             groupViewModel.getByEventGID("Bearer $token", event.gid)
+                        } else if (volunteersGroupsResponse is BaseResponse.Error) {
+                            showUserCheckError(volunteersGroupsResponse)
                         }
                     }
                     groupViewModel.getByEventGIDResponse.observe(viewLifecycleOwner) { groupsInEventResponse ->
@@ -87,9 +91,13 @@ class EventDetailsFragment : Fragment() {
                             } else {
                                 renderNotJoinedScreen()
                             }
+                        } else if (groupsInEventResponse is BaseResponse.Error) {
+                            showUserCheckError(groupsInEventResponse)
                         }
                     }
                 }
+            } else if (validationResponse is BaseResponse.Error) {
+                showUserCheckError(validationResponse)
             }
         }
     }
@@ -127,6 +135,10 @@ class EventDetailsFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun showUserCheckError(response: BaseResponse.Error) {
+        handleError(binding.root, "Failed to check the user. ${response.error?.message}")
     }
 
     override fun onDestroyView() {

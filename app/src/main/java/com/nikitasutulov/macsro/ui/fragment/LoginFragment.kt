@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -15,6 +14,7 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
 import com.nikitasutulov.macsro.utils.SessionManager
+import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 
 class LoginFragment : Fragment() {
@@ -138,7 +138,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showLoginError(message: String) {
-        Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
+        handleError(binding.root, "Failed to login. $message")
         binding.passwordEditText.setText("")
     }
 

@@ -6,13 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.databinding.FragmentRegisterBinding
+import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
 
 class RegisterFragment : Fragment() {
@@ -77,7 +77,7 @@ class RegisterFragment : Fragment() {
                     checkAllValidationsAndNavigate()
                 }
                 is BaseResponse.Error -> {
-                    Toast.makeText(requireActivity(), response.error!!.message, Toast.LENGTH_LONG).show()
+                    handleError(binding.root, "Failed to check username availability. ${response.error!!.message}")
                 }
                 is BaseResponse.Loading -> {}
             }
@@ -95,7 +95,7 @@ class RegisterFragment : Fragment() {
                     checkAllValidationsAndNavigate()
                 }
                 is BaseResponse.Error -> {
-                    Toast.makeText(requireActivity(), response.error!!.message, Toast.LENGTH_LONG).show()
+                    handleError(binding.root, "Failed to check email availability. ${response.error!!.message}")
                 }
                 is BaseResponse.Loading -> {}
             }
