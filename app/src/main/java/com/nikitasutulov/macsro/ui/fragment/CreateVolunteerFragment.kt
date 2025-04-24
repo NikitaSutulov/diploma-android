@@ -18,6 +18,7 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.databinding.FragmentCreateVolunteerBinding
 import com.nikitasutulov.macsro.utils.SessionManager
+import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import java.text.ParseException
@@ -126,7 +127,7 @@ class CreateVolunteerFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        authViewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+        authViewModel.registerResponse.observeOnce(viewLifecycleOwner) { response ->
             when (response) {
                 is BaseResponse.Success -> {
                     userGID = response.data!!.id
@@ -139,7 +140,7 @@ class CreateVolunteerFragment : Fragment() {
             }
         }
 
-        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
+        authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { response ->
             when (response) {
                 is BaseResponse.Success -> {
                     authToken = response.data?.token
@@ -153,7 +154,7 @@ class CreateVolunteerFragment : Fragment() {
             }
         }
 
-        volunteerViewModel.createResponse.observe(viewLifecycleOwner) { response ->
+        volunteerViewModel.createResponse.observeOnce(viewLifecycleOwner) { response ->
             isProcessing = false
             updateButtonState()
 

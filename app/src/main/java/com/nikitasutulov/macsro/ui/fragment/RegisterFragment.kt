@@ -13,6 +13,7 @@ import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.databinding.FragmentRegisterBinding
 import com.nikitasutulov.macsro.utils.handleError
+import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
 
 class RegisterFragment : Fragment() {
@@ -66,7 +67,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        userViewModel.getWithUsernameResponse.observe(viewLifecycleOwner) { response ->
+        userViewModel.getWithUsernameResponse.observeOnce(viewLifecycleOwner) { response ->
             isCheckingUsername = false
             when (response) {
                 is BaseResponse.Success -> {
@@ -84,7 +85,7 @@ class RegisterFragment : Fragment() {
             updateRegisterButtonState()
         }
 
-        userViewModel.getWithEmailResponse.observe(viewLifecycleOwner) { response ->
+        userViewModel.getWithEmailResponse.observeOnce(viewLifecycleOwner) { response ->
             isCheckingEmail = false
             when (response) {
                 is BaseResponse.Success -> {

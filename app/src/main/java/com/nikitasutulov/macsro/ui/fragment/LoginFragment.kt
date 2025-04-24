@@ -15,6 +15,7 @@ import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
 import com.nikitasutulov.macsro.databinding.FragmentLoginBinding
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
+import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 
 class LoginFragment : Fragment() {
@@ -89,7 +90,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
+        authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { response ->
             isLoggingIn = false
             updateLoginButtonState()
             when (response) {
@@ -149,7 +150,6 @@ class LoginFragment : Fragment() {
     private fun updateLoginButtonState() {
         binding.loginButton.isEnabled = !isLoggingIn
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

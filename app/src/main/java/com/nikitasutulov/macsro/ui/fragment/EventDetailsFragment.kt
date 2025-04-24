@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
+import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
@@ -59,7 +60,7 @@ class EventDetailsFragment : Fragment() {
         var groupsOfVolunteer: Set<String> = setOf()
         var groupsInEvent: Set<String> = setOf()
         authViewModel.validateToken("Bearer $token")
-        authViewModel.tokenValidationResponse.observe(viewLifecycleOwner) { validationResponse ->
+        authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
                 val user = validationResponse.data!!.user!!
                 val roles = user.roles
@@ -67,7 +68,7 @@ class EventDetailsFragment : Fragment() {
                     renderCoordinatorScreen()
                 } else if (roles.any { it.name == "Volunteer" }) {
                     volunteerViewModel.getByUserGID("Bearer $token", user.id)
-                    volunteerViewModel.getByUserGIDResponse.observe(viewLifecycleOwner) { volunteerResponse ->
+                    volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { volunteerResponse ->
                         if (volunteerResponse is BaseResponse.Success) {
                             val volunteerGID = volunteerResponse.data!!.gid
                             volunteersGroupsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
@@ -75,7 +76,7 @@ class EventDetailsFragment : Fragment() {
                             showUserCheckError(volunteerResponse)
                         }
                     }
-                    volunteersGroupsViewModel.getByVolunteerGIDResponse.observe(viewLifecycleOwner) { volunteersGroupsResponse ->
+                    volunteersGroupsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { volunteersGroupsResponse ->
                         if (volunteersGroupsResponse is BaseResponse.Success) {
                             groupsOfVolunteer = volunteersGroupsResponse.data!!.map { it.groupGID }.toSet()
                             groupViewModel.getByEventGID("Bearer $token", event.gid)
@@ -83,7 +84,7 @@ class EventDetailsFragment : Fragment() {
                             showUserCheckError(volunteersGroupsResponse)
                         }
                     }
-                    groupViewModel.getByEventGIDResponse.observe(viewLifecycleOwner) { groupsInEventResponse ->
+                    groupViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { groupsInEventResponse ->
                         if (groupsInEventResponse is BaseResponse.Success) {
                             groupsInEvent = groupsInEventResponse.data!!.map { it.gid }.toSet()
                             if (groupsOfVolunteer.toSet().intersect(groupsInEvent.toSet()).isNotEmpty()) {

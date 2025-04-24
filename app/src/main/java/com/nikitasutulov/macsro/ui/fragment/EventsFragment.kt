@@ -20,6 +20,7 @@ import com.nikitasutulov.macsro.databinding.FragmentEventsBinding
 import com.nikitasutulov.macsro.ui.adapter.EventAdapter
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
+import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.operations.EventStatusViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.EventTypeViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.EventViewModel
@@ -100,7 +101,7 @@ class EventsFragment : Fragment() {
     private fun fetchEvents() {
         val token = sessionManager.getToken()
         eventTypeViewModel.getAll("Bearer $token", null, null)
-        eventTypeViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
+        eventTypeViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 eventTypes = response.data!!.associateBy { it.gid }
                 eventStatusViewModel.getAll("Bearer $token", null, null)
@@ -108,7 +109,7 @@ class EventsFragment : Fragment() {
                 showFetchEventsError(response)
             }
         }
-        eventStatusViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
+        eventStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 eventStatuses = response.data!!.associateBy { it.gid }
                 districtViewModel.getAll("Bearer $token", null, null)
@@ -116,7 +117,7 @@ class EventsFragment : Fragment() {
                 showFetchEventsError(response)
             }
         }
-        districtViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
+        districtViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 districts = response.data!!.associateBy { it.gid }
                 eventViewModel.getAll("Bearer $token", null, null)
@@ -124,7 +125,7 @@ class EventsFragment : Fragment() {
                 showFetchEventsError(response)
             }
         }
-        eventViewModel.getAllResponse.observe(viewLifecycleOwner) { response ->
+        eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 mapEvents(response.data!!)
                 eventAdapter.submitList(events)
