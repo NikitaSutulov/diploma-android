@@ -31,4 +31,10 @@
     <string name="email_taken_message">This email is already taken</string>
     <string name="birthdate_must_not_be_empty">Birthdate must not be empty</string>
     <string name="open_location_in_maps">Open location in Maps</string>
+    <string name="event_type_spinner_text">Type:</string>
+    <string name="event_status_spinner_text">Status:</string>
+    <string name="event_district_spinner_text">District:</string>
+    <string name="filter_button_text">Filter</string>
+    <string name="refresh_button_text">Refresh</string>
+    <string name="log_out_button_text">Log Out</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.nikitasutulov.macsro.R
@@ -72,6 +73,7 @@ class EventsFragment : Fragment() {
 
     private fun setupListeners() {
         setupLogoutButton()
+        setupFilterButton()
         setupRefreshButton()
     }
 
@@ -84,9 +86,25 @@ class EventsFragment : Fragment() {
                     sessionManager.clearSession()
                     navigateToLogin()
                 }
-                .setNegativeButton("No") { _, _ -> }
+                .setNegativeButton("No", null)
                 .create()
                 .show()
+        }
+    }
+
+    private fun setupFilterButton() {
+        binding.filterButton.setOnClickListener {
+            val selectedType = binding.typeSpinner.selectedItem.toString()
+            val selectedStatus = binding.statusSpinner.selectedItem.toString()
+            val selectedDistrict = binding.districtSpinner.selectedItem.toString()
+
+            val filteredEvents = events.filter { event ->
+                (selectedType == "All" || event.eventType.name == selectedType) &&
+                        (selectedStatus == "All" || event.eventStatus.name == selectedStatus) &&
+                        (selectedDistrict == "All" || event.district.name == selectedDistrict)
+            }
+
+            eventAdapter.submitList(filteredEvents)
         }
     }
 
@@ -134,6 +152,7 @@ class EventsFragment : Fragment() {
                 districtViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
                     if (response is BaseResponse.Success) {
                         districts = response.data!!.associateBy { it.gid }
+                        setupSpinners()
                         if (user.roles.any { it.name == "Coordinator" }) {
                             fetchEventsForCoordinator()
                         } else if (user.roles.any { it.name == "Volunteer" }) {
@@ -147,6 +166,16 @@ class EventsFragment : Fragment() {
                 showFetchEventsError(validationResponse)
             }
         }
+    }
+
+    private fun setupSpinners() {
+        val typeList = listOf("All") + eventTypes.values.map { it.name }
+        val statusList = listOf("All") + eventStatuses.values.map { it.name }
+        val districtList = listOf("All") + districts.values.map { it.name }
+
+        binding.typeSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, typeList)
+        binding.statusSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, statusList)
+        binding.districtSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtList)
     }
 
     private fun fetchEventsForCoordinator() {
