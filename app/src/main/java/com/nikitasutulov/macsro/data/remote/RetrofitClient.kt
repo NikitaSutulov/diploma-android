@@ -5,6 +5,7 @@ import com.nikitasutulov.macsro.data.remote.api.utils.*
 import com.nikitasutulov.macsro.data.remote.api.operations.*
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteerApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersDistrictsApi
+import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersEventsApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersGroupsApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -42,4 +43,5 @@ object RetrofitClient {
     val volunteerApi: VolunteerApi by lazy { retrofitClient.create(VolunteerApi::class.java) }
     val volunteersDistrictsApi: VolunteersDistrictsApi by lazy { retrofitClient.create(VolunteersDistrictsApi::class.java) }
     val volunteersGroupsApi: VolunteersGroupsApi by lazy { retrofitClient.create(VolunteersGroupsApi::class.java) }
+    val volunteersEventsApi: VolunteersEventsApi by lazy { retrofitClient.create(VolunteersEventsApi::class.java) }
 }

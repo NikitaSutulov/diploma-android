@@ -44,8 +44,8 @@ class EventsFragment : Fragment() {
     private lateinit var eventTypes: Map<String, EventTypeDto>
     private lateinit var eventStatuses: Map<String, EventStatusDto>
     private lateinit var districts: Map<String, DistrictDto>
-    private lateinit var token: String
     private lateinit var user: UserDto
+    private var token: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,7 +108,7 @@ class EventsFragment : Fragment() {
     }
 
     private fun fetchEvents() {
-        token = sessionManager.getToken()!!
+        token = sessionManager.getToken()
 
         authViewModel.validateToken("Bearer $token")
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->

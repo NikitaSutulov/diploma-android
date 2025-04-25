@@ -20,6 +20,7 @@ import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
+import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersEventsViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersGroupsViewModel
 
 class EventDetailsFragment : Fragment() {
@@ -31,6 +32,7 @@ class EventDetailsFragment : Fragment() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var volunteerViewModel: VolunteerViewModel
     private lateinit var volunteersGroupsViewModel: VolunteersGroupsViewModel
+    private lateinit var volunteersEventsViewModel: VolunteersEventsViewModel
     private lateinit var groupViewModel: GroupViewModel
 
     override fun onCreateView(
@@ -51,14 +53,13 @@ class EventDetailsFragment : Fragment() {
         volunteerViewModel = ViewModelProvider(this)[VolunteerViewModel::class.java]
         volunteersGroupsViewModel = ViewModelProvider(this)[VolunteersGroupsViewModel::class.java]
         groupViewModel = ViewModelProvider(this)[GroupViewModel::class.java]
+        volunteersEventsViewModel = ViewModelProvider(this)[VolunteersEventsViewModel::class.java]
     }
 
     private fun renderEventDetails() {
         event = args.event
         renderEventHeader()
         val token = sessionManager.getToken()
-        var groupsOfVolunteer: Set<String> = setOf()
-        var groupsInEvent: Set<String> = setOf()
         authViewModel.validateToken("Bearer $token")
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
@@ -71,29 +72,21 @@ class EventDetailsFragment : Fragment() {
                     volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { volunteerResponse ->
                         if (volunteerResponse is BaseResponse.Success) {
                             val volunteerGID = volunteerResponse.data!!.gid
-                            volunteersGroupsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
+                            volunteersEventsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
                         } else if (volunteerResponse is BaseResponse.Error) {
                             showUserCheckError(volunteerResponse)
                         }
                     }
-                    volunteersGroupsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { volunteersGroupsResponse ->
-                        if (volunteersGroupsResponse is BaseResponse.Success) {
-                            groupsOfVolunteer = volunteersGroupsResponse.data!!.map { it.groupGID }.toSet()
-                            groupViewModel.getByEventGID("Bearer $token", event.gid)
-                        } else if (volunteersGroupsResponse is BaseResponse.Error) {
-                            showUserCheckError(volunteersGroupsResponse)
-                        }
-                    }
-                    groupViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { groupsInEventResponse ->
-                        if (groupsInEventResponse is BaseResponse.Success) {
-                            groupsInEvent = groupsInEventResponse.data!!.map { it.gid }.toSet()
-                            if (groupsOfVolunteer.toSet().intersect(groupsInEvent.toSet()).isNotEmpty()) {
+                    volunteersEventsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { eventsOfVolunteerResponse ->
+                        if (eventsOfVolunteerResponse is BaseResponse.Success) {
+                            val eventsOfVolunteer = eventsOfVolunteerResponse.data!!
+                            if (eventsOfVolunteer.any { it.eventGID == event.gid }) {
                                 renderVolunteerScreen()
                             } else {
                                 renderNotJoinedScreen()
                             }
-                        } else if (groupsInEventResponse is BaseResponse.Error) {
-                            showUserCheckError(groupsInEventResponse)
+                        } else if (eventsOfVolunteerResponse is BaseResponse.Error) {
+                            showUserCheckError(eventsOfVolunteerResponse)
                         }
                     }
                 }
