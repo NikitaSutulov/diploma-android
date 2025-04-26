@@ -12,6 +12,8 @@ class SessionManager private constructor(context: Context) {
     companion object {
         private const val KEY_TOKEN = "token"
         private const val KEY_EXPIRATION = "expiration"
+        private const val KEY_IS_SEND_GEO_NOTIFICATIONS = "send_geo_notifications"
+        private const val KEY_MAX_DISTANCE = "max_distance"
 
         @Volatile
         private var INSTANCE: SessionManager? = null
@@ -35,9 +37,22 @@ class SessionManager private constructor(context: Context) {
         }
     }
 
+    fun saveNotificationSettings(isSendGeoNotifications: Boolean, maxDistance: Int) {
+        with(sharedPref.edit()) {
+            putBoolean(KEY_IS_SEND_GEO_NOTIFICATIONS, isSendGeoNotifications)
+            putInt(KEY_MAX_DISTANCE, maxDistance)
+            apply()
+        }
+    }
+
     fun getToken(): String? = sharedPref.getString(KEY_TOKEN, null)
 
     fun getExpiration(): String? = sharedPref.getString(KEY_EXPIRATION, null)
+
+    fun getIsSendGeoNotifications(): Boolean =
+        sharedPref.getBoolean(KEY_IS_SEND_GEO_NOTIFICATIONS, false)
+
+    fun getMaxDistance(): Int = sharedPref.getInt(KEY_MAX_DISTANCE, 0)
 
     fun clearSession() {
         with(sharedPref.edit()) {

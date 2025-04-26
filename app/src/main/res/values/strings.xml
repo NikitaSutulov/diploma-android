@@ -37,4 +37,10 @@
     <string name="filter_button_text">Filter</string>
     <string name="refresh_button_text">Refresh</string>
     <string name="log_out_button_text">Log Out</string>
+    <string name="settings">Settings</string>
+    <string name="km">km</string>
+    <string name="max_distance">Max distance:</string>
+    <string name="notify_about_events_near_me">Notify about events near me (needs location)</string>
+    <string name="get_notifications_for_events_in_districts">Get notifications for events in districts:</string>
+    <string name="save">Save</string>
 </resources>

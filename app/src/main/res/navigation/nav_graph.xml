@@ -29,6 +29,9 @@
             android:id="@+id/action_eventsFragment_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment"
             app:popUpTo="@id/eventsFragment" />
+        <action
+            android:id="@+id/action_eventsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -67,4 +70,9 @@
             android:name="event"
             app:argType="com.nikitasutulov.macsro.data.ui.Event" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.nikitasutulov.macsro.ui.fragment.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

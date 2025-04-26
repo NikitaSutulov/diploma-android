@@ -75,6 +75,7 @@ class EventsFragment : Fragment() {
         setupLogoutButton()
         setupFilterButton()
         setupRefreshButton()
+        setupSettingsButton()
     }
 
     private fun setupLogoutButton() {
@@ -110,6 +111,12 @@ class EventsFragment : Fragment() {
 
     private fun setupRefreshButton() {
         binding.refreshButton.setOnClickListener { fetchEvents() }
+    }
+
+    private fun setupSettingsButton() {
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_eventsFragment_to_settingsFragment)
+        }
     }
 
     private fun navigateToLogin() {
@@ -156,6 +163,7 @@ class EventsFragment : Fragment() {
                         if (user.roles.any { it.name == "Coordinator" }) {
                             fetchEventsForCoordinator()
                         } else if (user.roles.any { it.name == "Volunteer" }) {
+                            binding.settingsButton.visibility = View.VISIBLE
                             fetchEventsForVolunteer()
                         }
                     } else if (response is BaseResponse.Error) {
