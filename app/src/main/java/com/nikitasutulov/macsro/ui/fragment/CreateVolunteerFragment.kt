@@ -10,14 +10,12 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
-import com.nikitasutulov.macsro.data.dto.auth.auth.LoginDto
-import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.databinding.FragmentCreateVolunteerBinding
 import com.nikitasutulov.macsro.utils.SessionManager
+import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
@@ -33,12 +31,11 @@ class CreateVolunteerFragment : Fragment() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var volunteerViewModel: VolunteerViewModel
     private lateinit var sessionManager: SessionManager
-    private val args: CreateVolunteerFragmentArgs by navArgs()
 
     private var isProcessing = false
     private var userGID: String? = null
+    private var email: String? = null
     private var authToken: String? = null
-    private var tokenExpiration: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +45,8 @@ class CreateVolunteerFragment : Fragment() {
 
         initViewModels()
         initSessionManager()
+        checkIfVolunteerCreationNeeded()
         setupViews()
-        setupObservers()
 
         return binding.root
     }
@@ -61,6 +58,29 @@ class CreateVolunteerFragment : Fragment() {
 
     private fun initSessionManager() {
         sessionManager = SessionManager.getInstance(requireContext())
+    }
+
+    private fun checkIfVolunteerCreationNeeded() {
+        authToken = sessionManager.getToken()
+        authViewModel.validateToken("Bearer $authToken")
+        authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                val responseData = response.data!!
+                val user = responseData.user!!
+                if (user.roles.any { it.name == "Coordinator" }) {
+                    navigateToEvents()
+                } else {
+                    userGID = user.id
+                    email = user.email
+                }
+            } else if (response is BaseResponse.Error) {
+                handleVolunteerCreationError(response.error!!.message)
+            }
+        }
+    }
+
+    private fun navigateToEvents() {
+        findNavController().navigate(R.id.action_createVolunteerFragment_to_eventsFragment)
     }
 
     private fun setupViews() {
@@ -121,51 +141,7 @@ class CreateVolunteerFragment : Fragment() {
             if (validateAllInputs()) {
                 isProcessing = true
                 updateButtonState()
-                startRegistrationProcess()
-            }
-        }
-    }
-
-    private fun setupObservers() {
-        authViewModel.registerResponse.observeOnce(viewLifecycleOwner) { response ->
-            when (response) {
-                is BaseResponse.Success -> {
-                    userGID = response.data!!.id
-                    performLogin()
-                }
-                is BaseResponse.Error -> {
-                    handleError("Registration failed: ${response.error?.message}")
-                }
-                is BaseResponse.Loading -> {}
-            }
-        }
-
-        authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { response ->
-            when (response) {
-                is BaseResponse.Success -> {
-                    authToken = response.data?.token
-                    tokenExpiration = response.data?.expiration
-                    createVolunteerRecord()
-                }
-                is BaseResponse.Error -> {
-                    handleError("Login failed: ${response.error?.message}")
-                }
-                is BaseResponse.Loading -> {}
-            }
-        }
-
-        volunteerViewModel.createResponse.observeOnce(viewLifecycleOwner) { response ->
-            isProcessing = false
-            updateButtonState()
-
-            when (response) {
-                is BaseResponse.Success -> {
-                    saveSessionAndNavigate()
-                }
-                is BaseResponse.Error -> {
-                    handleError("Volunteer creation failed: ${response.error?.message}")
-                }
-                is BaseResponse.Loading -> {}
+                createVolunteerRecord()
             }
         }
     }
@@ -213,48 +189,35 @@ class CreateVolunteerFragment : Fragment() {
         return isValid
     }
 
-    private fun startRegistrationProcess() {
-        authViewModel.register(RegisterDto(
-            username = args.username,
-            email = args.email,
-            password = args.password
-        ))
-    }
-
-    private fun performLogin() {
-        authViewModel.login(LoginDto(
-            username = args.username,
-            password = args.password
-        ))
-    }
-
     private fun createVolunteerRecord() {
         val volunteerDto = CreateVolunteerDto(
             name = binding.nameEditText.text.toString().trim(),
             secondName = binding.secondNameEditText.text.toString().trim(),
             surname = binding.surnameEditText.text.toString().trim(),
-            email = args.email,
+            email = email!!,
             mobilePhone = binding.mobilePhoneEditText.text.toString().trim(),
+            ratingNumber = 1, // TODO: change to 0 after validation is fixed
             birthDate = convertDateInputToIsoFormat(binding.birthdateEditText.text.toString()),
             userGID = userGID!!
         )
 
         volunteerViewModel.create("Bearer ${authToken!!}", volunteerDto)
-    }
+        volunteerViewModel.createResponse.observeOnce(viewLifecycleOwner) { response ->
+            isProcessing = false
+            updateButtonState()
 
-    private fun saveSessionAndNavigate() {
-        authToken?.let { token ->
-            tokenExpiration?.let { expiration ->
-                sessionManager.saveToken(token, expiration)
-                findNavController().navigate(R.id.action_createVolunteerFragment_to_eventsFragment)
+            if (response is BaseResponse.Success) {
+                navigateToEvents()
+            } else if (response is BaseResponse.Error) {
+                handleVolunteerCreationError("Volunteer creation failed: ${response.error?.message}")
             }
         }
     }
 
-    private fun handleError(message: String) {
+    private fun handleVolunteerCreationError(message: String) {
         isProcessing = false
         updateButtonState()
-        com.nikitasutulov.macsro.utils.handleError(binding.root, message)
+        handleError(binding.root, message)
     }
 
     private fun updateButtonState() {

@@ -121,6 +121,10 @@ class EventsFragment : Fragment() {
     }
 
     private fun navigateToLogin() {
+        findNavController().navigate(R.id.action_eventsFragment_to_loginFragment)
+    }
+
+    private fun navigateToVolunteerCreation() {
         findNavController().navigate(R.id.loginFragment)
     }
 
@@ -168,6 +172,8 @@ class EventsFragment : Fragment() {
                         } else if (user.roles.any { it.name == "Volunteer" }) {
                             binding.settingsButton.visibility = View.VISIBLE
                             fetchEventsForVolunteer()
+                        } else {
+                            navigateToVolunteerCreation()
                         }
                     } else if (response is BaseResponse.Error) {
                         showFetchEventsError(response)

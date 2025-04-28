@@ -6,6 +6,7 @@ data class CreateVolunteerDto(
     val secondName: String,
     val email: String,
     val mobilePhone: String,
+    val ratingNumber: Int,
     val birthDate: String,
     val userGID: String
 )

@@ -11,15 +11,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.auth.auth.RegisterDto
 import com.nikitasutulov.macsro.databinding.FragmentRegisterBinding
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
+import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.auth.UserViewModel
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
     private lateinit var userViewModel: UserViewModel
+    private lateinit var authViewModel: AuthViewModel
     private var isCheckingUsername = false
     private var isCheckingEmail = false
     private var isUsernameAvailable = false
@@ -30,12 +33,17 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
 
+        initViewModels()
         setupViews()
         setupObservers()
 
         return binding.root
+    }
+
+    private fun initViewModels() {
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
     }
 
     private fun setupViews() {
@@ -75,7 +83,7 @@ class RegisterFragment : Fragment() {
                     if (!isUsernameAvailable) {
                         binding.usernameEditText.error = getString(R.string.username_taken_message)
                     }
-                    checkAllValidationsAndNavigate()
+                    checkAllValidationsAndRegister()
                 }
                 is BaseResponse.Error -> {
                     handleError(binding.root, "Failed to check username availability. ${response.error!!.message}")
@@ -93,7 +101,7 @@ class RegisterFragment : Fragment() {
                     if (!isEmailAvailable) {
                         binding.emailEditText.error = getString(R.string.email_taken_message)
                     }
-                    checkAllValidationsAndNavigate()
+                    checkAllValidationsAndRegister()
                 }
                 is BaseResponse.Error -> {
                     handleError(binding.root, "Failed to check email availability. ${response.error!!.message}")
@@ -143,7 +151,7 @@ class RegisterFragment : Fragment() {
         userViewModel.getWithEmail(email)
     }
 
-    private fun checkAllValidationsAndNavigate() {
+    private fun checkAllValidationsAndRegister() {
         if (isCheckingUsername || isCheckingEmail) return
 
         val username = binding.usernameEditText.text.toString().trim()
@@ -151,12 +159,19 @@ class RegisterFragment : Fragment() {
         val password = binding.passwordEditText.text.toString()
 
         if (isUsernameAvailable && isEmailAvailable) {
-            val action = RegisterFragmentDirections.actionRegisterFragmentToCreateVolunteerFragment(
-                username,
-                email,
-                password
-            )
-            findNavController().navigate(action)
+            authViewModel.register(RegisterDto(username, email, password))
+            authViewModel.registerResponse.observeOnce(viewLifecycleOwner) { response ->
+                if (response is BaseResponse.Success) {
+                    val action =
+                        RegisterFragmentDirections.actionRegisterFragmentToAddGoogleAuthenticatorFragment(
+                            username,
+                            password
+                        )
+                    findNavController().navigate(action)
+                } else if (response is BaseResponse.Error) {
+                    handleError(binding.root, "Failed to register the user. ${response.error!!.message}")
+                }
+            }
         }
     }
 

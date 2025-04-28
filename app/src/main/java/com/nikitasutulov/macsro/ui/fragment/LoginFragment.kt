@@ -33,7 +33,6 @@ class LoginFragment : Fragment() {
 
         initDependencies()
         setupViews()
-        setupObservers()
 
         return binding.root
     }
@@ -44,13 +43,15 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.loginToRegisterLink.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
+        setupLoginToRegisterLink()
         setupPasswordVisibilityToggle()
         setupInputValidation()
-        binding.loginButton.setOnClickListener {
-            attemptLogin()
+        setupLoginButton()
+    }
+
+    private fun setupLoginToRegisterLink() {
+        binding.loginToRegisterLink.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 
@@ -89,23 +90,9 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun setupObservers() {
-        authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { response ->
-            isLoggingIn = false
-            updateLoginButtonState()
-            when (response) {
-                is BaseResponse.Success -> {
-                    response.data?.let { loginData ->
-                        sessionManager.saveToken(loginData.token, loginData.expiration)
-                        authViewModel.clearLoginResponse()
-                        navigateToEvents()
-                    }
-                }
-                is BaseResponse.Error -> {
-                    showLoginError(response.error?.message ?: "Unknown error occurred")
-                }
-                is BaseResponse.Loading -> {}
-            }
+    private fun setupLoginButton() {
+        binding.loginButton.setOnClickListener {
+            attemptLogin()
         }
     }
 
@@ -122,8 +109,22 @@ class LoginFragment : Fragment() {
             return
         }
         isLoggingIn = true
-        updateLoginButtonState()
         authViewModel.login(LoginDto(username, password))
+        authViewModel.loginResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                val responseData = response.data!!
+                val isLoginSuccessful = responseData.isValid
+                if (!isLoginSuccessful) {
+                    showLoginError(response.data.message)
+                } else {
+                    authViewModel.clearLoginResponse()
+                    val action = LoginFragmentDirections.actionLoginFragmentToEnterGoogleAuthenticatorCodeFragment(username)
+                    findNavController().navigate(action)
+                }
+            } else if (response is BaseResponse.Error) {
+                showLoginError(response.error!!.message)
+            }
+        }
     }
 
     private fun showValidationErrors(
@@ -141,14 +142,6 @@ class LoginFragment : Fragment() {
     private fun showLoginError(message: String) {
         handleError(binding.root, "Failed to login. $message")
         binding.passwordEditText.setText("")
-    }
-
-    private fun navigateToEvents() {
-        findNavController().navigate(R.id.action_loginFragment_to_eventsFragment)
-    }
-
-    private fun updateLoginButtonState() {
-        binding.loginButton.isEnabled = !isLoggingIn
     }
 
     override fun onDestroyView() {
