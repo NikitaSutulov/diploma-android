@@ -3,6 +3,7 @@ package com.nikitasutulov.macsro.data.remote
 import com.nikitasutulov.macsro.data.remote.api.auth.*
 import com.nikitasutulov.macsro.data.remote.api.utils.*
 import com.nikitasutulov.macsro.data.remote.api.operations.*
+import com.nikitasutulov.macsro.data.remote.api.qr.QrCodeApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteerApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersDistrictsApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersEventsApi
@@ -44,4 +45,6 @@ object RetrofitClient {
     val volunteersDistrictsApi: VolunteersDistrictsApi by lazy { retrofitClient.create(VolunteersDistrictsApi::class.java) }
     val volunteersGroupsApi: VolunteersGroupsApi by lazy { retrofitClient.create(VolunteersGroupsApi::class.java) }
     val volunteersEventsApi: VolunteersEventsApi by lazy { retrofitClient.create(VolunteersEventsApi::class.java) }
+
+    val qrCodeApi: QrCodeApi by lazy { retrofitClient.create(QrCodeApi::class.java) }
 }
