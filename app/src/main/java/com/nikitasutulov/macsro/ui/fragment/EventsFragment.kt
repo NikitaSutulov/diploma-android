@@ -47,6 +47,7 @@ class EventsFragment : Fragment() {
     private lateinit var districts: Map<String, DistrictDto>
     private lateinit var user: UserDto
     private var token: String? = null
+    private val usefulEventStatusesNames = listOf("Активна", "Завершена")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -150,7 +151,9 @@ class EventsFragment : Fragment() {
                 }
                 eventStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
                     if (response is BaseResponse.Success) {
-                        eventStatuses = response.data!!.associateBy { it.gid }
+                        eventStatuses = response.data!!
+                            .filter { it.name in usefulEventStatusesNames }
+                            .associateBy { it.gid }
                         districtViewModel.getAll("Bearer $token", null, null)
                     } else if (response is BaseResponse.Error) {
                         showFetchEventsError(response)
@@ -199,7 +202,8 @@ class EventsFragment : Fragment() {
         }
         eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                val eventsOfCoordinator = response.data!!.filter { it.coordinatorGID == operationWorkerGID }
+                val eventsOfCoordinator = response.data!!
+                    .filter { it.coordinatorGID == operationWorkerGID && eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
                 mapEvents(eventsOfCoordinator)
                 eventAdapter.submitList(events)
             } else if (response is BaseResponse.Error) {
@@ -212,7 +216,9 @@ class EventsFragment : Fragment() {
         eventViewModel.getAll("Bearer $token", null, null)
         eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                mapEvents(response.data!!)
+                val eventsOfVolunteer= response.data!!
+                    .filter { eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
+                mapEvents(eventsOfVolunteer)
                 eventAdapter.submitList(events)
             } else if (response is BaseResponse.Error) {
                 showFetchEventsError(response)
