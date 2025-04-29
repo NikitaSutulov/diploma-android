@@ -49,4 +49,6 @@
     <string name="qr_code">QR Code</string>
     <string name="enter_google_authenticator_code">Enter Google Authenticator code</string>
     <string name="submit">Submit</string>
+    <string name="let_coordinator_scan_qr_code">Let the coordinator scan this QR code to join the event</string>
+    <string name="the_code_has_been_scanned">The code has been scanned</string>
 </resources>

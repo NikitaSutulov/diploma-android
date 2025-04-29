@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    tools:context=".ui.fragment.AddGoogleAuthenticatorFragment">
+    tools:context=".ui.fragment.JoinEventFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,33 +24,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="@string/enter_ga_code_text"
+            android:ems="12"
+            android:text="@string/let_coordinator_scan_qr_code"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/ga_secret_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="SOME_SECRET_HERE" />
-
         <Button
-            android:id="@+id/confirm_button"
+            android:id="@+id/done_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:enabled="false"
-            android:text="@string/i_have_saved_the_code" />
+            android:text="@string/the_code_has_been_scanned" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ga_warning"
-            android:textAlignment="center"
-            android:textColor="#FF0000"
-            android:textSize="14sp" />
     </LinearLayout>
 
 </ScrollView>

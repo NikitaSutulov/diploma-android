@@ -65,6 +65,9 @@
         <argument
             android:name="event"
             app:argType="com.nikitasutulov.macsro.data.ui.Event" />
+        <action
+            android:id="@+id/action_eventDetailsFragment_to_joinEventFragment"
+            app:destination="@id/joinEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -95,6 +98,18 @@
             android:id="@+id/action_enterGoogleAuthenticatorCodeFragment_to_createVolunteerFragment"
             app:destination="@id/createVolunteerFragment" />
         <argument android:name="username"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinEventFragment"
+        android:name="com.nikitasutulov.macsro.ui.fragment.JoinEventFragment"
+        android:label="fragment_join_event"
+        tools:layout="@layout/fragment_join_event" >
+        <argument
+            android:name="volunteerGID"
+            app:argType="string" />
+        <argument
+            android:name="eventGID"
             app:argType="string" />
     </fragment>
 </navigation>

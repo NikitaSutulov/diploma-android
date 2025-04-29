@@ -7,12 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.nikitasutulov.macsro.data.ui.Event
 import com.nikitasutulov.macsro.databinding.FragmentEventDetailsBinding
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
@@ -34,6 +34,7 @@ class EventDetailsFragment : Fragment() {
     private lateinit var volunteersGroupsViewModel: VolunteersGroupsViewModel
     private lateinit var volunteersEventsViewModel: VolunteersEventsViewModel
     private lateinit var groupViewModel: GroupViewModel
+    private var volunteerGID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +72,7 @@ class EventDetailsFragment : Fragment() {
                     volunteerViewModel.getByUserGID("Bearer $token", user.id)
                     volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { volunteerResponse ->
                         if (volunteerResponse is BaseResponse.Success) {
-                            val volunteerGID = volunteerResponse.data!!.gid
+                            volunteerGID = volunteerResponse.data!!.gid
                             volunteersEventsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
                         } else if (volunteerResponse is BaseResponse.Error) {
                             showUserCheckError(volunteerResponse)
@@ -123,11 +124,12 @@ class EventDetailsFragment : Fragment() {
     private fun renderNotJoinedScreen() {
         binding.eventLockJoinButton.visibility = View.VISIBLE
         binding.eventLockJoinButton.setOnClickListener {
-            Toast.makeText(
-                requireActivity(),
-                "Clicked on link to join the event",
-                Toast.LENGTH_SHORT
-            ).show()
+            val action =
+                EventDetailsFragmentDirections.actionEventDetailsFragmentToJoinEventFragment(
+                    volunteerGID,
+                    event.gid
+                )
+            findNavController().navigate(action)
         }
     }
 
