@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.databinding.FragmentJoinEventBinding
@@ -51,7 +52,7 @@ class JoinEventFragment : Fragment() {
         val token = sessionManager.getToken()
         qrCodeViewModel.generateQrCode(
             "Bearer $token",
-            CreateVolunteersEventsDto(args.volunteerGID, args.eventGID)
+            CreateVolunteersEventsDto(args.volunteerGID, args.event.gid)
         )
         qrCodeViewModel.generateQrCodeResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
@@ -76,7 +77,13 @@ class JoinEventFragment : Fragment() {
 
     private fun setupDoneButton() {
         binding.doneButton.setOnClickListener {
-            findNavController().navigateUp()
+//            findNavController().navigateUp()
+            val action = EventsFragmentDirections.actionEventsFragmentToEventDetailsFragment(args.event)
+            with(findNavController()) {
+                popBackStack(R.id.eventDetailsFragment, true)
+                navigate(action)
+            }
+
         }
     }
 

@@ -7,13 +7,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.navigation.fragment.navArgs
 import com.nikitasutulov.macsro.data.ui.Event
 import com.nikitasutulov.macsro.databinding.FragmentEventDetailsBinding
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
@@ -22,6 +27,7 @@ import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersEventsViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersGroupsViewModel
+import org.json.JSONObject
 
 class EventDetailsFragment : Fragment() {
     private var _binding: FragmentEventDetailsBinding? = null
@@ -35,6 +41,27 @@ class EventDetailsFragment : Fragment() {
     private lateinit var volunteersEventsViewModel: VolunteersEventsViewModel
     private lateinit var groupViewModel: GroupViewModel
     private var volunteerGID: String = ""
+    private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        qrCodeScannerLauncher = registerForActivityResult(ScanContract()) {result ->
+            if (result.contents != null) {
+                val codeData = JSONObject(result.contents)
+                try {
+                    val codeVolunteerGID = codeData.getString("volunteerGID")
+                    val codeEventGID = codeData.getString("eventGID")
+                    addVolunteerToEvent(codeVolunteerGID, codeEventGID)
+                } catch (e: Exception) {
+                    Snackbar.make(
+                        binding.root,
+                        "Invalid QR code",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -115,6 +142,11 @@ class EventDetailsFragment : Fragment() {
 
     private fun renderCoordinatorScreen() {
         binding.eventCoordinatorView.visibility = View.VISIBLE
+        binding.addVolunteerToEventButton.setOnClickListener {
+            qrCodeScannerLauncher.launch(ScanOptions().apply {
+                setOrientationLocked(true)
+            })
+        }
     }
 
     private fun renderVolunteerScreen() {
@@ -127,9 +159,26 @@ class EventDetailsFragment : Fragment() {
             val action =
                 EventDetailsFragmentDirections.actionEventDetailsFragmentToJoinEventFragment(
                     volunteerGID,
-                    event.gid
+                    event
                 )
             findNavController().navigate(action)
+        }
+    }
+
+    private fun addVolunteerToEvent(volunteerGID: String, eventGID: String) {
+        val token = sessionManager.getToken()
+        volunteersEventsViewModel.create(
+            "Bearer $token",
+            CreateVolunteersEventsDto(volunteerGID, eventGID)
+        )
+        volunteersEventsViewModel.createResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                Snackbar.make(
+                    binding.root,
+                    "Volunteer has been added to the event successfully!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

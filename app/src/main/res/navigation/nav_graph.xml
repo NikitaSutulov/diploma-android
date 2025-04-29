@@ -109,7 +109,7 @@
             android:name="volunteerGID"
             app:argType="string" />
         <argument
-            android:name="eventGID"
-            app:argType="string" />
+            android:name="event"
+            app:argType="com.nikitasutulov.macsro.data.ui.Event" />
     </fragment>
 </navigation>

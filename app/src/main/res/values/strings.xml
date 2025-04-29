@@ -51,4 +51,9 @@
     <string name="submit">Submit</string>
     <string name="let_coordinator_scan_qr_code">Let the coordinator scan this QR code to join the event</string>
     <string name="the_code_has_been_scanned">The code has been scanned</string>
+    <string name="lock">Lock</string>
+    <string name="click_to_join_the_event">Click to join the event</string>
+    <string name="welcome_coordinator">Welcome, coordinator!</string>
+    <string name="add_a_volunteer_to_the_event">Add a volunteer to the event</string>
+    <string name="welcome_volunteer">Welcome, volunteer!</string>
 </resources>
