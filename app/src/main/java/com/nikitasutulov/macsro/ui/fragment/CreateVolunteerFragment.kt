@@ -93,6 +93,7 @@ class CreateVolunteerFragment : Fragment() {
     private fun setupBirthDatePicker() {
         binding.birthdateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
+            calendar.add(Calendar.YEAR, -16)
             DatePickerDialog(requireActivity(), { _, year, month, day ->
                 binding.birthdateEditText.setText(String.format("%02d/%02d/%04d", day, month + 1, year))
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
