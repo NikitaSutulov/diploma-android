@@ -28,37 +28,22 @@ class ResourceViewModel : ApiClientViewModel() {
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
     fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
-        performRequest(
-            request = { api.getAll(token, pageNumber, pageSize) },
-            responseLiveData = _getAllResponse
-        )
+        performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 
     fun create(token: String, createDto: CreateResourceDto) {
-        performRequest(
-            request = { api.create(token, createDto) },
-            responseLiveData = _createResponse
-        )
+        performRequest(_createResponse) { api.create(token, createDto) }
     }
 
     fun edit(token: String, dto: ResourceDto) {
-        performRequest(
-            request = { api.edit(token, dto) },
-            responseLiveData = _editResponse
-        )
+        performRequest(_editResponse) { api.edit(token, dto) }
     }
 
     fun getByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.getByGID(token, gid) },
-            responseLiveData = _getByGIDResponse
-        )
+        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 
     fun deleteByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.deleteByGID(token, gid) },
-            responseLiveData = _deleteByGIDResponse
-        )
+        performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 }

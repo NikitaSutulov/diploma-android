@@ -38,44 +38,26 @@ class VolunteersEventsViewModel : ApiClientViewModel() {
     val existsResponse: LiveData<BaseResponse<ResponseBody>> = _existsResponse
 
     fun getByVolunteerGID(token: String, volunteerGID: String) {
-        performRequest(
-            request = { api.getByVolunteerGID(token, volunteerGID) },
-            responseLiveData = _getByVolunteerGIDResponse
-        )
+        performRequest(_getByVolunteerGIDResponse) { api.getByVolunteerGID(token, volunteerGID) }
     }
 
     fun getByEventGID(token: String, eventGID: String) {
-        performRequest(
-            request = { api.getByEventGID(token, eventGID) },
-            responseLiveData = _getByEventGIDResponse
-        )
+        performRequest(_getByEventGIDResponse) { api.getByEventGID(token, eventGID) }
     }
 
     fun getByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.getByGID(token, gid) },
-            responseLiveData = _getByGIDResponse
-        )
+        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 
     fun deleteByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.deleteByGID(token, gid) },
-            responseLiveData = _deleteByGIDResponse
-        )
+        performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 
     fun create(token: String, createDto: CreateVolunteersEventsDto) {
-        performRequest(
-            request = { api.create(token, createDto) },
-            responseLiveData = _createResponse
-        )
+        performRequest(_createResponse) { api.create(token, createDto) }
     }
 
     fun exists(token: String, dto: CreateVolunteersEventsDto) {
-        performRequest(
-            request = { api.exists(token, dto) },
-            responseLiveData = _existsResponse
-        )
+        performRequest(_existsResponse) { api.exists(token, dto) }
     }
 }

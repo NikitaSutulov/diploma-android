@@ -27,37 +27,22 @@ class UserViewModel : ApiClientViewModel() {
     val editResponse: LiveData<BaseResponse<UserDto>> = _editResponse
 
     fun getAll(token: String) {
-        performRequest(
-            request = { api.getAllUsers(token) },
-            responseLiveData = _getAllResponse
-        )
+        performRequest(_getAllResponse) { api.getAllUsers(token) }
     }
 
     fun getWithUsername(username: String) {
-        performRequest(
-            request = { api.getUsersWithUsername(username) },
-            responseLiveData = _getWithUsernameResponse
-        )
+        performRequest(_getWithUsernameResponse) { api.getUsersWithUsername(username) }
     }
 
     fun getWithEmail(email: String) {
-        performRequest(
-            request = { api.getUsersWithEmail(email) },
-            responseLiveData = _getWithEmailResponse
-        )
+        performRequest(_getWithEmailResponse) { api.getUsersWithEmail(email) }
     }
 
     fun getWithRole(token: String, roleName: String) {
-        performRequest(
-            request = { api.getUsersWithRole(token, roleName) },
-            responseLiveData = _getWithRoleResponse
-        )
+        performRequest(_getWithRoleResponse) { api.getUsersWithRole(token, roleName) }
     }
 
     fun edit(token: String, userDto: UserDto) {
-        performRequest(
-            request = { api.editUser(token, userDto) },
-            responseLiveData = _editResponse
-        )
+        performRequest(_editResponse) { api.editUser(token, userDto) }
     }
 }

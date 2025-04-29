@@ -31,24 +31,15 @@ class AuthViewModel : ApiClientViewModel() {
         _tokenValidationResponse
 
     fun register(registerDto: RegisterDto) {
-        performRequest(
-            request = { api.register(registerDto) },
-            responseLiveData = _registerResponse
-        )
+        performRequest(_registerResponse) { api.register(registerDto) }
     }
 
     fun login(loginDto: LoginDto) {
-        performRequest(
-            request = { api.login(loginDto) },
-            responseLiveData = _loginResponse
-        )
+        performRequest(_loginResponse) { api.login(loginDto) }
     }
 
     fun getToken(getTokenDto: GetTokenDto) {
-        performRequest(
-            request = { api.getToken(getTokenDto) },
-            responseLiveData = _getTokenResponse
-        )
+        performRequest(_getTokenResponse) { api.getToken(getTokenDto) }
     }
 
     fun clearLoginResponse() {
@@ -56,9 +47,6 @@ class AuthViewModel : ApiClientViewModel() {
     }
 
     fun validateToken(token: String) {
-        performRequest(
-            request = { api.validateToken(token) },
-            responseLiveData = _tokenValidationResponse
-        )
+        performRequest(_tokenValidationResponse) { api.validateToken(token) }
     }
 }

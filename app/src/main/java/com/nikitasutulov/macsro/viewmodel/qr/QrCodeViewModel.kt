@@ -15,9 +15,6 @@ class QrCodeViewModel : ApiClientViewModel() {
     val generateQrCodeResponse: LiveData<BaseResponse<QrCodeResponseDto>> = _generateQrCodeResponse
 
     fun generateQrCode(token: String, dto: CreateVolunteersEventsDto) {
-        performRequest(
-            request = { api.generateQrCode(token, dto) },
-            responseLiveData = _generateQrCodeResponse
-        )
+        performRequest(_generateQrCodeResponse) { api.generateQrCode(token, dto) }
     }
 }

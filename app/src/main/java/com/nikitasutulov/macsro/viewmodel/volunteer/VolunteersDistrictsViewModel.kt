@@ -38,44 +38,26 @@ class VolunteersDistrictsViewModel : ApiClientViewModel() {
     val existsResponse: LiveData<BaseResponse<ResponseBody>> = _existsResponse
 
     fun getByVolunteerGID(token: String, volunteerGID: String) {
-        performRequest(
-            request = { api.getByVolunteerGID(token, volunteerGID) },
-            responseLiveData = _getByVolunteerGIDResponse
-        )
+        performRequest(_getByVolunteerGIDResponse) { api.getByVolunteerGID(token, volunteerGID) }
     }
 
     fun getByDistrictGID(token: String, districtGID: String) {
-        performRequest(
-            request = { api.getByDistrictGID(token, districtGID) },
-            responseLiveData = _getByDistrictGIDResponse
-        )
+        performRequest(_getByDistrictGIDResponse) { api.getByDistrictGID(token, districtGID) }
     }
 
     fun getByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.getByGID(token, gid) },
-            responseLiveData = _getByGIDResponse
-        )
+        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 
     fun deleteByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.deleteByGID(token, gid) },
-            responseLiveData = _deleteByGIDResponse
-        )
+        performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 
     fun create(token: String, createDto: CreateVolunteersDistrictsDto) {
-        performRequest(
-            request = { api.create(token, createDto) },
-            responseLiveData = _createResponse
-        )
+        performRequest(_createResponse) { api.create(token, createDto) }
     }
 
     fun exists(token: String, dto: CreateVolunteersDistrictsDto) {
-        performRequest(
-            request = { api.exists(token, dto) },
-            responseLiveData = _existsResponse
-        )
+        performRequest(_existsResponse) { api.exists(token, dto) }
     }
 }

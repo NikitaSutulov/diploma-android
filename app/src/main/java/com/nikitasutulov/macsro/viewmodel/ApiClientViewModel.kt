@@ -12,8 +12,8 @@ import org.json.JSONObject
 
 abstract class ApiClientViewModel : ViewModel() {
     fun <T> performRequest(
-        request: suspend () -> retrofit2.Response<T>,
-        responseLiveData: MutableLiveData<BaseResponse<T>>
+        responseLiveData: MutableLiveData<BaseResponse<T>>,
+        request: suspend () -> retrofit2.Response<T>
     ) {
         responseLiveData.postValue(BaseResponse.Loading())
 

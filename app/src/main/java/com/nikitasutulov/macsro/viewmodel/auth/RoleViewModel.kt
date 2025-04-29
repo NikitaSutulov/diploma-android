@@ -14,9 +14,6 @@ class RoleViewModel : ApiClientViewModel() {
     val getAllResponse: LiveData<BaseResponse<List<RoleDto>>> = _getAllRolesResponse
 
     fun getAll(token: String) {
-        performRequest(
-            request = { api.getAllRoles(token) },
-            responseLiveData = _getAllRolesResponse
-        )
+        performRequest(_getAllRolesResponse) { api.getAllRoles(token) }
     }
 }

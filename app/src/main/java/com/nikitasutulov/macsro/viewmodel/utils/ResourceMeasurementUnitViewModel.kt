@@ -35,44 +35,26 @@ class ResourceMeasurementUnitViewModel : ApiClientViewModel() {
     val existsResponse: LiveData<BaseResponse<ResponseBody>> = _existsResponse
 
     fun getByUnitGID(token: String, unitGID: String) {
-        performRequest(
-            request = { api.getByUnitGID(token, unitGID) },
-            responseLiveData = _getByUnitGIDResponse
-        )
+        performRequest(_getByUnitGIDResponse) { api.getByUnitGID(token, unitGID) }
     }
 
     fun getByResourceGID(token: String, resourceGID: String) {
-        performRequest(
-            request = { api.getByResourceGID(token, resourceGID) },
-            responseLiveData = _getByResourceGIDResponse
-        )
+        performRequest(_getByResourceGIDResponse) { api.getByResourceGID(token, resourceGID) }
     }
 
     fun getByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.getByGID(token, gid) },
-            responseLiveData = _getByGIDResponse
-        )
+        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 
     fun deleteByGID(token: String, gid: String) {
-        performRequest(
-            request = { api.deleteByGID(token, gid) },
-            responseLiveData = _deleteByGIDResponse
-        )
+        performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 
     fun create(token: String, createDto: CreateResourceMeasurementUnitDto) {
-        performRequest(
-            request = { api.create(token, createDto) },
-            responseLiveData = _createResponse
-        )
+        performRequest(_createResponse) { api.create(token, createDto) }
     }
 
     fun exists(token: String, dto: ResourceMeasurementUnitDto) {
-        performRequest(
-            request = { api.exists(token, dto) },
-            responseLiveData = _existsResponse
-        )
+        performRequest(_existsResponse) { api.exists(token, dto) }
     }
 }
