@@ -196,7 +196,7 @@ class CreateVolunteerFragment : Fragment() {
             surname = binding.surnameEditText.text.toString().trim(),
             email = email!!,
             mobilePhone = binding.mobilePhoneEditText.text.toString().trim(),
-            ratingNumber = 1, // TODO: change to 0 after validation is fixed
+            ratingNumber = 0,
             birthDate = convertDateInputToIsoFormat(binding.birthdateEditText.text.toString()),
             userGID = userGID!!
         )
