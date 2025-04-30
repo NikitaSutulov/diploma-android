@@ -148,7 +148,7 @@ class EventDetailsFragment : Fragment() {
 
     private fun renderEventResources() {
         val token = sessionManager.getToken()
-        var resourcesEventDtos: List<ResourcesEventDto>
+        var resourcesEventDtos: List<ResourcesEventDto> = listOf()
         var resourceDtos: List<ResourceDto>
         val eventResources: MutableList<EventResource> = mutableListOf()
         resourcesEventViewModel.getByEventGID("Bearer $token", event.gid)
@@ -156,31 +156,30 @@ class EventDetailsFragment : Fragment() {
             if (resourcesEventsResponse is BaseResponse.Success) {
                 resourcesEventDtos = resourcesEventsResponse.data!!
                 resourceViewModel.getAll("Bearer $token", null, null)
-                resourceViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { resourcesResponse ->
-                    if (resourcesResponse is BaseResponse.Success) {
-                        resourceDtos = resourcesResponse.data!!.filter {
-                            resourceDto -> resourcesEventDtos.any {
-                                it.resourceGID == resourceDto.gid
-                            }
-                        }
-                        for (resourcesEventDto in resourcesEventDtos) {
-                            eventResources.add(
-                                EventResource(
-                                    gid = resourcesEventDto.gid,
-                                    resourceName = resourceDtos.find { it.gid == resourcesEventDto.resourceGID }!!.name,
-                                    requiredQuantity = resourcesEventDto.requiredQuantity,
-                                    availableQuantity = resourcesEventDto.availableQuantity
-                                )
-                            )
-                        }
-                        eventResourcesAdapter.submitList(eventResources)
-                    } else if (resourcesResponse is BaseResponse.Error) {
-                        showEventResourcesError(resourcesResponse)
-                    }
-                }
-
             } else if (resourcesEventsResponse is BaseResponse.Error) {
                 showEventResourcesError(resourcesEventsResponse)
+            }
+        }
+        resourceViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { resourcesResponse ->
+            if (resourcesResponse is BaseResponse.Success) {
+                resourceDtos = resourcesResponse.data!!.filter {
+                        resourceDto -> resourcesEventDtos.any {
+                            it.resourceGID == resourceDto.gid
+                        }
+                }
+                for (resourcesEventDto in resourcesEventDtos) {
+                    eventResources.add(
+                        EventResource(
+                            gid = resourcesEventDto.gid,
+                            resourceName = resourceDtos.find { it.gid == resourcesEventDto.resourceGID }!!.name,
+                            requiredQuantity = resourcesEventDto.requiredQuantity,
+                            availableQuantity = resourcesEventDto.availableQuantity
+                        )
+                    )
+                }
+                eventResourcesAdapter.submitList(eventResources)
+            } else if (resourcesResponse is BaseResponse.Error) {
+                showEventResourcesError(resourcesResponse)
             }
         }
     }
