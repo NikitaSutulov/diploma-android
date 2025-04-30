@@ -1,105 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragment.EventDetailsFragment">
 
     <LinearLayout
-        android:id="@+id/event_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/event_name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="Event name" />
-
-        <TextView
-            android:id="@+id/event_type_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            tools:text="Event type" />
-
-        <TextView
-            android:id="@+id/event_status_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            tools:text="Event status" />
-
-        <TextView
-            android:id="@+id/event_district_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            tools:text="Event district" />
-
-        <TextView
-            android:id="@+id/event_location_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingTop="8dp"
-            android:text="@string/open_location_in_maps"
-            android:textColor="@android:color/holo_blue_dark" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/event_lock_join_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/event_header"
-        tools:visibility="visible"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:contentDescription="@string/lock"
-            android:src="@drawable/baseline_lock_24" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/click_to_join_the_event" />
-
-    </LinearLayout>
-
-    <!--  Other event details to be added  -->
-    <ScrollView
-        android:id="@+id/event_coordinator_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_header">
+        android:padding="16dp">
 
         <LinearLayout
+            android:id="@+id/event_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Event name" />
+
+            <TextView
+                android:id="@+id/event_type_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                tools:text="Event type" />
+
+            <TextView
+                android:id="@+id/event_status_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                tools:text="Event status" />
+
+            <TextView
+                android:id="@+id/event_district_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                tools:text="Event district" />
+
+            <TextView
+                android:id="@+id/event_location_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="8dp"
+                android:text="@string/open_location_in_maps"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:text="@string/resources_needed"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/event_resources_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/event_lock_join_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:ignore="UseCompoundDrawables"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:contentDescription="@string/lock"
+                android:src="@drawable/baseline_lock_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/click_to_join_the_event" />
+
+        </LinearLayout>
+
+        <!--  Other event details to be added  -->
+        <LinearLayout
+            android:id="@+id/event_coordinator_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,23 +118,20 @@
 
         </LinearLayout>
 
-    </ScrollView>
-
-    <ScrollView
-        android:id="@+id/event_volunteer_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_header">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/event_volunteer_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/welcome_volunteer" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-    </ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_volunteer" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

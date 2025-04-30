@@ -14,16 +14,23 @@ import com.nikitasutulov.macsro.databinding.FragmentEventDetailsBinding
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
+import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
+import com.nikitasutulov.macsro.data.ui.EventResource
+import com.nikitasutulov.macsro.ui.adapter.EventResourceAdapter
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
+import com.nikitasutulov.macsro.viewmodel.operations.ResourcesEventViewModel
+import com.nikitasutulov.macsro.viewmodel.utils.ResourceViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersEventsViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersGroupsViewModel
@@ -40,8 +47,11 @@ class EventDetailsFragment : Fragment() {
     private lateinit var volunteersGroupsViewModel: VolunteersGroupsViewModel
     private lateinit var volunteersEventsViewModel: VolunteersEventsViewModel
     private lateinit var groupViewModel: GroupViewModel
+    private lateinit var resourcesEventViewModel: ResourcesEventViewModel
+    private lateinit var resourceViewModel: ResourceViewModel
     private var volunteerGID: String = ""
     private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
+    private lateinit var eventResourcesAdapter: EventResourceAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +81,7 @@ class EventDetailsFragment : Fragment() {
 
         initViewModels()
         sessionManager = SessionManager.getInstance(requireContext())
+        setupRecyclerViews()
         renderEventDetails()
 
         return binding.root
@@ -82,6 +93,16 @@ class EventDetailsFragment : Fragment() {
         volunteersGroupsViewModel = ViewModelProvider(this)[VolunteersGroupsViewModel::class.java]
         groupViewModel = ViewModelProvider(this)[GroupViewModel::class.java]
         volunteersEventsViewModel = ViewModelProvider(this)[VolunteersEventsViewModel::class.java]
+        resourcesEventViewModel = ViewModelProvider(this)[ResourcesEventViewModel::class.java]
+        resourceViewModel = ViewModelProvider(this)[ResourceViewModel::class.java]
+    }
+
+    private fun setupRecyclerViews() {
+        eventResourcesAdapter = EventResourceAdapter()
+        binding.eventResourcesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = eventResourcesAdapter
+        }
     }
 
     private fun renderEventDetails() {
@@ -118,8 +139,48 @@ class EventDetailsFragment : Fragment() {
                         }
                     }
                 }
+                renderEventResources()
             } else if (validationResponse is BaseResponse.Error) {
                 showUserCheckError(validationResponse)
+            }
+        }
+    }
+
+    private fun renderEventResources() {
+        val token = sessionManager.getToken()
+        var resourcesEventDtos: List<ResourcesEventDto>
+        var resourceDtos: List<ResourceDto>
+        val eventResources: MutableList<EventResource> = mutableListOf()
+        resourcesEventViewModel.getByEventGID("Bearer $token", event.gid)
+        resourcesEventViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { resourcesEventsResponse ->
+            if (resourcesEventsResponse is BaseResponse.Success) {
+                resourcesEventDtos = resourcesEventsResponse.data!!
+                resourceViewModel.getAll("Bearer $token", null, null)
+                resourceViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { resourcesResponse ->
+                    if (resourcesResponse is BaseResponse.Success) {
+                        resourceDtos = resourcesResponse.data!!.filter {
+                            resourceDto -> resourcesEventDtos.any {
+                                it.resourceGID == resourceDto.gid
+                            }
+                        }
+                        for (resourcesEventDto in resourcesEventDtos) {
+                            eventResources.add(
+                                EventResource(
+                                    gid = resourcesEventDto.gid,
+                                    resourceName = resourceDtos.find { it.gid == resourcesEventDto.resourceGID }!!.name,
+                                    requiredQuantity = resourcesEventDto.requiredQuantity,
+                                    availableQuantity = resourcesEventDto.availableQuantity
+                                )
+                            )
+                        }
+                        eventResourcesAdapter.submitList(eventResources)
+                    } else if (resourcesResponse is BaseResponse.Error) {
+                        showEventResourcesError(resourcesResponse)
+                    }
+                }
+
+            } else if (resourcesEventsResponse is BaseResponse.Error) {
+                showEventResourcesError(resourcesEventsResponse)
             }
         }
     }
@@ -184,6 +245,10 @@ class EventDetailsFragment : Fragment() {
 
     private fun showUserCheckError(response: BaseResponse.Error) {
         handleError(binding.root, "Failed to check the user. ${response.error?.message}")
+    }
+
+    private fun showEventResourcesError(response: BaseResponse.Error) {
+        handleError(binding.root, "Failed to get event resources. ${response.error?.message}")
     }
 
     override fun onDestroyView() {

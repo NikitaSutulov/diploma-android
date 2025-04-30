@@ -4,6 +4,6 @@ data class ResourcesEventDto(
     val gid: String,
     val resourceGID: String,
     val eventGID: String,
-    val requiredQuantity: Int,
-    val availableQuantity: Int
+    val requiredQuantity: Double,
+    val availableQuantity: Double
 )
