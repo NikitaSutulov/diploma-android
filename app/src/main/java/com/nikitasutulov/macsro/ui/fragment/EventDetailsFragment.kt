@@ -118,30 +118,30 @@ class EventDetailsFragment : Fragment() {
                     renderCoordinatorScreen()
                 } else if (roles.any { it.name == "Volunteer" }) {
                     volunteerViewModel.getByUserGID("Bearer $token", user.id)
-                    volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { volunteerResponse ->
-                        if (volunteerResponse is BaseResponse.Success) {
-                            volunteerGID = volunteerResponse.data!!.gid
-                            volunteersEventsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
-                        } else if (volunteerResponse is BaseResponse.Error) {
-                            showUserCheckError(volunteerResponse)
-                        }
-                    }
-                    volunteersEventsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { eventsOfVolunteerResponse ->
-                        if (eventsOfVolunteerResponse is BaseResponse.Success) {
-                            val eventsOfVolunteer = eventsOfVolunteerResponse.data!!
-                            if (eventsOfVolunteer.any { it.eventGID == event.gid }) {
-                                renderVolunteerScreen()
-                            } else {
-                                renderNotJoinedScreen()
-                            }
-                        } else if (eventsOfVolunteerResponse is BaseResponse.Error) {
-                            showUserCheckError(eventsOfVolunteerResponse)
-                        }
-                    }
                 }
                 renderEventResources()
             } else if (validationResponse is BaseResponse.Error) {
                 showUserCheckError(validationResponse)
+            }
+        }
+        volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { volunteerResponse ->
+            if (volunteerResponse is BaseResponse.Success) {
+                volunteerGID = volunteerResponse.data!!.gid
+                volunteersEventsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
+            } else if (volunteerResponse is BaseResponse.Error) {
+                showUserCheckError(volunteerResponse)
+            }
+        }
+        volunteersEventsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { eventsOfVolunteerResponse ->
+            if (eventsOfVolunteerResponse is BaseResponse.Success) {
+                val eventsOfVolunteer = eventsOfVolunteerResponse.data!!
+                if (eventsOfVolunteer.any { it.eventGID == event.gid }) {
+                    renderVolunteerScreen()
+                } else {
+                    renderNotJoinedScreen()
+                }
+            } else if (eventsOfVolunteerResponse is BaseResponse.Error) {
+                showUserCheckError(eventsOfVolunteerResponse)
             }
         }
     }
