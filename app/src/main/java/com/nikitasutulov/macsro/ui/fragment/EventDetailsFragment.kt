@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
-import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
@@ -28,10 +27,11 @@ import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
 import com.nikitasutulov.macsro.data.ui.EventResource
+import com.nikitasutulov.macsro.data.ui.Group
 import com.nikitasutulov.macsro.data.ui.GroupMember
 import com.nikitasutulov.macsro.data.ui.OperationTask
 import com.nikitasutulov.macsro.ui.adapter.EventResourceAdapter
-import com.nikitasutulov.macsro.ui.adapter.GroupMemberAdapter
+import com.nikitasutulov.macsro.ui.adapter.GroupAdapter
 import com.nikitasutulov.macsro.ui.adapter.OperationTaskAdapter
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
@@ -67,7 +67,7 @@ class EventDetailsFragment : Fragment() {
     private var volunteerGID: String = ""
     private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
     private lateinit var eventResourcesAdapter: EventResourceAdapter
-    private lateinit var groupMembersAdapter: GroupMemberAdapter
+    private lateinit var groupAdapter: GroupAdapter
     private lateinit var operationTasksAdapter: OperationTaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,10 +124,10 @@ class EventDetailsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventResourcesAdapter
         }
-        groupMembersAdapter = GroupMemberAdapter()
+        groupAdapter = GroupAdapter()
         binding.volunteerGroupRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = groupMembersAdapter
+            adapter = groupAdapter
         }
         operationTasksAdapter = OperationTaskAdapter()
         binding.groupOperationTasksRecyclerView.apply {
@@ -287,8 +287,6 @@ class EventDetailsFragment : Fragment() {
                     if (isVolunteerLeader) {
                         binding.coordinationChatButton.visibility = View.VISIBLE
                     }
-                    val groupNameText = getString(R.string.your_group) + volunteerGroupDto!!.name
-                    binding.volunteerGroupNameTextView.text = groupNameText
                     volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
                 } else {
                     renderNoGroupLayout()
@@ -307,7 +305,12 @@ class EventDetailsFragment : Fragment() {
                         isLeader = it.gid == volunteerGroupDto!!.leaderGID
                     )
                 }
-                groupMembersAdapter.submitList(groupMembers)
+                val volunteerGroup = Group(
+                    gid = volunteerGroupDto!!.gid,
+                    name = volunteerGroupDto!!.name,
+                    members = groupMembers
+                )
+                groupAdapter.submitList(listOf(volunteerGroup))
             } else if (volunteersInGroupResponse is BaseResponse.Error) {
                 showGroupMembersError(volunteersInGroupResponse)
             }
@@ -348,7 +351,6 @@ class EventDetailsFragment : Fragment() {
 
     private fun renderNoGroupLayout() {
         binding.noGroupLayout.visibility = View.VISIBLE
-        binding.volunteerGroupNameTextView.text = getString(R.string.your_group)
     }
 
     private fun renderNotJoinedScreen() {
