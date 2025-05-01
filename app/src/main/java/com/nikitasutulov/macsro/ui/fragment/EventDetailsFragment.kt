@@ -23,6 +23,7 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
+import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
@@ -40,6 +41,7 @@ import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.OperationTaskStatusViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.OperationTaskViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.ResourcesEventViewModel
+import com.nikitasutulov.macsro.viewmodel.utils.MeasurementUnitViewModel
 import com.nikitasutulov.macsro.viewmodel.utils.ResourceViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteersEventsViewModel
@@ -59,6 +61,7 @@ class EventDetailsFragment : Fragment() {
     private lateinit var groupViewModel: GroupViewModel
     private lateinit var resourcesEventViewModel: ResourcesEventViewModel
     private lateinit var resourceViewModel: ResourceViewModel
+    private lateinit var measurementUnitViewModel: MeasurementUnitViewModel
     private lateinit var operationTaskViewModel: OperationTaskViewModel
     private lateinit var operationTaskStatusViewModel: OperationTaskStatusViewModel
     private var volunteerGID: String = ""
@@ -110,6 +113,7 @@ class EventDetailsFragment : Fragment() {
         volunteersEventsViewModel = ViewModelProvider(this)[VolunteersEventsViewModel::class.java]
         resourcesEventViewModel = ViewModelProvider(this)[ResourcesEventViewModel::class.java]
         resourceViewModel = ViewModelProvider(this)[ResourceViewModel::class.java]
+        measurementUnitViewModel = ViewModelProvider(this)[MeasurementUnitViewModel::class.java]
         operationTaskViewModel = ViewModelProvider(this)[OperationTaskViewModel::class.java]
         operationTaskStatusViewModel = ViewModelProvider(this)[OperationTaskStatusViewModel::class.java]
     }
@@ -177,14 +181,23 @@ class EventDetailsFragment : Fragment() {
         val token = sessionManager.getToken()
         var resourcesEventDtos: List<ResourcesEventDto> = listOf()
         var resourceDtos: List<ResourceDto>
+        var measurementUnitDtos: List<MeasurementUnitDto> = listOf()
         val eventResources: MutableList<EventResource> = mutableListOf()
         resourcesEventViewModel.getByEventGID("Bearer $token", event.gid)
         resourcesEventViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { resourcesEventsResponse ->
             if (resourcesEventsResponse is BaseResponse.Success) {
                 resourcesEventDtos = resourcesEventsResponse.data!!
-                resourceViewModel.getAll("Bearer $token", null, null)
+                measurementUnitViewModel.getAll("Bearer $token", null, null)
             } else if (resourcesEventsResponse is BaseResponse.Error) {
                 showEventResourcesError(resourcesEventsResponse)
+            }
+        }
+        measurementUnitViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { measurementUnitsResponse ->
+            if (measurementUnitsResponse is BaseResponse.Success) {
+                measurementUnitDtos = measurementUnitsResponse.data!!
+                resourceViewModel.getAll("Bearer $token", null, null)
+            } else if (measurementUnitsResponse is BaseResponse.Error) {
+                showEventResourcesError(measurementUnitsResponse)
             }
         }
         resourceViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { resourcesResponse ->
@@ -199,6 +212,7 @@ class EventDetailsFragment : Fragment() {
                         EventResource(
                             gid = resourcesEventDto.gid,
                             resourceName = resourceDtos.find { it.gid == resourcesEventDto.resourceGID }!!.name,
+                            measurementUnitName = measurementUnitDtos.find { it.gid == resourcesEventDto.measurementUnitGID }!!.name,
                             requiredQuantity = resourcesEventDto.requiredQuantity,
                             availableQuantity = resourcesEventDto.availableQuantity
                         )
@@ -243,7 +257,7 @@ class EventDetailsFragment : Fragment() {
 
     private fun renderVolunteerGroupMembers() {
         val token = sessionManager.getToken()
-        var volunteersGroups: List<VolunteersGroupsDto> = listOf()
+        var volunteersGroups: List<VolunteersGroupsDto>
         var eventGroups: List<GroupDto> = listOf()
         var volunteerGroupDto: GroupDto? = null
         var isVolunteerLeader: Boolean
@@ -325,6 +339,7 @@ class EventDetailsFragment : Fragment() {
                     )
                 }
                 operationTasksAdapter.submitList(operationTasks)
+                binding.groupOperationTasksLayout.visibility = View.VISIBLE
             } else if (operationTasksResponse is BaseResponse.Error) {
                 showOperationTasksError(operationTasksResponse)
             }
