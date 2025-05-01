@@ -70,7 +70,8 @@ class EventDetailsFragment : Fragment() {
     private lateinit var eventResourcesAdapter: EventResourceAdapter
     private lateinit var coordinatorGroupAdapter: GroupAdapter
     private lateinit var volunteerGroupAdapter: GroupAdapter
-    private lateinit var operationTasksAdapter: OperationTaskAdapter
+    private lateinit var groupOperationTasksAdapter: OperationTaskAdapter
+    private lateinit var eventOperationTasksAdapter: OperationTaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,10 +137,15 @@ class EventDetailsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = volunteerGroupAdapter
         }
-        operationTasksAdapter = OperationTaskAdapter()
+        groupOperationTasksAdapter = OperationTaskAdapter()
         binding.groupOperationTasksRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = operationTasksAdapter
+            adapter = groupOperationTasksAdapter
+        }
+        eventOperationTasksAdapter = OperationTaskAdapter()
+        binding.eventOperationTasksRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = eventOperationTasksAdapter
         }
     }
 
@@ -288,6 +294,7 @@ class EventDetailsFragment : Fragment() {
                                     )
                                 }
                                 coordinatorGroupAdapter.submitList(groups)
+                                renderEventOperationTasks(eventGroupDtos)
                             }
                         } else if (groupVolunteersResponse is BaseResponse.Error) {
                             showGroupMembersError(groupVolunteersResponse)
@@ -297,6 +304,40 @@ class EventDetailsFragment : Fragment() {
                 }
             } else if (eventGroupResponse is BaseResponse.Error) {
                 showGroupMembersError(eventGroupResponse)
+            }
+        }
+    }
+
+    private fun renderEventOperationTasks(groupDtos: List<GroupDto>) {
+        val token = sessionManager.getToken()
+        var operationTaskStatuses: List<OperationTaskStatusDto> = listOf()
+        operationTaskStatusViewModel.getAll("Bearer $token", null, null)
+        operationTaskStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { operationTaskStatusesResponse ->
+            if (operationTaskStatusesResponse is BaseResponse.Success) {
+                operationTaskStatuses = operationTaskStatusesResponse.data!!
+                for (groupDto in groupDtos) {
+                    val operationTasksLiveData = operationTaskViewModel.getByGroupGID("Bearer $token", groupDto.gid)
+                    operationTasksLiveData.observeOnce(viewLifecycleOwner) { operationTasksResponse ->
+                        if (operationTasksResponse is BaseResponse.Success) {
+                            val operationTaskDtos = operationTasksResponse.data!!
+                            val operationTasks = operationTaskDtos.map {
+                                OperationTask(
+                                    gid = it.gid,
+                                    name = it.name,
+                                    taskDescription = it.taskDescription,
+                                    groupName = groupDto.name,
+                                    taskStatusName = operationTaskStatuses.find { status -> status.gid == it.taskStatusGID }!!.name
+                                )
+                            }
+                            eventOperationTasksAdapter.submitList(operationTasks)
+                            binding.eventOperationTasksLayout.visibility = View.VISIBLE
+                        } else if (operationTasksResponse is BaseResponse.Error) {
+                            showOperationTasksError(operationTasksResponse)
+                        }
+                    }
+                }
+            } else if (operationTaskStatusesResponse is BaseResponse.Error) {
+                showOperationTasksError(operationTaskStatusesResponse)
             }
         }
     }
@@ -375,27 +416,27 @@ class EventDetailsFragment : Fragment() {
         operationTaskStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { operationTaskStatusesResponse ->
             if (operationTaskStatusesResponse is BaseResponse.Success) {
                 operationTaskStatuses = operationTaskStatusesResponse.data!!
-                operationTaskViewModel.getByGroupGID("Bearer $token", groupDto.gid)
+                val operationTasksLiveData = operationTaskViewModel.getByGroupGID("Bearer $token", groupDto.gid)
+                operationTasksLiveData.observeOnce(viewLifecycleOwner) { operationTasksResponse ->
+                    if (operationTasksResponse is BaseResponse.Success) {
+                        val operationTaskDtos = operationTasksResponse.data!!
+                        val operationTasks = operationTaskDtos.map {
+                            OperationTask(
+                                gid = it.gid,
+                                name = it.name,
+                                taskDescription = it.taskDescription,
+                                groupName = groupDto.name,
+                                taskStatusName = operationTaskStatuses.find { status -> status.gid == it.taskStatusGID }!!.name
+                            )
+                        }
+                        groupOperationTasksAdapter.submitList(operationTasks)
+                        binding.groupOperationTasksLayout.visibility = View.VISIBLE
+                    } else if (operationTasksResponse is BaseResponse.Error) {
+                        showOperationTasksError(operationTasksResponse)
+                    }
+                }
             } else if (operationTaskStatusesResponse is BaseResponse.Error) {
                 showOperationTasksError(operationTaskStatusesResponse)
-            }
-        }
-        operationTaskViewModel.getByGroupGIDResponse.observeOnce(viewLifecycleOwner) { operationTasksResponse ->
-            if (operationTasksResponse is BaseResponse.Success) {
-                val operationTaskDtos = operationTasksResponse.data!!
-                val operationTasks = operationTaskDtos.map {
-                    OperationTask(
-                        gid = it.gid,
-                        name = it.name,
-                        taskDescription = it.taskDescription,
-                        groupName = groupDto.name,
-                        taskStatusName = operationTaskStatuses.find { status -> status.gid == it.taskStatusGID }!!.name
-                    )
-                }
-                operationTasksAdapter.submitList(operationTasks)
-                binding.groupOperationTasksLayout.visibility = View.VISIBLE
-            } else if (operationTasksResponse is BaseResponse.Error) {
-                showOperationTasksError(operationTasksResponse)
             }
         }
     }

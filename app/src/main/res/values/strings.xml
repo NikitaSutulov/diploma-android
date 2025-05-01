@@ -63,4 +63,5 @@
     <string name="coordination_chat">Coordination chat</string>
     <string name="your_tasks">Your tasks:</string>
     <string name="event_groups">Event Groups:</string>
+    <string name="event_tasks">Event tasks:</string>
 </resources>
