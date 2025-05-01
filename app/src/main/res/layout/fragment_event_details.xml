@@ -132,6 +132,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
+            <Button
+                android:id="@+id/coordinator_coordination_chat_button"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/coordination_chat" />
+
             <LinearLayout
                 android:id="@+id/event_operation_tasks_layout"
                 android:layout_width="match_parent"
@@ -218,7 +224,7 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/coordination_chat_button"
+                android:id="@+id/group_leader_coordination_chat_button"
                 android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:text="@string/coordination_chat"

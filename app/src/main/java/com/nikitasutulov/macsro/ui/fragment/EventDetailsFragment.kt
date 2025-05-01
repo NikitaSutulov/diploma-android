@@ -375,9 +375,9 @@ class EventDetailsFragment : Fragment() {
                     renderGroupOperationTasks(volunteerGroupDto!!)
                     isVolunteerLeader = volunteerGroupDto!!.leaderGID == volunteerGID
                     binding.groupChatButton.visibility = View.VISIBLE
-                    binding.coordinationChatButton.visibility = View.GONE
+                    binding.groupLeaderCoordinationChatButton.visibility = View.GONE
                     if (isVolunteerLeader) {
-                        binding.coordinationChatButton.visibility = View.VISIBLE
+                        binding.groupLeaderCoordinationChatButton.visibility = View.VISIBLE
                     }
                     val groupVolunteersLiveData = volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
                     groupVolunteersLiveData.observeOnce(viewLifecycleOwner) { volunteersInGroupResponse ->
