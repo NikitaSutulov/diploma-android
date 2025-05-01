@@ -24,6 +24,7 @@ import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.Operatio
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
 import com.nikitasutulov.macsro.data.ui.EventResource
@@ -67,7 +68,8 @@ class EventDetailsFragment : Fragment() {
     private var volunteerGID: String = ""
     private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
     private lateinit var eventResourcesAdapter: EventResourceAdapter
-    private lateinit var groupAdapter: GroupAdapter
+    private lateinit var coordinatorGroupAdapter: GroupAdapter
+    private lateinit var volunteerGroupAdapter: GroupAdapter
     private lateinit var operationTasksAdapter: OperationTaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,10 +126,15 @@ class EventDetailsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventResourcesAdapter
         }
-        groupAdapter = GroupAdapter()
+        coordinatorGroupAdapter = GroupAdapter()
+        binding.coordinatorGroupRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = coordinatorGroupAdapter
+        }
+        volunteerGroupAdapter = GroupAdapter()
         binding.volunteerGroupRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = groupAdapter
+            adapter = volunteerGroupAdapter
         }
         operationTasksAdapter = OperationTaskAdapter()
         binding.groupOperationTasksRecyclerView.apply {
@@ -248,14 +255,58 @@ class EventDetailsFragment : Fragment() {
                 setOrientationLocked(true)
             })
         }
+        renderEventGroupsAndTasks()
+    }
+
+    private fun renderEventGroupsAndTasks() {
+        val token = sessionManager.getToken()
+        var eventGroupDtos: List<GroupDto> = listOf()
+        val groupsMembersMap: MutableMap<String, List<VolunteerDto>> = mutableMapOf()
+        groupViewModel.getByEventGID("Bearer $token", event.gid)
+        groupViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { eventGroupResponse ->
+            if (eventGroupResponse is BaseResponse.Success) {
+                eventGroupDtos = eventGroupResponse.data!!
+                for (groupDto in eventGroupDtos) {
+                    val groupVolunteersLiveData = volunteerViewModel.getByGroupGID("Bearer $token", groupDto.gid)
+                    groupVolunteersLiveData.observeOnce(viewLifecycleOwner) { groupVolunteersResponse ->
+                        if (groupVolunteersResponse is BaseResponse.Success) {
+                            val volunteerDtosInGroup = groupVolunteersResponse.data!!
+                            groupsMembersMap[groupDto.gid] = volunteerDtosInGroup
+                            if (groupsMembersMap.keys.size == eventGroupDtos.size) {
+                                val groups = eventGroupDtos.map {
+                                    val groupMembers = groupsMembersMap[it.gid]!!.map { volunteerDto ->
+                                        GroupMember(
+                                            gid = volunteerDto.gid,
+                                            name = "${volunteerDto.name} ${volunteerDto.surname}",
+                                            isLeader = volunteerDto.gid == it.leaderGID
+                                        )
+                                    }
+                                    Group(
+                                        gid = it.gid,
+                                        name = it.name,
+                                        members = groupMembers
+                                    )
+                                }
+                                coordinatorGroupAdapter.submitList(groups)
+                            }
+                        } else if (groupVolunteersResponse is BaseResponse.Error) {
+                            showGroupMembersError(groupVolunteersResponse)
+                        }
+
+                    }
+                }
+            } else if (eventGroupResponse is BaseResponse.Error) {
+                showGroupMembersError(eventGroupResponse)
+            }
+        }
     }
 
     private fun renderVolunteerScreen() {
         binding.eventVolunteerView.visibility = View.VISIBLE
-        renderVolunteerGroupMembers()
+        renderVolunteerGroupMembersAndTasks()
     }
 
-    private fun renderVolunteerGroupMembers() {
+    private fun renderVolunteerGroupMembersAndTasks() {
         val token = sessionManager.getToken()
         var volunteersGroups: List<VolunteersGroupsDto>
         var eventGroups: List<GroupDto> = listOf()
@@ -287,32 +338,32 @@ class EventDetailsFragment : Fragment() {
                     if (isVolunteerLeader) {
                         binding.coordinationChatButton.visibility = View.VISIBLE
                     }
-                    volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
+                    val groupVolunteersLiveData = volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
+                    groupVolunteersLiveData.observeOnce(viewLifecycleOwner) { volunteersInGroupResponse ->
+                        if (volunteersInGroupResponse is BaseResponse.Success) {
+                            val volunteersInGroup = volunteersInGroupResponse.data!!
+                            val groupMembers = volunteersInGroup.map {
+                                GroupMember(
+                                    gid = it.gid,
+                                    name = "${it.name} ${it.surname}",
+                                    isLeader = it.gid == volunteerGroupDto!!.leaderGID
+                                )
+                            }
+                            val volunteerGroup = Group(
+                                gid = volunteerGroupDto!!.gid,
+                                name = volunteerGroupDto!!.name,
+                                members = groupMembers
+                            )
+                            volunteerGroupAdapter.submitList(listOf(volunteerGroup))
+                        } else if (volunteersInGroupResponse is BaseResponse.Error) {
+                            showGroupMembersError(volunteersInGroupResponse)
+                        }
+                    }
                 } else {
                     renderNoGroupLayout()
                 }
             } else if (volunteersGroupsResponse is BaseResponse.Error) {
                 showGroupMembersError(volunteersGroupsResponse)
-            }
-        }
-        volunteerViewModel.getByGroupGIDResponse.observeOnce(viewLifecycleOwner) { volunteersInGroupResponse ->
-            if (volunteersInGroupResponse is BaseResponse.Success) {
-                val volunteersInGroup = volunteersInGroupResponse.data!!
-                val groupMembers = volunteersInGroup.map {
-                    GroupMember(
-                        gid = it.gid,
-                        name = "${it.name} ${it.surname}",
-                        isLeader = it.gid == volunteerGroupDto!!.leaderGID
-                    )
-                }
-                val volunteerGroup = Group(
-                    gid = volunteerGroupDto!!.gid,
-                    name = volunteerGroupDto!!.name,
-                    members = groupMembers
-                )
-                groupAdapter.submitList(listOf(volunteerGroup))
-            } else if (volunteersInGroupResponse is BaseResponse.Error) {
-                showGroupMembersError(volunteersInGroupResponse)
             }
         }
     }

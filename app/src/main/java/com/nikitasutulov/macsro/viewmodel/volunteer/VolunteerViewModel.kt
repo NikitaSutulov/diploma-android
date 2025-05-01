@@ -21,9 +21,6 @@ class VolunteerViewModel : ApiClientViewModel() {
     private val _editResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val editResponse: LiveData<BaseResponse<VolunteerDto>> = _editResponse
 
-    private val _getByGroupGIDResponse = MutableLiveData<BaseResponse<List<VolunteerDto>>>()
-    val getByGroupGIDResponse: LiveData<BaseResponse<List<VolunteerDto>>> = _getByGroupGIDResponse
-
     private val _getByGIDResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val getByGIDResponse: LiveData<BaseResponse<VolunteerDto>> = _getByGIDResponse
 
@@ -45,8 +42,11 @@ class VolunteerViewModel : ApiClientViewModel() {
         performRequest(_editResponse) { api.edit(token, dto) }
     }
 
-    fun getByGroupGID(token: String, groupGID: String) {
-        performRequest(_getByGroupGIDResponse) { api.getByGroupGID(token, groupGID) }
+    fun getByGroupGID(token: String, groupGID: String): LiveData<BaseResponse<List<VolunteerDto>>> {
+        val responseMutableLiveData = MutableLiveData<BaseResponse<List<VolunteerDto>>>()
+        val responseLiveData: LiveData<BaseResponse<List<VolunteerDto>>> = responseMutableLiveData
+        performRequest(responseMutableLiveData) { api.getByGroupGID(token, groupGID) }
+        return responseLiveData
     }
 
     fun getByGID(token: String, gid: String) {
