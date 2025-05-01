@@ -27,6 +27,9 @@ class OperationTaskViewModel : ApiClientViewModel() {
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
+    private val _getByGroupGIDResponse = MutableLiveData<BaseResponse<List<OperationTaskDto>>>()
+    val getByGroupGIDResponse: LiveData<BaseResponse<List<OperationTaskDto>>> = _getByGroupGIDResponse
+
     fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
@@ -45,5 +48,9 @@ class OperationTaskViewModel : ApiClientViewModel() {
 
     fun deleteByGID(token: String, gid: String) {
         performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
+    }
+
+    fun getByGroupGID(token: String, groupGID: String) {
+        performRequest(_getByGroupGIDResponse) { api.getByGroupGID(token, groupGID) }
     }
 }

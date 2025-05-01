@@ -44,4 +44,10 @@ interface OperationTaskApi {
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<ResponseBody>
+
+    @GET("OperationTask/byGroupGID/{groupGID}")
+    suspend fun getByGroupGID(
+        @Header("Authorization") token: String,
+        @Path("groupGID") groupGID: String
+    ): Response<List<OperationTaskDto>>
 }

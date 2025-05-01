@@ -21,19 +21,24 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
+import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
 import com.nikitasutulov.macsro.data.ui.EventResource
 import com.nikitasutulov.macsro.data.ui.GroupMember
+import com.nikitasutulov.macsro.data.ui.OperationTask
 import com.nikitasutulov.macsro.ui.adapter.EventResourceAdapter
 import com.nikitasutulov.macsro.ui.adapter.GroupMemberAdapter
+import com.nikitasutulov.macsro.ui.adapter.OperationTaskAdapter
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.GroupViewModel
+import com.nikitasutulov.macsro.viewmodel.operations.OperationTaskStatusViewModel
+import com.nikitasutulov.macsro.viewmodel.operations.OperationTaskViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.ResourcesEventViewModel
 import com.nikitasutulov.macsro.viewmodel.utils.ResourceViewModel
 import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
@@ -54,10 +59,13 @@ class EventDetailsFragment : Fragment() {
     private lateinit var groupViewModel: GroupViewModel
     private lateinit var resourcesEventViewModel: ResourcesEventViewModel
     private lateinit var resourceViewModel: ResourceViewModel
+    private lateinit var operationTaskViewModel: OperationTaskViewModel
+    private lateinit var operationTaskStatusViewModel: OperationTaskStatusViewModel
     private var volunteerGID: String = ""
     private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
     private lateinit var eventResourcesAdapter: EventResourceAdapter
     private lateinit var groupMembersAdapter: GroupMemberAdapter
+    private lateinit var operationTasksAdapter: OperationTaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +110,8 @@ class EventDetailsFragment : Fragment() {
         volunteersEventsViewModel = ViewModelProvider(this)[VolunteersEventsViewModel::class.java]
         resourcesEventViewModel = ViewModelProvider(this)[ResourcesEventViewModel::class.java]
         resourceViewModel = ViewModelProvider(this)[ResourceViewModel::class.java]
+        operationTaskViewModel = ViewModelProvider(this)[OperationTaskViewModel::class.java]
+        operationTaskStatusViewModel = ViewModelProvider(this)[OperationTaskStatusViewModel::class.java]
     }
 
     private fun setupRecyclerViews() {
@@ -114,6 +124,11 @@ class EventDetailsFragment : Fragment() {
         binding.volunteerGroupRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = groupMembersAdapter
+        }
+        operationTasksAdapter = OperationTaskAdapter()
+        binding.groupOperationTasksRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = operationTasksAdapter
         }
     }
 
@@ -230,7 +245,7 @@ class EventDetailsFragment : Fragment() {
         val token = sessionManager.getToken()
         var volunteersGroups: List<VolunteersGroupsDto> = listOf()
         var eventGroups: List<GroupDto> = listOf()
-        var volunteersGroup: GroupDto? = null
+        var volunteerGroupDto: GroupDto? = null
         var isVolunteerLeader: Boolean
         groupViewModel.getByEventGID("Bearer $token", event.gid)
         groupViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { eventGroupResponse ->
@@ -250,14 +265,15 @@ class EventDetailsFragment : Fragment() {
                 if (intersection.isNotEmpty()) {
                     binding.noGroupLayout.visibility = View.GONE
                     val volunteerGroupGID = intersection[0]
-                    volunteersGroup = eventGroups.find { it.gid == volunteerGroupGID }
-                    isVolunteerLeader = volunteersGroup!!.leaderGID == volunteerGID
+                    volunteerGroupDto = eventGroups.find { it.gid == volunteerGroupGID }
+                    renderGroupOperationTasks(volunteerGroupDto!!)
+                    isVolunteerLeader = volunteerGroupDto!!.leaderGID == volunteerGID
                     binding.groupChatButton.visibility = View.VISIBLE
                     binding.coordinationChatButton.visibility = View.GONE
                     if (isVolunteerLeader) {
                         binding.coordinationChatButton.visibility = View.VISIBLE
                     }
-                    val groupNameText = getString(R.string.your_group) + volunteersGroup!!.name
+                    val groupNameText = getString(R.string.your_group) + volunteerGroupDto!!.name
                     binding.volunteerGroupNameTextView.text = groupNameText
                     volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
                 } else {
@@ -274,12 +290,43 @@ class EventDetailsFragment : Fragment() {
                     GroupMember(
                         gid = it.gid,
                         name = "${it.name} ${it.surname}",
-                        isLeader = it.gid == volunteersGroup!!.leaderGID
+                        isLeader = it.gid == volunteerGroupDto!!.leaderGID
                     )
                 }
                 groupMembersAdapter.submitList(groupMembers)
             } else if (volunteersInGroupResponse is BaseResponse.Error) {
                 showGroupMembersError(volunteersInGroupResponse)
+            }
+        }
+    }
+
+    private fun renderGroupOperationTasks(groupDto: GroupDto) {
+        val token = sessionManager.getToken()
+        var operationTaskStatuses: List<OperationTaskStatusDto> = listOf()
+        operationTaskStatusViewModel.getAll("Bearer $token", null, null)
+        operationTaskStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { operationTaskStatusesResponse ->
+            if (operationTaskStatusesResponse is BaseResponse.Success) {
+                operationTaskStatuses = operationTaskStatusesResponse.data!!
+                operationTaskViewModel.getByGroupGID("Bearer $token", groupDto.gid)
+            } else if (operationTaskStatusesResponse is BaseResponse.Error) {
+                showOperationTasksError(operationTaskStatusesResponse)
+            }
+        }
+        operationTaskViewModel.getByGroupGIDResponse.observeOnce(viewLifecycleOwner) { operationTasksResponse ->
+            if (operationTasksResponse is BaseResponse.Success) {
+                val operationTaskDtos = operationTasksResponse.data!!
+                val operationTasks = operationTaskDtos.map {
+                    OperationTask(
+                        gid = it.gid,
+                        name = it.name,
+                        taskDescription = it.taskDescription,
+                        groupName = groupDto.name,
+                        taskStatusName = operationTaskStatuses.find { status -> status.gid == it.taskStatusGID }!!.name
+                    )
+                }
+                operationTasksAdapter.submitList(operationTasks)
+            } else if (operationTasksResponse is BaseResponse.Error) {
+                showOperationTasksError(operationTasksResponse)
             }
         }
     }
@@ -334,6 +381,10 @@ class EventDetailsFragment : Fragment() {
 
     private fun showGroupMembersError(response: BaseResponse.Error) {
         handleError(binding.root, "Failed to get group members. ${response.error?.message}")
+    }
+
+    private fun showOperationTasksError(response: BaseResponse.Error) {
+        handleError(binding.root, "Failed to get operation tasks. ${response.error?.message}")
     }
 
     override fun onDestroyView() {
