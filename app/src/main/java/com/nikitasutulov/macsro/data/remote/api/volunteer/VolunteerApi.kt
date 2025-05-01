@@ -33,6 +33,12 @@ interface VolunteerApi {
         @Body dto: VolunteerDto
     ): Response<VolunteerDto>
 
+    @GET("Volunteer/by-group/{groupGID}")
+    suspend fun getByGroupGID(
+        @Header("Authorization") token: String,
+        @Path("groupGID") groupGID: String
+    ): Response<List<VolunteerDto>>
+
     @GET("Volunteer/{gid}")
     suspend fun getByGID(
         @Header("Authorization") token: String,

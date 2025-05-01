@@ -18,12 +18,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
 import com.nikitasutulov.macsro.data.ui.EventResource
+import com.nikitasutulov.macsro.data.ui.GroupMember
 import com.nikitasutulov.macsro.ui.adapter.EventResourceAdapter
+import com.nikitasutulov.macsro.ui.adapter.GroupMemberAdapter
 import com.nikitasutulov.macsro.utils.SessionManager
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
@@ -52,6 +57,7 @@ class EventDetailsFragment : Fragment() {
     private var volunteerGID: String = ""
     private lateinit var qrCodeScannerLauncher: ActivityResultLauncher<ScanOptions>
     private lateinit var eventResourcesAdapter: EventResourceAdapter
+    private lateinit var groupMembersAdapter: GroupMemberAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +89,7 @@ class EventDetailsFragment : Fragment() {
         sessionManager = SessionManager.getInstance(requireContext())
         setupRecyclerViews()
         renderEventDetails()
+        setupRefreshButton()
 
         return binding.root
     }
@@ -102,6 +109,11 @@ class EventDetailsFragment : Fragment() {
         binding.eventResourcesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventResourcesAdapter
+        }
+        groupMembersAdapter = GroupMemberAdapter()
+        binding.volunteerGroupRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = groupMembersAdapter
         }
     }
 
@@ -211,6 +223,70 @@ class EventDetailsFragment : Fragment() {
 
     private fun renderVolunteerScreen() {
         binding.eventVolunteerView.visibility = View.VISIBLE
+        renderVolunteerGroupMembers()
+    }
+
+    private fun renderVolunteerGroupMembers() {
+        val token = sessionManager.getToken()
+        var volunteersGroups: List<VolunteersGroupsDto> = listOf()
+        var eventGroups: List<GroupDto> = listOf()
+        var volunteersGroup: GroupDto? = null
+        var isVolunteerLeader: Boolean
+        groupViewModel.getByEventGID("Bearer $token", event.gid)
+        groupViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { eventGroupResponse ->
+            if (eventGroupResponse is BaseResponse.Success) {
+                eventGroups = eventGroupResponse.data!!
+                volunteersGroupsViewModel.getByVolunteerGID("Bearer $token", volunteerGID)
+            } else if (eventGroupResponse is BaseResponse.Error) {
+                showGroupMembersError(eventGroupResponse)
+            }
+        }
+        volunteersGroupsViewModel.getByVolunteerGIDResponse.observeOnce(viewLifecycleOwner) { volunteersGroupsResponse ->
+            if (volunteersGroupsResponse is BaseResponse.Success) {
+                volunteersGroups = volunteersGroupsResponse.data!!
+                val eventGroupGIDS = eventGroups.map { it.gid }.toSet()
+                val volunteerGroupGIDs = volunteersGroups.map { it.groupGID }.toSet()
+                val intersection = eventGroupGIDS.intersect(volunteerGroupGIDs).toList()
+                if (intersection.isNotEmpty()) {
+                    binding.noGroupLayout.visibility = View.GONE
+                    val volunteerGroupGID = intersection[0]
+                    volunteersGroup = eventGroups.find { it.gid == volunteerGroupGID }
+                    isVolunteerLeader = volunteersGroup!!.leaderGID == volunteerGID
+                    binding.groupChatButton.visibility = View.VISIBLE
+                    binding.coordinationChatButton.visibility = View.GONE
+                    if (isVolunteerLeader) {
+                        binding.coordinationChatButton.visibility = View.VISIBLE
+                    }
+                    val groupNameText = getString(R.string.your_group) + volunteersGroup!!.name
+                    binding.volunteerGroupNameTextView.text = groupNameText
+                    volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
+                } else {
+                    renderNoGroupLayout()
+                }
+            } else if (volunteersGroupsResponse is BaseResponse.Error) {
+                showGroupMembersError(volunteersGroupsResponse)
+            }
+        }
+        volunteerViewModel.getByGroupGIDResponse.observeOnce(viewLifecycleOwner) { volunteersInGroupResponse ->
+            if (volunteersInGroupResponse is BaseResponse.Success) {
+                val volunteersInGroup = volunteersInGroupResponse.data!!
+                val groupMembers = volunteersInGroup.map {
+                    GroupMember(
+                        gid = it.gid,
+                        name = "${it.name} ${it.surname}",
+                        isLeader = it.gid == volunteersGroup!!.leaderGID
+                    )
+                }
+                groupMembersAdapter.submitList(groupMembers)
+            } else if (volunteersInGroupResponse is BaseResponse.Error) {
+                showGroupMembersError(volunteersInGroupResponse)
+            }
+        }
+    }
+
+    private fun renderNoGroupLayout() {
+        binding.noGroupLayout.visibility = View.VISIBLE
+        binding.volunteerGroupNameTextView.text = getString(R.string.your_group)
     }
 
     private fun renderNotJoinedScreen() {
@@ -222,6 +298,12 @@ class EventDetailsFragment : Fragment() {
                     event
                 )
             findNavController().navigate(action)
+        }
+    }
+
+    private fun setupRefreshButton() {
+        binding.noGroupRefreshButton.setOnClickListener {
+            renderEventDetails()
         }
     }
 
@@ -248,6 +330,10 @@ class EventDetailsFragment : Fragment() {
 
     private fun showEventResourcesError(response: BaseResponse.Error) {
         handleError(binding.root, "Failed to get event resources. ${response.error?.message}")
+    }
+
+    private fun showGroupMembersError(response: BaseResponse.Error) {
+        handleError(binding.root, "Failed to get group members. ${response.error?.message}")
     }
 
     override fun onDestroyView() {

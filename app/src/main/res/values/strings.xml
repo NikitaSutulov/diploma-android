@@ -57,4 +57,8 @@
     <string name="add_a_volunteer_to_the_event">Add a volunteer to the event</string>
     <string name="welcome_volunteer">Welcome, volunteer!</string>
     <string name="resources_needed">Resources needed:</string>
+    <string name="your_group">Your group:\ </string>
+    <string name="no_group_text">You have not been assigned to any group yet.</string>
+    <string name="group_chat">Group chat</string>
+    <string name="coordination_chat">Coordination chat</string>
 </resources>

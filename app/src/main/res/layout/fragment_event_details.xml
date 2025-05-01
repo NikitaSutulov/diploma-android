@@ -75,14 +75,14 @@
             android:id="@+id/event_lock_join_button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
             tools:ignore="UseCompoundDrawables"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <ImageView
                 android:layout_width="150dp"
@@ -123,12 +123,65 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/welcome_volunteer" />
+                android:paddingTop="8dp"
+                android:text="@string/welcome_volunteer"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/volunteer_group_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                tools:text="@string/your_group" />
+
+            <LinearLayout
+                android:id="@+id/no_group_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/no_group_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_group_text" />
+
+                <Button
+                    android:id="@+id/no_group_refresh_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refresh_button_text" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/volunteer_group_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/group_chat_button"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/group_chat"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/coordination_chat_button"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/coordination_chat"
+                android:visibility="gone" />
 
         </LinearLayout>
 
