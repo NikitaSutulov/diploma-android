@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
 import com.nikitasutulov.macsro.databinding.FragmentCreateVolunteerBinding
 import com.nikitasutulov.macsro.utils.SessionManager
@@ -35,7 +36,7 @@ class CreateVolunteerFragment : Fragment() {
     private var isProcessing = false
     private var userGID: String? = null
     private var email: String? = null
-    private var authToken: String? = null
+    private var token: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +62,28 @@ class CreateVolunteerFragment : Fragment() {
     }
 
     private fun checkIfVolunteerCreationNeeded() {
-        authToken = sessionManager.getToken()
-        authViewModel.validateToken("Bearer $authToken")
+        token = sessionManager.getToken()
+        authViewModel.validateToken("Bearer $token")
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 val responseData = response.data!!
                 val user = responseData.user!!
                 if (user.roles.any { it.name == "Coordinator" }) {
+                    navigateToEvents()
+                } else {
+                    volunteerViewModel.getByUserGID("Bearer $token", user.id)
+                    observeGettingVolunteerDto(user)
+                }
+            } else if (response is BaseResponse.Error) {
+                handleVolunteerCreationError(response.error!!.message)
+            }
+        }
+    }
+
+    private fun observeGettingVolunteerDto(user: UserDto) {
+        volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                if (response.code != 204) {
                     navigateToEvents()
                 } else {
                     userGID = user.id
@@ -202,7 +218,7 @@ class CreateVolunteerFragment : Fragment() {
             userGID = userGID!!
         )
 
-        volunteerViewModel.create("Bearer ${authToken!!}", volunteerDto)
+        volunteerViewModel.create("Bearer ${token!!}", volunteerDto)
         volunteerViewModel.createResponse.observeOnce(viewLifecycleOwner) { response ->
             isProcessing = false
             updateButtonState()
