@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.navArgs
 import com.nikitasutulov.macsro.data.ui.Event
 import com.nikitasutulov.macsro.databinding.FragmentEventDetailsBinding
@@ -18,12 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
 import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.resource.ResourceDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.UpdateRatingDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersevents.CreateVolunteersEventsDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteersgroups.VolunteersGroupsDto
@@ -127,7 +130,11 @@ class EventDetailsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventResourcesAdapter
         }
-        coordinatorGroupAdapter = GroupAdapter()
+        coordinatorGroupAdapter = GroupAdapter().apply {
+            setOnMemberClickListener { member ->
+                showMemberRatingUpdateDialog(member)
+            }
+        }
         binding.coordinatorGroupRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = coordinatorGroupAdapter
@@ -147,6 +154,38 @@ class EventDetailsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventOperationTasksAdapter
         }
+    }
+
+    private fun showMemberRatingUpdateDialog(member: GroupMember) {
+        val values = arrayOf("-1", "0", "1")
+        var selectedIndex = 1
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.adjust_rating_points_for, member.name))
+            .setSingleChoiceItems(values, selectedIndex) { _, which ->
+                selectedIndex = which
+            }
+            .setPositiveButton("OK") { _, _ ->
+                val token = sessionManager.getToken()
+                val selectedValue = values[selectedIndex].toInt()
+                val ratingUpdateLiveData = volunteerViewModel.updateRating(
+                    "Bearer $token",
+                    UpdateRatingDto(member.gid, selectedValue)
+                )
+                ratingUpdateLiveData.observeOnce(viewLifecycleOwner) { ratingUpdateResponse ->
+                    if (ratingUpdateResponse is BaseResponse.Success) {
+                        Snackbar.make(
+                            binding.root,
+                            "Successfully updated rating for ${member.name}!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    } else if (ratingUpdateResponse is BaseResponse.Error) {
+                        showRatingUpdateError(ratingUpdateResponse)
+                    }
+                }
+
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun renderEventDetails() {
@@ -494,6 +533,10 @@ class EventDetailsFragment : Fragment() {
 
     private fun showOperationTasksError(response: BaseResponse.Error) {
         handleError(binding.root, "Failed to get operation tasks. ${response.error?.message}")
+    }
+
+    private fun showRatingUpdateError(response: BaseResponse.Error) {
+        handleError(binding.root, "Failed to update rating. ${response.error?.message}")
     }
 
     override fun onDestroyView() {

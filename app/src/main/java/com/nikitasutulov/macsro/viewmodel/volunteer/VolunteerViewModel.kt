@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.UpdateRatingDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
@@ -54,6 +55,13 @@ class VolunteerViewModel : ApiClientViewModel() {
 
     fun edit(token: String, dto: VolunteerDto) {
         performRequest(_editResponse) { api.edit(token, dto) }
+    }
+
+    fun updateRating(token: String, updateRatingDto: UpdateRatingDto): LiveData<BaseResponse<ResponseBody>> {
+        val responseMutableLiveData = MutableLiveData<BaseResponse<ResponseBody>>()
+        val responseLiveData: LiveData<BaseResponse<ResponseBody>> = responseMutableLiveData
+        performRequest(responseMutableLiveData) { api.updateRating(token, updateRatingDto) }
+        return responseLiveData
     }
 
     fun getByGroupGID(token: String, groupGID: String): LiveData<BaseResponse<List<VolunteerDto>>> {

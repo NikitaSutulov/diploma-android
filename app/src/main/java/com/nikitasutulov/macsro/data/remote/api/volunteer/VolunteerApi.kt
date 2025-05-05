@@ -1,6 +1,7 @@
 package com.nikitasutulov.macsro.data.remote.api.volunteer
 
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.UpdateRatingDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -34,6 +35,12 @@ interface VolunteerApi {
         @Header("Authorization") token: String,
         @Body dto: VolunteerDto
     ): Response<VolunteerDto>
+
+    @PUT("Volunteer/update-rating")
+    suspend fun updateRating(
+        @Header("Authorization") token: String,
+        @Body updateRatingDto: UpdateRatingDto
+    ): Response<ResponseBody>
 
     @GET("Volunteer/by-group/{groupGID}")
     suspend fun getByGroupGID(

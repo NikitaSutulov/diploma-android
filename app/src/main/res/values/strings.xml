@@ -69,4 +69,5 @@
     <string name="rating">Rating</string>
     <string name="prev">Prev</string>
     <string name="next">Next</string>
+    <string name="adjust_rating_points_for">Adjust rating points for %1$s</string>
 </resources>
