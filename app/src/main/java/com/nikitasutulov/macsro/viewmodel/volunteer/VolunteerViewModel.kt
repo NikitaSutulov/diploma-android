@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.RatingPositionDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.UpdateRatingDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import com.nikitasutulov.macsro.data.remote.RetrofitClient
@@ -18,6 +19,9 @@ class VolunteerViewModel : ApiClientViewModel() {
 
     private val _editResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val editResponse: LiveData<BaseResponse<VolunteerDto>> = _editResponse
+
+    private val _getRatingPositionResponse = MutableLiveData<BaseResponse<RatingPositionDto>>()
+    val getRatingPositionResponse: LiveData<BaseResponse<RatingPositionDto>> = _getRatingPositionResponse
 
     private val _getByGIDResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val getByGIDResponse: LiveData<BaseResponse<VolunteerDto>> = _getByGIDResponse
@@ -55,6 +59,10 @@ class VolunteerViewModel : ApiClientViewModel() {
 
     fun edit(token: String, dto: VolunteerDto) {
         performRequest(_editResponse) { api.edit(token, dto) }
+    }
+
+    fun getRatingPosition(token: String, volunteerGID: String) {
+        performRequest(_getRatingPositionResponse) { api.getRatingPosition(token, volunteerGID) }
     }
 
     fun updateRating(token: String, updateRatingDto: UpdateRatingDto): LiveData<BaseResponse<ResponseBody>> {

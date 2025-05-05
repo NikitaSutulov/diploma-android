@@ -7,7 +7,7 @@
     android:paddingVertical="16dp">
 
     <TextView
-        android:id="@+id/volunteer_place_text_view"
+        android:id="@+id/volunteer_position_text_view"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

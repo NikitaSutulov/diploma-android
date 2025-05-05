@@ -4,6 +4,6 @@ data class VolunteerRating(
     val gid: String,
     val name: String,
     val ratingNumber: Int,
-    val place: Int,
+    val position: Int,
     val isOfCurrentUser: Boolean
 )

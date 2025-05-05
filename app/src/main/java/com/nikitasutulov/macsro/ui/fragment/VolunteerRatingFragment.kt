@@ -62,20 +62,30 @@ class VolunteerRatingFragment : Fragment() {
     private fun getUserVolunteerRating() {
         val token = sessionManager.getToken()
         val userGID = args.userGID
+        var volunteerDto: VolunteerDto? = null
         volunteerViewModel.getByUserGID("Bearer $token", userGID)
         volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                val volunteerDto = response.data!!
-                renderUserVolunteerRating(volunteerDto)
+                volunteerDto = response.data!!
+                volunteerViewModel.getRatingPosition("Bearer $token", volunteerDto!!.gid)
+            } else if (response is BaseResponse.Error) {
+                showUserRatingError(response)
+            }
+        }
+        volunteerViewModel.getRatingPositionResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                val position = response.data!!.ratingNumber
+                renderUserVolunteerRating(volunteerDto!!, position)
             } else if (response is BaseResponse.Error) {
                 showUserRatingError(response)
             }
         }
     }
 
-    private fun renderUserVolunteerRating(volunteerDto: VolunteerDto) {
+    private fun renderUserVolunteerRating(volunteerDto: VolunteerDto, position: Int) {
         binding.volunteerNameTextView.text = volunteerDto.name
         binding.volunteerRatingTextView.text = volunteerDto.ratingNumber.toString()
+        binding.volunteerPositionTextView.text = position.toString()
     }
 
     private fun getVolunteersRating(pageDiff: Int) {
@@ -102,7 +112,7 @@ class VolunteerRatingFragment : Fragment() {
                         name = "${it.name} ${it.surname}",
                         ratingNumber = it.ratingNumber,
                         isOfCurrentUser = it.userGID == currentUserGID,
-                        place = PAGE_SIZE * (newPage - 1) + index + 1
+                        position = PAGE_SIZE * (newPage - 1) + index + 1
                     )
                 }
                 volunteerRatingAdapter.submitList(volunteerRatings)

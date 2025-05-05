@@ -30,13 +30,13 @@ class VolunteerRatingAdapter :
         fun bind(volunteerRating: VolunteerRating) {
             binding.volunteerNameTextView.text = volunteerRating.name
             binding.volunteerRatingTextView.text = volunteerRating.ratingNumber.toString()
-            binding.volunteerPlaceTextView.text = volunteerRating.place.toString()
+            binding.volunteerPositionTextView.text = volunteerRating.position.toString()
             if (volunteerRating.isOfCurrentUser) {
-                binding.volunteerPlaceTextView.setTypeface(null, Typeface.BOLD)
+                binding.volunteerPositionTextView.setTypeface(null, Typeface.BOLD)
                 binding.volunteerNameTextView.setTypeface(null, Typeface.BOLD)
                 binding.volunteerRatingTextView.setTypeface(null, Typeface.BOLD)
             } else {
-                binding.volunteerPlaceTextView.setTypeface(null, Typeface.NORMAL)
+                binding.volunteerPositionTextView.setTypeface(null, Typeface.NORMAL)
                 binding.volunteerNameTextView.setTypeface(null, Typeface.NORMAL)
                 binding.volunteerRatingTextView.setTypeface(null, Typeface.NORMAL)
             }

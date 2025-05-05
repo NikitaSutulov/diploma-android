@@ -1,6 +1,7 @@
 package com.nikitasutulov.macsro.data.remote.api.volunteer
 
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.CreateVolunteerDto
+import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.RatingPositionDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.UpdateRatingDto
 import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import okhttp3.ResponseBody
@@ -35,6 +36,12 @@ interface VolunteerApi {
         @Header("Authorization") token: String,
         @Body dto: VolunteerDto
     ): Response<VolunteerDto>
+
+    @GET("Volunteer/get-rating-from-list/{gid}")
+    suspend fun getRatingPosition(
+        @Header("Authorization") token: String,
+        @Path("gid") volunteerGID: String
+    ): Response<RatingPositionDto>
 
     @PUT("Volunteer/update-rating")
     suspend fun updateRating(
