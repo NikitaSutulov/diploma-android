@@ -12,9 +12,6 @@ import okhttp3.ResponseBody
 class VolunteerViewModel : ApiClientViewModel() {
     private val api = RetrofitClient.volunteerApi
 
-    private val _getAllResponse = MutableLiveData<BaseResponse<List<VolunteerDto>>>()
-    val getAllResponse: LiveData<BaseResponse<List<VolunteerDto>>> = _getAllResponse
-
     private val _createResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val createResponse: LiveData<BaseResponse<VolunteerDto>> = _createResponse
 
@@ -30,8 +27,25 @@ class VolunteerViewModel : ApiClientViewModel() {
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
     val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
-    fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
-        performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
+    fun getAll(
+        token: String,
+        pageNumber: Int? = null,
+        pageSize: Int? = null,
+        sortBy: String = "",
+        isDescending: Boolean = false
+    ): LiveData<BaseResponse<List<VolunteerDto>>> {
+        val responseMutableLiveData = MutableLiveData<BaseResponse<List<VolunteerDto>>>()
+        val responseLiveData: LiveData<BaseResponse<List<VolunteerDto>>> = responseMutableLiveData
+        performRequest(responseMutableLiveData) {
+            api.getAll(
+                token,
+                pageNumber,
+                pageSize,
+                sortBy,
+                isDescending
+            )
+        }
+        return responseLiveData
     }
 
     fun create(token: String, createDto: CreateVolunteerDto) {

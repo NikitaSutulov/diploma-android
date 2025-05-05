@@ -77,6 +77,7 @@ class EventsFragment : Fragment() {
         setupFilterButton()
         setupRefreshButton()
         setupSettingsButton()
+        setupRatingButton()
     }
 
     private fun setupLogoutButton() {
@@ -117,6 +118,13 @@ class EventsFragment : Fragment() {
     private fun setupSettingsButton() {
         binding.settingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_eventsFragment_to_settingsFragment)
+        }
+    }
+
+    private fun setupRatingButton() {
+        binding.ratingButton.setOnClickListener {
+            val action = EventsFragmentDirections.actionEventsFragmentToVolunteerRatingFragment(user.id)
+            findNavController().navigate(action)
         }
     }
 
@@ -171,6 +179,7 @@ class EventsFragment : Fragment() {
                             fetchEventsForCoordinator()
                         } else if (user.roles.any { it.name == "Volunteer" }) {
                             binding.settingsButton.visibility = View.VISIBLE
+                            binding.ratingButton.visibility = View.VISIBLE
                             fetchEventsForVolunteer()
                         } else {
                             navigateToVolunteerCreation()

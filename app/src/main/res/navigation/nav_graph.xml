@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_eventsFragment_to_createVolunteerFragment"
             app:destination="@id/createVolunteerFragment" />
+        <action
+            android:id="@+id/action_eventsFragment_to_volunteerRatingFragment"
+            app:destination="@id/volunteerRatingFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -111,5 +114,14 @@
         <argument
             android:name="event"
             app:argType="com.nikitasutulov.macsro.data.ui.Event" />
+    </fragment>
+    <fragment
+        android:id="@+id/volunteerRatingFragment"
+        android:name="com.nikitasutulov.macsro.ui.fragment.VolunteerRatingFragment"
+        android:label="fragment_rating"
+        tools:layout="@layout/fragment_rating" >
+        <argument
+            android:name="userGID"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -64,4 +64,9 @@
     <string name="your_tasks">Your tasks:</string>
     <string name="event_groups">Event Groups:</string>
     <string name="event_tasks">Event tasks:</string>
+    <string name="volunteers_rating">Volunteers Rating:</string>
+    <string name="you">You:</string>
+    <string name="rating">Rating</string>
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
 </resources>

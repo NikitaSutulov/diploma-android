@@ -18,7 +18,9 @@ interface VolunteerApi {
     suspend fun getAll(
         @Header("Authorization") token: String,
         @Query("PageNumber") pageNumber: Int?,
-        @Query("PageSize") pageSize: Int?
+        @Query("PageSize") pageSize: Int?,
+        @Query("SortBy") sortBy: String,
+        @Query("IsDescending") isDescending: Boolean
     ): Response<List<VolunteerDto>>
 
     @POST("Volunteer")
