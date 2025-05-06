@@ -39,6 +39,7 @@ object RetrofitClient {
     val operationTaskApi: OperationTaskApi by lazy { retrofitClient.create(OperationTaskApi::class.java) }
     val operationTaskStatusApi: OperationTaskStatusApi by lazy { retrofitClient.create(OperationTaskStatusApi::class.java) }
     val operationWorkerApi: OperationWorkerApi by lazy { retrofitClient.create(OperationWorkerApi::class.java) }
+    val requestApi: RequestApi by lazy { retrofitClient.create(RequestApi::class.java) }
     val resourcesEventApi: ResourcesEventApi by lazy { retrofitClient.create(ResourcesEventApi::class.java) }
 
     val volunteerApi: VolunteerApi by lazy { retrofitClient.create(VolunteerApi::class.java) }

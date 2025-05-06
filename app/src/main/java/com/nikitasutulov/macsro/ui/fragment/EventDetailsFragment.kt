@@ -300,6 +300,10 @@ class EventDetailsFragment : Fragment() {
                 setOrientationLocked(true)
             })
         }
+        binding.requestsButton.setOnClickListener {
+            val action = EventDetailsFragmentDirections.actionEventDetailsFragmentToRequestsFragment(event)
+            findNavController().navigate(action)
+        }
         renderEventGroupsAndTasks()
     }
 

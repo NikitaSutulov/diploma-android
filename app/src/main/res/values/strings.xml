@@ -70,4 +70,11 @@
     <string name="prev">Prev</string>
     <string name="next">Next</string>
     <string name="adjust_rating_points_for">Adjust rating points for %1$s</string>
+    <string name="your_messaging_with_the_dispatcher">Your messaging with the dispatcher</string>
+    <string name="text">Text:</string>
+    <string name="read">Read</string>
+    <string name="new_read">New/Read</string>
+    <string name="requests">Requests</string>
+    <string name="ingoing_outgoing">Ingoing/Outgoing</string>
+    <string name="mark_as_read">Mark as read</string>
 </resources>
