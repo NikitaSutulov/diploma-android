@@ -31,6 +31,12 @@ class VolunteerRatingAdapter :
             binding.volunteerNameTextView.text = volunteerRating.name
             binding.volunteerRatingTextView.text = volunteerRating.ratingNumber.toString()
             binding.volunteerPositionTextView.text = volunteerRating.position.toString()
+            with(binding.volunteerRatingBar) {
+                min = 0
+                max = 100
+                numStars = 5
+                progress = volunteerRating.ratingNumber
+            }
             if (volunteerRating.isOfCurrentUser) {
                 binding.volunteerPositionTextView.setTypeface(null, Typeface.BOLD)
                 binding.volunteerNameTextView.setTypeface(null, Typeface.BOLD)

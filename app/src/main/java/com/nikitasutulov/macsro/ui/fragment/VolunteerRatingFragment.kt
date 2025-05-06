@@ -83,9 +83,16 @@ class VolunteerRatingFragment : Fragment() {
     }
 
     private fun renderUserVolunteerRating(volunteerDto: VolunteerDto, position: Int) {
-        binding.volunteerNameTextView.text = volunteerDto.name
+        val volunteerNameAndSurname = "${volunteerDto.name} ${volunteerDto.surname}"
+        binding.volunteerNameTextView.text = volunteerNameAndSurname
         binding.volunteerRatingTextView.text = volunteerDto.ratingNumber.toString()
         binding.volunteerPositionTextView.text = position.toString()
+        with(binding.volunteerRatingBar) {
+            min = 0
+            max = 100
+            numStars = 5
+            progress = volunteerDto.ratingNumber
+        }
     }
 
     private fun getVolunteersRating(pageDiff: Int) {
