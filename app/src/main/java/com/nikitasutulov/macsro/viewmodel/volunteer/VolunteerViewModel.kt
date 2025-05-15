@@ -29,9 +29,6 @@ class VolunteerViewModel : ApiClientViewModel() {
     private val _getByUserGIDResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val getByUserGIDResponse: LiveData<BaseResponse<VolunteerDto>> = _getByUserGIDResponse
 
-    private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
-    val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
-
     fun getAll(
         token: String,
         pageNumber: Int? = null,
@@ -85,9 +82,5 @@ class VolunteerViewModel : ApiClientViewModel() {
 
     fun getByUserGID(token: String, userGID: String) {
         performRequest(_getByUserGIDResponse) { api.getByUserGID(token, userGID) }
-    }
-
-    fun deleteByGID(token: String, gid: String) {
-        performRequest(_deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 }

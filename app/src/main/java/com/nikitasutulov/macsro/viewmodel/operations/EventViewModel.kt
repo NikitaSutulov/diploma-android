@@ -3,11 +3,9 @@ package com.nikitasutulov.macsro.viewmodel.operations
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nikitasutulov.macsro.data.dto.BaseResponse
-import com.nikitasutulov.macsro.data.dto.operations.event.CreateEventDto
 import com.nikitasutulov.macsro.data.dto.operations.event.EventDto
 import com.nikitasutulov.macsro.data.remote.RetrofitClient
 import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
-import okhttp3.ResponseBody
 
 class EventViewModel : ApiClientViewModel() {
     private val api = RetrofitClient.eventApi
@@ -15,35 +13,14 @@ class EventViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<EventDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<EventDto>>> = _getAllResponse
 
-    private val _createResponse = MutableLiveData<BaseResponse<EventDto>>()
-    val createResponse: LiveData<BaseResponse<EventDto>> = _createResponse
-
-    private val _editResponse = MutableLiveData<BaseResponse<EventDto>>()
-    val editResponse: LiveData<BaseResponse<EventDto>> = _editResponse
-
     private val _getByGIDResponse = MutableLiveData<BaseResponse<EventDto>>()
     val getByGIDResponse: LiveData<BaseResponse<EventDto>> = _getByGIDResponse
-
-    private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
-    val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
 
     fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 
-    fun create(token: String, createDto: CreateEventDto) {
-        performRequest(_createResponse) { api.create(token, createDto) }
-    }
-
-    fun edit(token: String, dto: EventDto) {
-        performRequest(_editResponse) { api.edit(token, dto) }
-    }
-
     fun getByGID(token: String, gid: String) {
         performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
-    }
-
-    fun deleteByGID(token: String, gid: String) {
-        performRequest( _deleteByGIDResponse) { api.deleteByGID(token, gid) }
     }
 }

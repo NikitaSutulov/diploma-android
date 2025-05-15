@@ -7,7 +7,6 @@ import com.nikitasutulov.macsro.data.dto.volunteer.volunteer.VolunteerDto
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -66,10 +65,4 @@ interface VolunteerApi {
         @Header("Authorization") token: String,
         @Path("userGID") userGID: String
     ): Response<VolunteerDto>
-
-    @DELETE("Volunteer/{gid}")
-    suspend fun deleteByGID(
-        @Header("Authorization") token: String,
-        @Path("gid") gid: String
-    ): Response<ResponseBody>
 }

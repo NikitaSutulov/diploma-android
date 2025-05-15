@@ -3,13 +3,16 @@ package com.nikitasutulov.macsro.ui.fragment
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
@@ -19,9 +22,6 @@ import com.nikitasutulov.macsro.databinding.FragmentAddGoogleAuthenticatorBindin
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
-import androidx.core.graphics.createBitmap
-import com.google.zxing.BarcodeFormat
-import androidx.core.graphics.set
 
 class AddGoogleAuthenticatorFragment : Fragment() {
     private var _binding: FragmentAddGoogleAuthenticatorBinding? = null

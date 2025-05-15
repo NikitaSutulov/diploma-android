@@ -17,9 +17,6 @@ interface AuthApi {
     @POST("Authenticate/register")
     suspend fun register(@Body registerDto: RegisterDto): Response<UserDto>
 
-//    @POST("Token/login")
-//    suspend fun login(@Body loginDto: LoginDto): Response<TokenInfoDto>
-
     @POST("Authenticate/2fa/login")
     suspend fun login(@Body loginDto: LoginDto): Response<LoginResponseDto>
 

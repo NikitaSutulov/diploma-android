@@ -1,16 +1,9 @@
 package com.nikitasutulov.macsro.data.remote.api.utils
 
-import com.nikitasutulov.macsro.data.dto.utils.measurementunit.CreateMeasurementUnitDto
 import com.nikitasutulov.macsro.data.dto.utils.measurementunit.MeasurementUnitDto
-import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MeasurementUnitApi {
@@ -20,28 +13,4 @@ interface MeasurementUnitApi {
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?
     ): Response<List<MeasurementUnitDto>>
-
-    @POST("MeasurementUnit")
-    suspend fun create(
-        @Header("Authorization") token: String,
-        @Body createDto: CreateMeasurementUnitDto
-    ): Response<MeasurementUnitDto>
-
-    @PUT("MeasurementUnit")
-    suspend fun edit(
-        @Header("Authorization") token: String,
-        @Body dto: MeasurementUnitDto
-    ): Response<MeasurementUnitDto>
-
-    @GET("MeasurementUnit/{gid}")
-    suspend fun getByGID(
-        @Header("Authorization") token: String,
-        @Path("gid") gid: String
-    ): Response<MeasurementUnitDto>
-
-    @DELETE("MeasurementUnit/{gid}")
-    suspend fun deleteByGID(
-        @Header("Authorization") token: String,
-        @Path("gid") gid: String
-    ): Response<ResponseBody>
 }

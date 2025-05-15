@@ -1,9 +1,20 @@
 package com.nikitasutulov.macsro.data.remote
 
-import com.nikitasutulov.macsro.data.remote.api.auth.*
-import com.nikitasutulov.macsro.data.remote.api.utils.*
-import com.nikitasutulov.macsro.data.remote.api.operations.*
+import com.nikitasutulov.macsro.data.remote.api.auth.AuthApi
+import com.nikitasutulov.macsro.data.remote.api.auth.UserApi
+import com.nikitasutulov.macsro.data.remote.api.operations.EventApi
+import com.nikitasutulov.macsro.data.remote.api.operations.EventStatusApi
+import com.nikitasutulov.macsro.data.remote.api.operations.EventTypeApi
+import com.nikitasutulov.macsro.data.remote.api.operations.GroupApi
+import com.nikitasutulov.macsro.data.remote.api.operations.OperationTaskApi
+import com.nikitasutulov.macsro.data.remote.api.operations.OperationTaskStatusApi
+import com.nikitasutulov.macsro.data.remote.api.operations.OperationWorkerApi
+import com.nikitasutulov.macsro.data.remote.api.operations.RequestApi
+import com.nikitasutulov.macsro.data.remote.api.operations.ResourcesEventApi
 import com.nikitasutulov.macsro.data.remote.api.qr.QrCodeApi
+import com.nikitasutulov.macsro.data.remote.api.utils.DistrictApi
+import com.nikitasutulov.macsro.data.remote.api.utils.MeasurementUnitApi
+import com.nikitasutulov.macsro.data.remote.api.utils.ResourceApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteerApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersDistrictsApi
 import com.nikitasutulov.macsro.data.remote.api.volunteer.VolunteersEventsApi
@@ -24,13 +35,11 @@ object RetrofitClient {
     }
 
     val authApi: AuthApi by lazy { retrofitClient.create(AuthApi::class.java) }
-    val roleApi: RoleApi by lazy { retrofitClient.create(RoleApi::class.java) }
     val userApi: UserApi by lazy { retrofitClient.create(UserApi::class.java) }
 
     val districtApi: DistrictApi by lazy { retrofitClient.create(DistrictApi::class.java) }
     val measurementUnitApi: MeasurementUnitApi by lazy { retrofitClient.create(MeasurementUnitApi::class.java) }
     val resourceApi: ResourceApi by lazy { retrofitClient.create(ResourceApi::class.java) }
-    val resourceMeasurementUnitApi: ResourceMeasurementUnitApi by lazy { retrofitClient.create(ResourceMeasurementUnitApi::class.java) }
 
     val eventApi: EventApi by lazy { retrofitClient.create(EventApi::class.java) }
     val eventStatusApi: EventStatusApi by lazy { retrofitClient.create(EventStatusApi::class.java) }

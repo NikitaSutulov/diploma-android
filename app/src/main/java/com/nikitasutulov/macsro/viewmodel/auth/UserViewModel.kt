@@ -11,24 +11,14 @@ import com.nikitasutulov.macsro.viewmodel.ApiClientViewModel
 class UserViewModel : ApiClientViewModel() {
     private val api = RetrofitClient.userApi
 
-    private val _getAllResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
-    val getAllResponse: LiveData<BaseResponse<List<UserDto>>> = _getAllResponse
-
     private val _getWithUsernameResponse = MutableLiveData<BaseResponse<ExistsDto>>()
     val getWithUsernameResponse: LiveData<BaseResponse<ExistsDto>> = _getWithUsernameResponse
 
     private val _getWithEmailResponse = MutableLiveData<BaseResponse<ExistsDto>>()
     val getWithEmailResponse: LiveData<BaseResponse<ExistsDto>> = _getWithEmailResponse
 
-    private val _getWithRoleResponse = MutableLiveData<BaseResponse<List<UserDto>>>()
-    val getWithRoleResponse: LiveData<BaseResponse<List<UserDto>>> = _getWithRoleResponse
-
     private val _editResponse = MutableLiveData<BaseResponse<UserDto>>()
     val editResponse: LiveData<BaseResponse<UserDto>> = _editResponse
-
-    fun getAll(token: String) {
-        performRequest(_getAllResponse) { api.getAllUsers(token) }
-    }
 
     fun getWithUsername(username: String) {
         performRequest(_getWithUsernameResponse) { api.getUsersWithUsername(username) }
@@ -36,10 +26,6 @@ class UserViewModel : ApiClientViewModel() {
 
     fun getWithEmail(email: String) {
         performRequest(_getWithEmailResponse) { api.getUsersWithEmail(email) }
-    }
-
-    fun getWithRole(token: String, roleName: String) {
-        performRequest(_getWithRoleResponse) { api.getUsersWithRole(token, roleName) }
     }
 
     fun edit(token: String, userDto: UserDto) {
