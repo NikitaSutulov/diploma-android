@@ -239,7 +239,7 @@ class EventDetailsFragment : Fragment() {
         resourcesEventViewModel.getByEventGIDResponse.observeOnce(viewLifecycleOwner) { resourcesEventsResponse ->
             if (resourcesEventsResponse is BaseResponse.Success) {
                 resourcesEventDtos = resourcesEventsResponse.data!!
-                measurementUnitViewModel.getAll("Bearer $token", null, null)
+                measurementUnitViewModel.getAll("Bearer $token")
             } else if (resourcesEventsResponse is BaseResponse.Error) {
                 showEventResourcesError(resourcesEventsResponse)
             }
@@ -247,7 +247,7 @@ class EventDetailsFragment : Fragment() {
         measurementUnitViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { measurementUnitsResponse ->
             if (measurementUnitsResponse is BaseResponse.Success) {
                 measurementUnitDtos = measurementUnitsResponse.data!!
-                resourceViewModel.getAll("Bearer $token", null, null)
+                resourceViewModel.getAll("Bearer $token")
             } else if (measurementUnitsResponse is BaseResponse.Error) {
                 showEventResourcesError(measurementUnitsResponse)
             }
@@ -354,7 +354,7 @@ class EventDetailsFragment : Fragment() {
     private fun renderEventOperationTasks(groupDtos: List<GroupDto>) {
         val token = sessionManager.getToken()
         var operationTaskStatuses: List<OperationTaskStatusDto> = listOf()
-        operationTaskStatusViewModel.getAll("Bearer $token", null, null)
+        operationTaskStatusViewModel.getAll("Bearer $token")
         operationTaskStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { operationTaskStatusesResponse ->
             if (operationTaskStatusesResponse is BaseResponse.Success) {
                 operationTaskStatuses = operationTaskStatusesResponse.data!!
@@ -455,7 +455,7 @@ class EventDetailsFragment : Fragment() {
     private fun renderGroupOperationTasks(groupDto: GroupDto) {
         val token = sessionManager.getToken()
         var operationTaskStatuses: List<OperationTaskStatusDto> = listOf()
-        operationTaskStatusViewModel.getAll("Bearer $token", null, null)
+        operationTaskStatusViewModel.getAll("Bearer $token")
         operationTaskStatusViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { operationTaskStatusesResponse ->
             if (operationTaskStatusesResponse is BaseResponse.Success) {
                 operationTaskStatuses = operationTaskStatusesResponse.data!!

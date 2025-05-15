@@ -16,7 +16,7 @@ class EventStatusViewModel : ApiClientViewModel() {
     private val _getByGIDResponse = MutableLiveData<BaseResponse<EventStatusDto>>()
     val getByGIDResponse: LiveData<BaseResponse<EventStatusDto>> = _getByGIDResponse
 
-    fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
+    fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 

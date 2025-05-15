@@ -152,11 +152,11 @@ class EventsFragment : Fragment() {
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
                 user = validationResponse.data!!.user!!
-                eventTypeViewModel.getAll("Bearer $token", null, null)
+                eventTypeViewModel.getAll("Bearer $token")
                 eventTypeViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
                     if (response is BaseResponse.Success) {
                         eventTypes = response.data!!.associateBy { it.gid }
-                        eventStatusViewModel.getAll("Bearer $token", null, null)
+                        eventStatusViewModel.getAll("Bearer $token")
                     } else if (response is BaseResponse.Error) {
                         showFetchEventsError(response)
                     }
@@ -166,7 +166,7 @@ class EventsFragment : Fragment() {
                         eventStatuses = response.data!!
                             .filter { it.name in usefulEventStatusesNames }
                             .associateBy { it.gid }
-                        districtViewModel.getAll("Bearer $token", null, null)
+                        districtViewModel.getAll("Bearer $token")
                     } else if (response is BaseResponse.Error) {
                         showFetchEventsError(response)
                     }
@@ -210,7 +210,7 @@ class EventsFragment : Fragment() {
         operationWorkerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 operationWorkerGID = response.data!!.gid
-                eventViewModel.getAll("Bearer $token", null, null)
+                eventViewModel.getAll("Bearer $token")
             } else if (response is BaseResponse.Error) {
                 showFetchEventsError(response)
             }
@@ -228,7 +228,7 @@ class EventsFragment : Fragment() {
     }
 
     private fun fetchEventsForVolunteer() {
-        eventViewModel.getAll("Bearer $token", null, null)
+        eventViewModel.getAll("Bearer $token")
         eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 val eventsOfVolunteer= response.data!!

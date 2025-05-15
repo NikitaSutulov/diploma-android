@@ -13,7 +13,7 @@ class ResourceViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<ResourceDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<ResourceDto>>> = _getAllResponse
 
-    fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
+    fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 }

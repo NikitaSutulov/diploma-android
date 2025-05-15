@@ -13,7 +13,7 @@ class MeasurementUnitViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<MeasurementUnitDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<MeasurementUnitDto>>> = _getAllResponse
 
-    fun getAll(token: String, pageNumber: Int?, pageSize: Int?) {
+    fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 }
