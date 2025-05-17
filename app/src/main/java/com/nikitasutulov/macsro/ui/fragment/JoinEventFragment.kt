@@ -77,7 +77,6 @@ class JoinEventFragment : Fragment() {
 
     private fun setupDoneButton() {
         binding.doneButton.setOnClickListener {
-//            findNavController().navigateUp()
             val action = EventsFragmentDirections.actionEventsFragmentToEventDetailsFragment(args.event)
             with(findNavController()) {
                 popBackStack(R.id.eventDetailsFragment, true)

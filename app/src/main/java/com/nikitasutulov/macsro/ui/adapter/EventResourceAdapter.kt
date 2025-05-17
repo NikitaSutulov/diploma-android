@@ -30,7 +30,6 @@ class EventResourceAdapter :
             binding.eventResourceNameTextView.text = eventResource.resourceName
             val quantityWithMeasurementUnit =
                 "${eventResource.availableQuantity}/${eventResource.requiredQuantity} ${eventResource.measurementUnitName}"
-//                "${eventResource.availableQuantity}/${eventResource.requiredQuantity}"
             binding.eventResourceQuantityTextView.text = quantityWithMeasurementUnit
         }
     }
