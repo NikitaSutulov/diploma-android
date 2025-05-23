@@ -31,6 +31,7 @@ import com.nikitasutulov.macsro.viewmodel.operations.EventTypeViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.EventViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.OperationWorkerViewModel
 import com.nikitasutulov.macsro.viewmodel.utils.DistrictViewModel
+import androidx.core.content.edit
 
 class EventsFragment : Fragment() {
     private var _binding: FragmentEventsBinding? = null
@@ -71,6 +72,7 @@ class EventsFragment : Fragment() {
     private fun checkAuthState() {
         if (!sessionManager.isLoggedIn()) {
             navigateToLogin()
+            FirebaseApp.getInstance().delete()
         }
     }
 
@@ -199,7 +201,12 @@ class EventsFragment : Fragment() {
     }
 
     private fun saveCurrentUserId(id: String) {
-        requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE).edit().putString("currentUserId", id).apply()
+        requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE).edit {
+            putString(
+                "currentUserId",
+                id
+            )
+        }
     }
 
     private fun setupSpinners() {
