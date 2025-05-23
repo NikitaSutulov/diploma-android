@@ -65,6 +65,5 @@ class ChatMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.d("FCM", "FCM token: $token")
-        // Send token to your server if needed
     }
 }
