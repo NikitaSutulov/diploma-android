@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.operations.request.CreateRequestDto
 import com.nikitasutulov.macsro.data.dto.operations.request.RequestPaginationQueryDto
@@ -101,9 +102,11 @@ class RequestsFragment : Fragment() {
                 val requestDtos = response.data!!.items.sortedBy { it.createdAt }
                 val requests = requestDtos.map {
                     val fromText =
-                        if (it.from == event.dispatcherGID) "From: Dispatcher" else "From: Coordinator"
+                        if (it.from == event.dispatcherGID) getString(R.string.from_dispatcher)
+                        else getString(R.string.from_coordinator)
                     val toText =
-                        if (it.to == event.dispatcherGID) "To: Dispatcher" else "To: Coordinator"
+                        if (it.to == event.dispatcherGID) getString(R.string.to_dispatcher)
+                        else getString(R.string.to_coordinator)
                     Request(
                         gid = it.gid,
                         from = fromText,

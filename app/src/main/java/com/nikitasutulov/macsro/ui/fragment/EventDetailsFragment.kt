@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
@@ -15,10 +16,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
+import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
 import com.nikitasutulov.macsro.data.dto.operations.group.GroupDto
 import com.nikitasutulov.macsro.data.dto.operations.operationtaskstatus.OperationTaskStatusDto
 import com.nikitasutulov.macsro.data.dto.operations.resourcesevent.ResourcesEventDto
@@ -56,6 +61,7 @@ class EventDetailsFragment : Fragment() {
     private var _binding: FragmentEventDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: EventDetailsFragmentArgs by navArgs()
+    private lateinit var user: UserDto
     private lateinit var event: Event
     private lateinit var sessionManager: SessionManager
     private lateinit var authViewModel: AuthViewModel
@@ -88,7 +94,7 @@ class EventDetailsFragment : Fragment() {
                 } catch (e: Exception) {
                     Snackbar.make(
                         binding.root,
-                        "Invalid QR code",
+                        getString(R.string.invalid_qr_code),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
@@ -195,7 +201,7 @@ class EventDetailsFragment : Fragment() {
         authViewModel.validateToken("Bearer $token")
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
-                val user = validationResponse.data!!.user!!
+                user = validationResponse.data!!.user!!
                 val roles = user.roles
                 if (roles.any { it.name == "Coordinator" }) {
                     renderCoordinatorScreen()
@@ -304,6 +310,9 @@ class EventDetailsFragment : Fragment() {
             val action = EventDetailsFragmentDirections.actionEventDetailsFragmentToRequestsFragment(event)
             findNavController().navigate(action)
         }
+        val roomId = "room_${event.gid}_${event.coordinatorGID}"
+        val roomName = "${event.name} Coordination"
+        setupCoordinationChat(roomId, roomName, binding.coordinatorCoordinationChatButton)
         renderEventGroupsAndTasks()
     }
 
@@ -418,9 +427,15 @@ class EventDetailsFragment : Fragment() {
                     renderGroupOperationTasks(volunteerGroupDto!!)
                     isVolunteerLeader = volunteerGroupDto!!.leaderGID == volunteerGID
                     binding.groupChatButton.visibility = View.VISIBLE
+                    var roomId = "room_${event.gid}_${volunteerGroupGID}"
+                    var roomName = "${event.name} ${volunteerGroupDto!!.name}"
+                    setupGroupChat(roomId, roomName)
                     binding.groupLeaderCoordinationChatButton.visibility = View.GONE
                     if (isVolunteerLeader) {
                         binding.groupLeaderCoordinationChatButton.visibility = View.VISIBLE
+                        roomId = "room_${event.gid}_${event.coordinatorGID}"
+                        roomName = "${event.name} ${getString(R.string.coordination)}"
+                        setupCoordinationChat(roomId, roomName, binding.groupLeaderCoordinationChatButton)
                     }
                     val groupVolunteersLiveData = volunteerViewModel.getByGroupGID("Bearer $token", volunteerGroupGID)
                     groupVolunteersLiveData.observeOnce(viewLifecycleOwner) { volunteersInGroupResponse ->
@@ -484,6 +499,66 @@ class EventDetailsFragment : Fragment() {
         }
     }
 
+    private fun setupGroupChat(roomId: String, roomName: String) {
+        createChatRoomIfNotExists(
+            roomId,
+            roomName,
+            {
+                FirebaseMessaging.getInstance().subscribeToTopic(roomId)
+                binding.groupChatButton.setOnClickListener {
+                    val action = EventDetailsFragmentDirections.actionEventDetailsFragmentToChatFragment(roomId, user.id, roomName, user.name)
+                    findNavController().navigate(action)
+                }
+            },
+            { errorMessage ->
+                handleError(binding.root, errorMessage)
+            }
+        )
+    }
+
+    private fun setupCoordinationChat(roomId: String, roomName: String, button: Button) {
+        createChatRoomIfNotExists(
+            roomId,
+            roomName,
+            {
+                FirebaseMessaging.getInstance().subscribeToTopic(roomId)
+                button.setOnClickListener {
+                    val action = EventDetailsFragmentDirections.actionEventDetailsFragmentToChatFragment(roomId, user.id, roomName, user.name)
+                    findNavController().navigate(action)
+                }
+            },
+            { errorMessage ->
+                handleError(binding.root, errorMessage)
+            }
+        )
+    }
+
+    private fun createChatRoomIfNotExists(
+        id: String,
+        name: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("chatRooms")
+            .whereEqualTo("name", name)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    val newRoom = hashMapOf(
+                        "name" to name,
+                        "createdAt" to FieldValue.serverTimestamp(),
+                    )
+                    db.collection("chatRooms").document(id).set(newRoom)
+                        .addOnSuccessListener { onSuccess() }
+                        .addOnFailureListener { e -> onFailure(e.message ?: "Unknown error") }
+                } else {
+                    onSuccess()
+                }
+            }
+            .addOnFailureListener { e -> onFailure(e.message ?: "Unknown error") }
+    }
+
     private fun renderNoGroupLayout() {
         binding.noGroupLayout.visibility = View.VISIBLE
     }
@@ -516,7 +591,7 @@ class EventDetailsFragment : Fragment() {
             if (response is BaseResponse.Success) {
                 Snackbar.make(
                     binding.root,
-                    "Volunteer has been added to the event successfully!",
+                    getString(R.string.volunteer_has_been_added_to_the_event_successfully),
                     Snackbar.LENGTH_SHORT
                 ).show()
             }

@@ -1,5 +1,6 @@
 package com.nikitasutulov.macsro.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseApp
 import com.nikitasutulov.macsro.R
 import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.user.UserDto
@@ -87,6 +89,7 @@ class EventsFragment : Fragment() {
                 .setMessage("Do you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
                     sessionManager.clearSession()
+                    FirebaseApp.getInstance().delete()
                     navigateToLogin()
                 }
                 .setNegativeButton("No", null)
@@ -152,6 +155,7 @@ class EventsFragment : Fragment() {
         authViewModel.tokenValidationResponse.observeOnce(viewLifecycleOwner) { validationResponse ->
             if (validationResponse is BaseResponse.Success) {
                 user = validationResponse.data!!.user!!
+                saveCurrentUserId(user.id)
                 eventTypeViewModel.getAll("Bearer $token")
                 eventTypeViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
                     if (response is BaseResponse.Success) {
@@ -192,6 +196,10 @@ class EventsFragment : Fragment() {
                 showFetchEventsError(validationResponse)
             }
         }
+    }
+
+    private fun saveCurrentUserId(id: String) {
+        requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE).edit().putString("currentUserId", id).apply()
     }
 
     private fun setupSpinners() {

@@ -77,4 +77,13 @@
     <string name="requests">Requests</string>
     <string name="ingoing_outgoing">Ingoing/Outgoing</string>
     <string name="mark_as_read">Mark as read</string>
+    <string name="invalid_qr_code">Invalid QR code</string>
+    <string name="volunteer_has_been_added_to_the_event_successfully">Volunteer has been added to the event successfully!</string>
+    <string name="coordination">Coordination</string>
+    <string name="from_dispatcher">From: Dispatcher</string>
+    <string name="from_coordinator">From: Coordinator</string>
+    <string name="to_dispatcher">To: Dispatcher</string>
+    <string name="to_coordinator">To: Coordinator</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
 </resources>

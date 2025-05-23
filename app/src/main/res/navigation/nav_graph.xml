@@ -74,6 +74,9 @@
         <action
             android:id="@+id/action_eventDetailsFragment_to_requestsFragment"
             app:destination="@id/requestsFragment" />
+        <action
+            android:id="@+id/action_eventDetailsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -135,5 +138,22 @@
         <argument
             android:name="event"
             app:argType="com.nikitasutulov.macsro.data.ui.Event" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.nikitasutulov.macsro.ui.fragment.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="roomId"
+            app:argType="string" />
+        <argument
+            android:name="userGID"
+            app:argType="string" />
+        <argument
+            android:name="roomName"
+            app:argType="string" />
+        <argument android:name="username"
+            app:argType="string" />
     </fragment>
 </navigation>
