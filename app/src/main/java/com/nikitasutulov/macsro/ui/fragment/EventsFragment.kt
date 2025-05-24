@@ -32,6 +32,13 @@ import com.nikitasutulov.macsro.viewmodel.operations.EventViewModel
 import com.nikitasutulov.macsro.viewmodel.operations.OperationWorkerViewModel
 import com.nikitasutulov.macsro.viewmodel.utils.DistrictViewModel
 import androidx.core.content.edit
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.nikitasutulov.macsro.viewmodel.volunteer.VolunteerViewModel
+import com.nikitasutulov.macsro.worker.EventCheckWorker
+import java.util.concurrent.TimeUnit
 
 class EventsFragment : Fragment() {
     private var _binding: FragmentEventsBinding? = null
@@ -44,6 +51,7 @@ class EventsFragment : Fragment() {
     private lateinit var eventStatusViewModel: EventStatusViewModel
     private lateinit var districtViewModel: DistrictViewModel
     private lateinit var operationWorkerViewModel: OperationWorkerViewModel
+    private lateinit var volunteerViewModel: VolunteerViewModel
     private lateinit var events: List<Event>
     private lateinit var eventTypes: Map<String, EventTypeDto>
     private lateinit var eventStatuses: Map<String, EventStatusDto>
@@ -51,6 +59,7 @@ class EventsFragment : Fragment() {
     private lateinit var user: UserDto
     private var token: String? = null
     private val usefulEventStatusesNames = listOf("Активна", "Завершена")
+    private val activeEventStatusName = usefulEventStatusesNames[0]
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -148,6 +157,7 @@ class EventsFragment : Fragment() {
         eventStatusViewModel = ViewModelProvider(this)[EventStatusViewModel::class.java]
         districtViewModel = ViewModelProvider(this)[DistrictViewModel::class.java]
         operationWorkerViewModel = ViewModelProvider(this)[OperationWorkerViewModel::class.java]
+        volunteerViewModel = ViewModelProvider(this)[VolunteerViewModel::class.java]
     }
 
     private fun fetchEvents() {
@@ -249,6 +259,7 @@ class EventsFragment : Fragment() {
                 val eventsOfVolunteer= response.data!!
                     .filter { eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
                 mapEvents(eventsOfVolunteer)
+                setupEventNotifications()
                 eventAdapter.submitList(events)
             } else if (response is BaseResponse.Error) {
                 showFetchEventsError(response)
@@ -285,6 +296,40 @@ class EventsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventAdapter
         }
+    }
+
+    private fun setupEventNotifications() {
+        val activeEventStatusGID = eventStatuses.values.find { it.name == activeEventStatusName }!!.gid
+        volunteerViewModel.getByUserGID("Bearer $token", user.id)
+        volunteerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { response ->
+            if (response is BaseResponse.Success) {
+                val volunteerGID = response.data!!.gid
+                launchEventCheckWorker(activeEventStatusGID, volunteerGID)
+            } else if (response is BaseResponse.Error) {
+                showFetchEventsError(response)
+            }
+        }
+    }
+
+    private fun launchEventCheckWorker(
+        eventStatusGID: String,
+        volunteerGID: String
+    ) {
+        val inputData = workDataOf(
+            "eventStatusGID" to eventStatusGID,
+            "volunteerGID" to volunteerGID
+        )
+
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<EventCheckWorker>(15, TimeUnit.MINUTES)
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance(requireContext())
+            .enqueueUniquePeriodicWork(
+                "EventCheckWorker",
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                periodicWorkRequest
+            )
     }
 
     override fun onDestroyView() {

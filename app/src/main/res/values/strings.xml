@@ -86,4 +86,6 @@
     <string name="to_coordinator">To: Coordinator</string>
     <string name="message">Message</string>
     <string name="send">Send</string>
+    <string name="new_events">Нові операції</string>
+    <string name="new_events_available">Доступно %1$d нових операцій.</string>
 </resources>

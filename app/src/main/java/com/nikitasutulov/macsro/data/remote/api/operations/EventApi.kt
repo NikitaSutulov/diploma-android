@@ -1,9 +1,13 @@
 package com.nikitasutulov.macsro.data.remote.api.operations
 
 import com.nikitasutulov.macsro.data.dto.operations.event.EventDto
+import com.nikitasutulov.macsro.data.dto.operations.event.EventPaginationQueryDto
+import com.nikitasutulov.macsro.data.dto.operations.event.EventsListResultDto
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -20,4 +24,10 @@ interface EventApi {
         @Header("Authorization") token: String,
         @Path("gid") gid: String
     ): Response<EventDto>
+
+    @POST("Event/sort")
+    suspend fun getSorted(
+        @Header("Authorization") token: String,
+        @Body paginationQueryDto: EventPaginationQueryDto
+    ): Response<EventsListResultDto>
 }

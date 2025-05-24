@@ -9,5 +9,6 @@ data class EventDto(
     val eventStatusGID: String,
     val districtGID: String,
     val coordinatorGID: String,
-    val dispatcherGID: String
+    val dispatcherGID: String,
+    val createdAt: String
 )
