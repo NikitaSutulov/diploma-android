@@ -44,7 +44,7 @@
     <string name="get_notifications_for_events_in_districts">Отримувати сповіщення про операції в районах:</string>
     <string name="save">Зберегти</string>
     <string name="i_have_saved_the_code">Я зберіг код</string>
-    <string name="enter_ga_code_text">Введіть цей код в Google Authenticator (або проскануйте QR-код нагорі):</string>
+    <string name="enter_ga_code_text">Введіть цей код в Google Authenticator (або проскануйте чи натисніть на QR-код нагорі):</string>
     <string name="ga_warning">УВАГА: Ви втратите доступ до цього облікового запису, якщо загубите Google Authenticator!</string>
     <string name="qr_code">QR-код</string>
     <string name="enter_google_authenticator_code">Введіть код з Google Authenticator</string>
@@ -87,4 +87,10 @@
     <string name="send">Надіслати</string>
     <string name="new_events">Нові операції</string>
     <string name="new_events_available">Доступно %1$d нових операцій.</string>
+    <string name="logout">Вийти</string>
+    <string name="do_you_want_to_log_out">Ви хочете вийти з облікового запису?</string>
+    <string name="yes">Так</string>
+    <string name="no">Ні</string>
+    <string name="exit_the_app">Вийти з застосунку</string>
+    <string name="do_you_want_to_exit">Ви хочете вийти з застосунку?</string>
 </resources>

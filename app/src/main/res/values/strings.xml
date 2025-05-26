@@ -43,7 +43,7 @@
     <string name="get_notifications_for_events_in_districts">Get notifications for events in districts:</string>
     <string name="save">Save</string>
     <string name="i_have_saved_the_code">I have saved the code</string>
-    <string name="enter_ga_code_text">Enter this code into Google Authenticator (or scan the QR Code above):</string>
+    <string name="enter_ga_code_text">Enter this code into Google Authenticator (or scan or click on the QR Code above):</string>
     <string name="ga_warning">WARNING: You will lose access to the account if you lose your Google Authenticator!</string>
     <string name="qr_code">QR Code</string>
     <string name="enter_google_authenticator_code">Enter Google Authenticator code</string>
@@ -87,4 +87,10 @@
     <string name="send">Send</string>
     <string name="new_events">New events</string>
     <string name="new_events_available">%1$d new events available.</string>
+    <string name="logout">Logout</string>
+    <string name="do_you_want_to_log_out">Do you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="exit_the_app">Exit the app</string>
+    <string name="do_you_want_to_exit">Do you want to exit?</string>
 </resources>

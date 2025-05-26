@@ -1,5 +1,6 @@
 package com.nikitasutulov.macsro.ui.fragment
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.nikitasutulov.macsro.databinding.FragmentAddGoogleAuthenticatorBindin
 import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
+import androidx.core.net.toUri
 
 class AddGoogleAuthenticatorFragment : Fragment() {
     private var _binding: FragmentAddGoogleAuthenticatorBinding? = null
@@ -79,6 +81,10 @@ class AddGoogleAuthenticatorFragment : Fragment() {
             }
         }
         binding.qrCodeImageView.setImageBitmap(bitmap)
+        binding.qrCodeImageView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, uri.toUri())
+            startActivity(intent)
+        }
     }
 
     private fun getOtpAuthUri(key: String, username: String): String {

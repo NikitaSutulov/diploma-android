@@ -83,6 +83,7 @@ class EventsFragment : Fragment() {
             navigateToLogin()
             FirebaseApp.getInstance().delete()
         }
+        FirebaseApp.initializeApp(requireContext())
     }
 
     private fun setupListeners() {
@@ -96,14 +97,14 @@ class EventsFragment : Fragment() {
     private fun setupLogoutButton() {
         binding.logoutButton.setOnClickListener {
             AlertDialog.Builder(requireActivity())
-                .setTitle("Logout")
-                .setMessage("Do you want to log out?")
-                .setPositiveButton("Yes") { _, _ ->
+                .setTitle(getString(R.string.logout))
+                .setMessage(getString(R.string.do_you_want_to_log_out))
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
                     sessionManager.clearSession()
                     FirebaseApp.getInstance().delete()
                     navigateToLogin()
                 }
-                .setNegativeButton("No", null)
+                .setNegativeButton(getString(R.string.no), null)
                 .create()
                 .show()
         }
