@@ -1,40 +1,82 @@
 package com.nikitasutulov.macsro.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nikitasutulov.macsro.data.ui.ChatMessage
+import com.nikitasutulov.macsro.databinding.MessageCardBinding
+import com.nikitasutulov.macsro.databinding.OwnMessageCardBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ChatMessageAdapter(private val currentUserId: String) :
-    ListAdapter<ChatMessage, ChatMessageAdapter.ViewHolder>(DIFF) {
+    ListAdapter<ChatMessage, RecyclerView.ViewHolder>(ChatMessageDiffCallback()) {
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView = view.findViewById(android.R.id.text1)
+    companion object {
+        private const val VIEW_TYPE_OWN = 0
+        private const val VIEW_TYPE_OTHER = 1
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(android.R.layout.simple_list_item_1, parent, false)
-        return ViewHolder(view)
+    override fun getItemViewType(position: Int): Int {
+        return if (getItem(position).senderGID == currentUserId) VIEW_TYPE_OWN else VIEW_TYPE_OTHER
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val message = getItem(position)
-        holder.textView.text = if (message.senderGID == currentUserId) {
-            "[${message.timestamp?.toDate()}]\nYou: ${message.text}\n"
-        } else {
-            "[${message.timestamp?.toDate()}]\n${message.senderUsername}: ${message.text}\n"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_OWN -> {
+                val binding = OwnMessageCardBinding.inflate(inflater, parent, false)
+                OwnMessageViewHolder(binding)
+            }
+            else -> {
+                val binding = MessageCardBinding.inflate(inflater, parent, false)
+                OtherMessageViewHolder(binding)
+            }
         }
     }
 
-    companion object {
-        val DIFF = object : DiffUtil.ItemCallback<ChatMessage>() {
-            override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage) = false
-            override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage) = false
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val message = getItem(position)
+        when (holder) {
+            is OwnMessageViewHolder -> holder.bind(message)
+            is OtherMessageViewHolder -> holder.bind(message)
+        }
+    }
+
+    inner class OwnMessageViewHolder(
+        private val binding: OwnMessageCardBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(message: ChatMessage) {
+            binding.messageTextView.text = message.text
+            binding.timestampTextView.text = message.timestamp?.toDate()?.let {
+                SimpleDateFormat("hh:mm a", Locale.getDefault()).format(it)
+            }
+        }
+    }
+
+    inner class OtherMessageViewHolder(
+        private val binding: MessageCardBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(message: ChatMessage) {
+            binding.senderTextView.text = message.senderUsername
+            binding.messageTextView.text = message.text
+            binding.timestampTextView.text = message.timestamp?.toDate()?.let {
+                SimpleDateFormat("hh:mm a", Locale.getDefault()).format(it)
+            }
+        }
+    }
+
+    class ChatMessageDiffCallback : DiffUtil.ItemCallback<ChatMessage>() {
+        override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
+            return oldItem == newItem
         }
     }
 }
