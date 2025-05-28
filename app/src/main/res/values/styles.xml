@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomHeadline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">#2C2C54</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomBody" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">#444444</item>
+    </style>
+
+    <style name="FancyButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">#6C63FF</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="FancySwitch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="android:thumbTint">#6C63FF</item>
+        <item name="android:trackTint">#D1D1F7</item>
+    </style>
+
+    <style name="FancySpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:popupBackground">#FFFFFF</item>
+        <item name="android:backgroundTint">#E0E0FF</item>
+        <item name="android:textColor">#2C2C54</item>
+    </style>
+
+    <style name="FancyCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">6dp</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
+    </style>
+
+</resources>

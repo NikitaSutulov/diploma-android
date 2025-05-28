@@ -1,8 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MACSRO" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#6C63FF</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#E0E0FF</item>
+        <item name="colorOnPrimaryContainer">#2C2C54</item>
+
+        <item name="colorSecondary">#FF6584</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+
+        <item name="android:windowBackground">#F8F8FF</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#333333</item>
+
+        <item name="textAppearanceHeadlineMedium">@style/CustomHeadline</item>
+        <item name="textAppearanceBodyMedium">@style/CustomBody</item>
+
+        <item name="switchStyle">@style/FancySwitch</item>
+        <item name="spinnerStyle">@style/FancySpinner</item>
+        <item name="buttonStyle">@style/FancyButton</item>
+        <item name="cardViewStyle">@style/FancyCardView</item>
     </style>
 
     <style name="Theme.MACSRO" parent="Base.Theme.MACSRO" />

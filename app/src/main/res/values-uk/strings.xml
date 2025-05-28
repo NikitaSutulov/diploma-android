@@ -72,7 +72,7 @@
     <string name="adjust_rating_points_for">Змінити бал рейтингу для %1$s</string>
     <string name="your_messaging_with_the_dispatcher">Ваші повідомлення з диспетчером</string>
     <string name="text">Текст:</string>
-    <string name="read">Прочитати</string>
+    <string name="read">Прочитано</string>
     <string name="new_read">Нові/Прочитані</string>
     <string name="requests">Запити</string>
     <string name="ingoing_outgoing">Вхідні/Вихідні</string>
@@ -93,4 +93,5 @@
     <string name="no">Ні</string>
     <string name="exit_the_app">Вийти з застосунку</string>
     <string name="do_you_want_to_exit">Ви хочете вийти з застосунку?</string>
+    <string name="create_request">Створити Запит</string>
 </resources>
