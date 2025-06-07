@@ -146,16 +146,16 @@ class RequestsFragment : Fragment() {
         binding.createRequestButton.setOnClickListener {
             val editText = EditText(requireContext()).apply {
                 inputType = InputType.TYPE_CLASS_TEXT
-                hint = "Enter your text"
+                hint = context.getString(R.string.enter_your_text)
             }
             AlertDialog.Builder(requireContext())
-                .setTitle("Create Request")
+                .setTitle(context?.getString(R.string.create_request))
                 .setView(editText)
                 .setPositiveButton("OK") { _, _ ->
                     val enteredText = editText.text.toString()
                     createRequest(enteredText)
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(context?.getString(R.string.cancel), null)
                 .show()
         }
     }

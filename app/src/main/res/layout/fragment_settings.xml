@@ -54,7 +54,8 @@
         android:layout_marginTop="8dp"
         android:choiceMode="multipleChoice"
         android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        tools:listitem="@android:layout/simple_list_item_multiple_choice"/>
 
     <CheckBox
         android:id="@+id/nearby_events_checkbox"

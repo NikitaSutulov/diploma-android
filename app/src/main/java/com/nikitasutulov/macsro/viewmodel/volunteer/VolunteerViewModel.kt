@@ -17,14 +17,8 @@ class VolunteerViewModel : ApiClientViewModel() {
     private val _createResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val createResponse: LiveData<BaseResponse<VolunteerDto>> = _createResponse
 
-    private val _editResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
-    val editResponse: LiveData<BaseResponse<VolunteerDto>> = _editResponse
-
     private val _getRatingPositionResponse = MutableLiveData<BaseResponse<RatingPositionDto>>()
     val getRatingPositionResponse: LiveData<BaseResponse<RatingPositionDto>> = _getRatingPositionResponse
-
-    private val _getByGIDResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
-    val getByGIDResponse: LiveData<BaseResponse<VolunteerDto>> = _getByGIDResponse
 
     private val _getByUserGIDResponse = MutableLiveData<BaseResponse<VolunteerDto>>()
     val getByUserGIDResponse: LiveData<BaseResponse<VolunteerDto>> = _getByUserGIDResponse
@@ -54,10 +48,6 @@ class VolunteerViewModel : ApiClientViewModel() {
         performRequest(_createResponse) { api.create(token, createDto) }
     }
 
-    fun edit(token: String, dto: VolunteerDto) {
-        performRequest(_editResponse) { api.edit(token, dto) }
-    }
-
     fun getRatingPosition(token: String, volunteerGID: String) {
         performRequest(_getRatingPositionResponse) { api.getRatingPosition(token, volunteerGID) }
     }
@@ -74,10 +64,6 @@ class VolunteerViewModel : ApiClientViewModel() {
         val responseLiveData: LiveData<BaseResponse<List<VolunteerDto>>> = responseMutableLiveData
         performRequest(responseMutableLiveData) { api.getByGroupGID(token, groupGID) }
         return responseLiveData
-    }
-
-    fun getByGID(token: String, gid: String) {
-        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 
     fun getByUserGID(token: String, userGID: String) {

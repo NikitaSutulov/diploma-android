@@ -94,4 +94,9 @@
     <string name="exit_the_app">Вийти з застосунку</string>
     <string name="do_you_want_to_exit">Ви хочете вийти з застосунку?</string>
     <string name="create_request">Створити Запит</string>
+    <string name="failed_to_login">Не вдалося увійти. %1$s</string>
+    <string name="failed_to_authenticate">Не вдалося здійснити аутентифікацію. %1$s</string>
+    <string name="cancel">Скасувати</string>
+    <string name="successfully_updated_rating_for">Успішно оновлено рейтинг для %1$s!</string>
+    <string name="enter_your_text">Введіть текст</string>
 </resources>

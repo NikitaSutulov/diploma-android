@@ -13,14 +13,7 @@ class EventTypeViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<EventTypeDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<EventTypeDto>>> = _getAllResponse
 
-    private val _getByGIDResponse = MutableLiveData<BaseResponse<EventTypeDto>>()
-    val getByGIDResponse: LiveData<BaseResponse<EventTypeDto>> = _getByGIDResponse
-
     fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
-    }
-
-    fun getByGID(token: String, gid: String) {
-        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 }

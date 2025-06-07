@@ -13,14 +13,7 @@ class DistrictViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<DistrictDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<DistrictDto>>> = _getAllResponse
 
-    private val _getByGIDResponse = MutableLiveData<BaseResponse<DistrictDto>>()
-    val getByGIDResponse: LiveData<BaseResponse<DistrictDto>> = _getByGIDResponse
-
     fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
-    }
-
-    fun getByGID(token: String, gid: String) {
-        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
     }
 }

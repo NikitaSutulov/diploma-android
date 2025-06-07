@@ -94,4 +94,9 @@
     <string name="exit_the_app">Exit the app</string>
     <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="create_request">Create Request</string>
+    <string name="failed_to_login">Failed to login. %1$s</string>
+    <string name="failed_to_authenticate">Failed to authenticate. %1$s</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_updated_rating_for">Successfully updated rating for %1$s!</string>
+    <string name="enter_your_text">Enter your text</string>
 </resources>

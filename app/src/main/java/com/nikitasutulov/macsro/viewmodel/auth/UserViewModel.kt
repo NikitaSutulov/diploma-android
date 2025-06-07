@@ -17,18 +17,11 @@ class UserViewModel : ApiClientViewModel() {
     private val _getWithEmailResponse = MutableLiveData<BaseResponse<ExistsDto>>()
     val getWithEmailResponse: LiveData<BaseResponse<ExistsDto>> = _getWithEmailResponse
 
-    private val _editResponse = MutableLiveData<BaseResponse<UserDto>>()
-    val editResponse: LiveData<BaseResponse<UserDto>> = _editResponse
-
     fun getWithUsername(username: String) {
         performRequest(_getWithUsernameResponse) { api.getUsersWithUsername(username) }
     }
 
     fun getWithEmail(email: String) {
         performRequest(_getWithEmailResponse) { api.getUsersWithEmail(email) }
-    }
-
-    fun edit(token: String, userDto: UserDto) {
-        performRequest(_editResponse) { api.editUser(token, userDto) }
     }
 }

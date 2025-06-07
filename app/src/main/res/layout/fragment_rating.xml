@@ -108,7 +108,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingBottom="12dp" />
+        android:paddingBottom="12dp"
+        tools:listitem="@layout/volunteer_rating_card" />
 
     <LinearLayout
         android:layout_width="match_parent"

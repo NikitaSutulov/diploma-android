@@ -34,7 +34,8 @@
         app:layout_constraintTop_toBottomOf="@id/chatRoomTitle"
         app:layout_constraintBottom_toTopOf="@id/messageInputLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/message_card" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/messageInputLayout"

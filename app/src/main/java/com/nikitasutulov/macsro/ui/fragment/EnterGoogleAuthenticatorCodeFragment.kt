@@ -14,6 +14,7 @@ import com.nikitasutulov.macsro.data.dto.BaseResponse
 import com.nikitasutulov.macsro.data.dto.auth.auth.GetTokenDto
 import com.nikitasutulov.macsro.databinding.FragmentEnterGoogleAuthenticatorCodeBinding
 import com.nikitasutulov.macsro.utils.SessionManager
+import com.nikitasutulov.macsro.utils.handleError
 import com.nikitasutulov.macsro.utils.observeOnce
 import com.nikitasutulov.macsro.viewmodel.auth.AuthViewModel
 
@@ -66,9 +67,16 @@ class EnterGoogleAuthenticatorCodeFragment : Fragment() {
                     val responseData = response.data!!
                     sessionManager.saveToken(responseData.token, responseData.expiration)
                     findNavController().navigate(R.id.action_enterGoogleAuthenticatorCodeFragment_to_createVolunteerFragment)
+                } else if (response is BaseResponse.Error) {
+                    showCodeError(response)
                 }
             }
         }
+    }
+
+    private fun showCodeError(response: BaseResponse.Error) {
+        handleError(binding.root,
+            getString(R.string.failed_to_authenticate, response.error?.message))
     }
 
     override fun onDestroyView() {

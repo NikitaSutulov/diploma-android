@@ -18,10 +18,7 @@ class VolunteersDistrictsViewModel : ApiClientViewModel() {
         _getByVolunteerGIDResponse
 
     private val _deleteByGIDResponse = MutableLiveData<BaseResponse<ResponseBody>>()
-    val deleteByGIDResponse: LiveData<BaseResponse<ResponseBody>> = _deleteByGIDResponse
-
     private val _createResponse = MutableLiveData<BaseResponse<VolunteersDistrictsDto>>()
-    val createResponse: LiveData<BaseResponse<VolunteersDistrictsDto>> = _createResponse
 
     fun getByVolunteerGID(token: String, volunteerGID: String) {
         performRequest(_getByVolunteerGIDResponse) { api.getByVolunteerGID(token, volunteerGID) }

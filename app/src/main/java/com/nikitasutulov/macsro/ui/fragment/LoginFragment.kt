@@ -124,6 +124,7 @@ class LoginFragment : Fragment() {
             } else if (response is BaseResponse.Error) {
                 showLoginError(response.error!!.message)
             }
+            isLoggingIn = false
         }
     }
 
@@ -140,7 +141,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showLoginError(message: String) {
-        handleError(binding.root, "Failed to login. $message")
+        handleError(binding.root, getString(R.string.failed_to_login, message))
         binding.passwordEditText.setText("")
     }
 

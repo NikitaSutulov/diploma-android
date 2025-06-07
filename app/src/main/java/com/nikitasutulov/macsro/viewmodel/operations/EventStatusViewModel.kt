@@ -13,15 +13,7 @@ class EventStatusViewModel : ApiClientViewModel() {
     private val _getAllResponse = MutableLiveData<BaseResponse<List<EventStatusDto>>>()
     val getAllResponse: LiveData<BaseResponse<List<EventStatusDto>>> = _getAllResponse
 
-    private val _getByGIDResponse = MutableLiveData<BaseResponse<EventStatusDto>>()
-    val getByGIDResponse: LiveData<BaseResponse<EventStatusDto>> = _getByGIDResponse
-
     fun getAll(token: String, pageNumber: Int? = null, pageSize: Int? = null) {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
-
-    fun getByGID(token: String, gid: String) {
-        performRequest(_getByGIDResponse) { api.getByGID(token, gid) }
-    }
-
 }

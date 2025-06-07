@@ -128,7 +128,8 @@
         app:layout_constraintTop_toBottomOf="@id/filters_card"
         app:layout_constraintBottom_toTopOf="@id/logout_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/event_card" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/logout_button"

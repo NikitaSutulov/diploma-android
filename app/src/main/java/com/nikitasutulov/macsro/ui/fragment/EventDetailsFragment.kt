@@ -181,7 +181,7 @@ class EventDetailsFragment : Fragment() {
                     if (ratingUpdateResponse is BaseResponse.Success) {
                         Snackbar.make(
                             binding.root,
-                            "Successfully updated rating for ${member.name}!",
+                            getString(R.string.successfully_updated_rating_for, member.name),
                             Snackbar.LENGTH_SHORT
                         ).show()
                     } else if (ratingUpdateResponse is BaseResponse.Error) {
@@ -190,7 +190,7 @@ class EventDetailsFragment : Fragment() {
                 }
 
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 

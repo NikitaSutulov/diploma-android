@@ -88,7 +88,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:clipToPadding="false" />
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/event_resource_card"
+                    tools:itemCount="2"/>
 
             </LinearLayout>
 
@@ -256,7 +258,9 @@
                 android:id="@+id/volunteer_group_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="12dp"
+                tools:listitem="@layout/group_card"
+                tools:itemCount="1"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/group_chat_button"
@@ -298,7 +302,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/group_operation_tasks_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/operation_task_card"
+                    tools:itemCount="1" />
             </LinearLayout>
 
         </LinearLayout>
