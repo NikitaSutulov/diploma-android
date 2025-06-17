@@ -117,12 +117,13 @@ class LoginFragment : Fragment() {
                 if (!isLoginSuccessful) {
                     showLoginError(response.data.message)
                 } else {
-                    authViewModel.clearLoginResponse()
                     val action = LoginFragmentDirections.actionLoginFragmentToEnterGoogleAuthenticatorCodeFragment(username)
                     findNavController().navigate(action)
                 }
+                authViewModel.clearLoginResponse()
             } else if (response is BaseResponse.Error) {
                 showLoginError(response.error!!.message)
+                authViewModel.clearLoginResponse()
             }
             isLoggingIn = false
         }

@@ -236,17 +236,17 @@ class EventsFragment : Fragment() {
         operationWorkerViewModel.getByUserGIDResponse.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
                 operationWorkerGID = response.data!!.gid
-                eventViewModel.getAll("Bearer $token")
-            } else if (response is BaseResponse.Error) {
-                showFetchEventsError(response)
-            }
-        }
-        eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
-            if (response is BaseResponse.Success) {
-                val eventsOfCoordinator = response.data!!
-                    .filter { it.coordinatorGID == operationWorkerGID && eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
-                mapEvents(eventsOfCoordinator)
-                eventAdapter.submitList(events)
+                val eventsResponseLiveData = eventViewModel.getSorted("Bearer $token")
+                eventsResponseLiveData.observeOnce(viewLifecycleOwner) { response ->
+                    if (response is BaseResponse.Success) {
+                        val eventsOfCoordinator = response.data!!.items
+                            .filter { it.coordinatorGID == operationWorkerGID && eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
+                        mapEvents(eventsOfCoordinator)
+                        eventAdapter.submitList(events)
+                    } else if (response is BaseResponse.Error) {
+                        showFetchEventsError(response)
+                    }
+                }
             } else if (response is BaseResponse.Error) {
                 showFetchEventsError(response)
             }
@@ -254,10 +254,10 @@ class EventsFragment : Fragment() {
     }
 
     private fun fetchEventsForVolunteer() {
-        eventViewModel.getAll("Bearer $token")
-        eventViewModel.getAllResponse.observeOnce(viewLifecycleOwner) { response ->
+        val eventsResponseLiveData = eventViewModel.getSorted("Bearer $token")
+        eventsResponseLiveData.observeOnce(viewLifecycleOwner) { response ->
             if (response is BaseResponse.Success) {
-                val eventsOfVolunteer= response.data!!
+                val eventsOfVolunteer= response.data!!.items
                     .filter { eventStatuses[it.eventStatusGID]?.name in usefulEventStatusesNames }
                 mapEvents(eventsOfVolunteer)
                 setupEventNotifications()

@@ -19,7 +19,7 @@ class EventViewModel : ApiClientViewModel() {
         performRequest(_getAllResponse) { api.getAll(token, pageNumber, pageSize) }
     }
 
-    fun getSorted(token: String, eventStatusGID: String): LiveData<BaseResponse<EventsListResultDto>> {
+    fun getSorted(token: String, eventStatusGID: String? = null): LiveData<BaseResponse<EventsListResultDto>> {
         val responseMutableLiveData = MutableLiveData<BaseResponse<EventsListResultDto>>()
         val responseLiveData: LiveData<BaseResponse<EventsListResultDto>> = responseMutableLiveData
         performRequest(responseMutableLiveData) { api.getSorted(token, EventPaginationQueryDto(eventStatusGID)) }

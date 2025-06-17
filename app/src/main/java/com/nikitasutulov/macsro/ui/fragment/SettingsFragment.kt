@@ -90,7 +90,7 @@ class SettingsFragment : Fragment() {
                     if (response is BaseResponse.Success) {
                         volunteer = response.data!!
                         val volunteerFullName =
-                            "${volunteer?.secondName} ${volunteer?.name} ${volunteer?.secondName}"
+                            "${volunteer?.surname} ${volunteer?.name} ${volunteer?.secondName}"
                         binding.volunteerNameTextView.text = volunteerFullName
                         districtViewModel.getAll("Bearer $token")
                     } else if (response is BaseResponse.Error) {
